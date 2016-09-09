@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\TouricoHotel;
+use App\TouricoActivity;
 
 class HomeController extends Controller
 {
@@ -23,6 +24,11 @@ class HomeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
+    {
+      return view('home');
+    }
+
+    public function hotels()
     {
       $hotel_api = new TouricoHotel;
       $data = [
@@ -44,5 +50,20 @@ class HomeController extends Controller
         ]
       ];
       print_r($hotel_api->SearchHotels($data));
+    }
+
+    public function activities()
+    {
+      $activity_api = new TouricoActivity;
+      $data = [
+        'SearchRequest'=>[
+          'fromDate'=>'2016-10-10',
+          'toDate'=>'2016-10-12',
+          'destinationIds'=>[
+            'int'=>'7647'
+          ]
+        ]
+      ];
+      print_r($activity_api->SearchActivityByDestinationIds($data));
     }
 }

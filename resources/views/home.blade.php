@@ -9,6 +9,10 @@
 
                 <div class="panel-body">
                     You are logged in!
+                    <ul>
+                      <li><a href="{{ url('activities') }}">Activities Test</a></li>
+                      <li><a href="{{ url('hotels') }}">Hotels Test</a></li>
+                    </ul>
                 </div>
             </div>
         </div>

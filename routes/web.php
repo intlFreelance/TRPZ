@@ -12,6 +12,8 @@
 */
 
 Route::get('/', 'HomeController@index');
+Route::get('hotels', 'HomeController@hotels');
+Route::get('activities', 'HomeController@activities');
 
 Auth::routes();
 
