@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\TouricoHotel;
 use App\TouricoActivity;
+use App\TouricoDestination;
 
 class HomeController extends Controller
 {
@@ -65,5 +66,18 @@ class HomeController extends Controller
         ]
       ];
       print_r($activity_api->SearchActivityByDestinationIds($data));
+    }
+
+    public function destinations()
+    {
+      $destination_api = new TouricoDestination;
+      //print_r($destination_api->functions());exit;
+      $data = [
+        'Destination'=>[
+          'Continent'=>'North America',
+          'StatusDate'=>'2016-09-10',
+        ]
+      ];
+      print_r($destination_api->SearchDestinations($data));
     }
 }
