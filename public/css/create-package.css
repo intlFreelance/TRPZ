@@ -1,0 +1,29 @@
+/* Create Package Styles */
+.package-image {
+    width: 400px; 
+    height: 200px; 
+    background-color: #ddd;
+}
+
+.hotel-panel {
+    width: 30%;
+    margin-right: 3%;
+}
+
+#destination-text span {
+    cursor: pointer;
+}
+
+.added-hotel span {
+    cursor: pointer;
+}
+
+#add-activity-button {
+    display: none;
+}
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
