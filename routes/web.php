@@ -16,8 +16,11 @@ Route::get('hotels', 'HomeController@hotels');
 Route::get('activities', 'HomeController@activities');
 Route::get('destinations', 'HomeController@destinations');
 
-Route::resource('packages', 'PackageController');
+Route::get('packages/json/destinations/{continent?}/{country?}/{state?}',  'PackageController@jsonDestinations');
+Route::get('packages/update/destinations',  'PackageController@updateDestinations');
 Route::get('search-hotels', 'PackageController@getHotels');
+Route::resource('packages', 'PackageController');
+
 
 Auth::routes();
 

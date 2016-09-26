@@ -1,6 +1,5 @@
 const elixir = require('laravel-elixir');
 
-require('laravel-elixir-vue');
 
 /*
  |--------------------------------------------------------------------------
@@ -15,5 +14,9 @@ require('laravel-elixir-vue');
 
 elixir(mix => {
     mix.sass('app.scss')
-       .webpack('app.js');
+    .scripts([
+      '../../../bower_components/angular/angular.min.js',
+      'app.js',
+      'pages/*.js',
+    ], 'public/js/trpz.js');
 });

@@ -2,7 +2,7 @@
 
 @section('content')
 <link href="/css/create-package.css" rel="stylesheet">
-<div class="container">
+<div class="container" ng-controller="PackageController">
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
             <div class="panel panel-default">
@@ -59,19 +59,22 @@
                         </div>
                     </div>
                     <div class="row">
+                        <ul>
+                          <li ng-repeat="destination in destinations"><%destination.id%> - <%destination.name%></li>
+                        </ul>
                         <div id="destination-menu" class="col-sm-2">
                             <div class="dropdown">
-                                <button 
-                                    class="btn btn-default dropdown-toggle" 
-                                    type="button" 
-                                    id="destination-menu-title" 
-                                    data-toggle="dropdown" 
-                                    aria-haspopup="true" 
+                                <button
+                                    class="btn btn-default dropdown-toggle"
+                                    type="button"
+                                    id="destination-menu-title"
+                                    data-toggle="dropdown"
+                                    aria-haspopup="true"
                                     aria-expanded="true"
                                     disabled="true">
                                 </button>
-                                <ul 
-                                    class="dropdown-menu" 
+                                <ul
+                                    class="dropdown-menu"
                                     id="destination-menu-list">
                                 </ul>
                             </div>
@@ -90,9 +93,9 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <p>
-                                <button id="add-activity-button" class="btn btn-primary">Add Activity</button> 
+                                <button id="add-activity-button" class="btn btn-primary">Add Activity</button>
                             </p>
-                         </div>                       
+                         </div>
                     </div>
                     <div class="row">
                         <div id="hotels" class="col-sm-12">

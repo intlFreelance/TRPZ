@@ -1,0 +1,21 @@
+{
+  "name": "trpz",
+  "description": "",
+  "main": "",
+  "authors": [
+    "Adam Williams <adam@whitesunrise.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/whitesunrise/TRPZ",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.5.8"
+  }
+}
