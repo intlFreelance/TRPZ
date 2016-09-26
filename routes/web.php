@@ -16,6 +16,9 @@ Route::get('hotels', 'HomeController@hotels');
 Route::get('activities', 'HomeController@activities');
 Route::get('destinations', 'HomeController@destinations');
 
+Route::resource('packages', 'PackageController');
+Route::get('search-hotels', 'PackageController@getHotels');
+
 Auth::routes();
 
 //Route::get('/home', 'HomeController@index')->middleware('auth');
