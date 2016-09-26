@@ -11,14 +11,16 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Styles -->
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
     <link href="/css/app.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
     <!-- Scripts -->
     <script>
         window.Laravel = <?php echo json_encode([
             'csrfToken' => csrf_token(),
         ]); ?>
     </script>
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 </head>
 <body>
     <nav class="navbar navbar-default navbar-static-top">
@@ -81,5 +83,6 @@
 
     <!-- Scripts -->
     <script src="/js/app.js"></script>
+    <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
 </body>
 </html>
