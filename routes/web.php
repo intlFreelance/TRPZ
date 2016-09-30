@@ -11,7 +11,8 @@
 |
 */
 
-Route::get('/', 'HomeController@index');
+Route::get('/', 'FrontendController@index');
+Route::get('about', 'FrontendController@about');
 Route::get('hotels', 'HomeController@hotels');
 Route::get('activities', 'HomeController@activities');
 Route::get('destinations', 'HomeController@destinations');
