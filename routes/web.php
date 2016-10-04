@@ -13,14 +13,16 @@
 
 Route::get('/', 'FrontendController@index');
 Route::get('about', 'FrontendController@about');
-Route::get('hotels', 'HomeController@hotels');
-Route::get('activities', 'HomeController@activities');
-Route::get('destinations', 'HomeController@destinations');
-
-Route::get('packages/json/destinations/{continent?}/{country?}/{state?}',  'PackageController@jsonDestinations');
-Route::get('packages/update/destinations',  'PackageController@updateDestinations');
-Route::get('search-hotels', 'PackageController@getHotels');
-Route::resource('packages', 'PackageController');
+Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
+  Route::get('/', 'AdminController@index');
+  Route::get('hotels', 'AdminController@hotels');
+  Route::get('activities', 'AdminController@activities');
+  Route::get('destinations', 'AdminController@destinations');
+  Route::get('packages/json/destinations/{continent?}/{country?}/{state?}',  'PackageController@jsonDestinations');
+  Route::get('packages/update/destinations',  'PackageController@updateDestinations');
+  Route::get('search-hotels', 'PackageController@getHotels');
+  Route::resource('packages', 'PackageController');
+});
 
 
 Auth::routes();

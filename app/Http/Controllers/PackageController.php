@@ -44,16 +44,16 @@ class PackageController extends Controller
     {
         // $this->request->session()->forget('destinations');
         $destinations = $this->request->session()->get('destinations', function() {
-            $allDestinations = $this->getAllDestinations();
-            $this->request->session()->put('destinations', $allDestinations);
-            return $allDestinations;
+          $allDestinations = $this->getAllDestinations();
+          $this->request->session()->put('destinations', $allDestinations);
+          return $allDestinations;
         });
 
         $data = [
             'destinations' => $destinations->DestinationResult
         ];
 
-        return view('create-package', $data);
+        return view('admin.package.create', $data);
     }
 
     private function getAllDestinations()

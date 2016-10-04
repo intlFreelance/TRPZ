@@ -7,7 +7,7 @@ use App\TouricoHotel;
 use App\TouricoActivity;
 use App\TouricoDestination;
 
-class HomeController extends Controller
+class AdminController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -26,7 +26,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-      return view('home');
+      return view('admin.home');
     }
 
     public function hotels()

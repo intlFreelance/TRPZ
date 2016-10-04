@@ -324,7 +324,7 @@ var app = angular.module('app', [])
   });
 
 app.controller('PackageController', function($scope, $http) {
-  $http.get('/packages/json/destinations').then(function successCallback(response) {
+  $http.get('/admin/packages/json/destinations').then(function successCallback(response) {
     if (200 == response.status) {
       $scope.destinations = response.data;
     }

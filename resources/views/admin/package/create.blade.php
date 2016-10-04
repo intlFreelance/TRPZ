@@ -59,9 +59,6 @@
                         </div>
                     </div>
                     <div class="row">
-                        <ul>
-                          <li ng-repeat="destination in destinations"><%destination.id%> - <%destination.name%></li>
-                        </ul>
                         <div id="destination-menu" class="col-sm-2">
                             <div class="dropdown">
                                 <button
