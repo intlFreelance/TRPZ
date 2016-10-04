@@ -15,9 +15,13 @@ const elixir = require('laravel-elixir');
 elixir(mix => {
     mix.sass('app.scss')
     .copy('node_modules/bootstrap-sass/assets/fonts','public/fonts')
+    .copy('bower_components/textAngular/dist/textAngular.css', 'public/css')
     .scripts([
       '../../../bower_components/angular/angular.min.js',
       '../../../bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
+      '../../../bower_components/textAngular/dist/textAngular-rangy.min.js',
+      '../../../bower_components/textAngular/dist/textAngular-sanitize.min.js',
+      '../../../bower_components/textAngular/dist/textAngular.min.js',
       'app.js',
       'pages/*.js',
     ], 'public/js/trpz.js');

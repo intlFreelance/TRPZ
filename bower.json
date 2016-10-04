@@ -17,6 +17,7 @@
   ],
   "dependencies": {
     "angular": "^1.5.8",
-    "angular-bootstrap": "^2.1.4"
+    "angular-bootstrap": "^2.1.4",
+    "textAngular": "^1.5.12"
   }
 }

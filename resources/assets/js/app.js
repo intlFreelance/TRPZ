@@ -1,5 +1,6 @@
 var app = angular.module('app', [
-  'ui.bootstrap'
+  'ui.bootstrap',
+  'textAngular'
 ])
   .config(function($interpolateProvider) {
     $interpolateProvider.startSymbol('<%');
