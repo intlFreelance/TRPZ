@@ -22,6 +22,7 @@ Route::group(['prefix' => 'admin','namespace' => 'Admin', 'middleware'=>'auth'],
   Route::get('packages/update/destinations',  'PackageController@updateDestinations');
   Route::get('search-hotels', 'PackageController@getHotels');
   Route::get('search-activities', 'PackageController@getActivities');
+  Route::post('save-package', 'PackageController@ajaxSavePackage');
   Route::resource('packages', 'PackageController');
   Route::resource('categories', 'CategoryController');
 });

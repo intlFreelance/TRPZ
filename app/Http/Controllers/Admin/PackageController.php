@@ -219,10 +219,9 @@ class PackageController extends Controller
     /**
      * Save a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function save()
+    public function ajaxSavePackage()
     {
         $package = new Package;
         $package->name = $this->request->name;
@@ -246,9 +245,6 @@ class PackageController extends Controller
         $package->packageHotels()->saveMany($hotelIds);
         $package->packageActivities()->saveMany($activityIds);
         return response()->json($package->id);
-
-
-        // foreach($this->request->hotelIds)
     }
 
     /**

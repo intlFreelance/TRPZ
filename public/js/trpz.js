@@ -8008,7 +8008,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter) {
       hotelIds: getHotelIds(),
       activityIds: getActivityIds()
     }
-    $http.post('/admin/packages/save', newPackage)
+    $http.post('/admin/save-package', newPackage)
       .then(function(response) {
         console.log(response);
       })
