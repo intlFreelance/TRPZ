@@ -14,6 +14,7 @@ const elixir = require('laravel-elixir');
 
 elixir(mix => {
     mix.sass('app.scss')
+    .copy('node_modules/bootstrap-sass/assets/fonts','public/fonts')
     .scripts([
       '../../../bower_components/angular/angular.min.js',
       'app.js',
