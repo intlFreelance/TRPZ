@@ -10,4 +10,14 @@ class Package extends Model
     {
         return $this->belongsToMany('App\Category');
     }
+
+    public $timestamps = false;
+    
+    function packageHotels() {
+        return $this->hasMany('App\PackageHotel');
+    }
+
+    function packageActivities() {
+        return $this->hasMany('App\PackageActivity');
+    }
 }

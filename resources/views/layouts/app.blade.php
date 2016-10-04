@@ -15,14 +15,12 @@
     <link href="/css/app.css" rel="stylesheet">
     <link href="/css/admin.css" rel="stylesheet">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
     <!-- Scripts -->
     <script>
         window.Laravel = <?php echo json_encode([
             'csrfToken' => csrf_token(),
         ]); ?>
     </script>
-    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 </head>
 <body>
     <nav class="navbar navbar-default navbar-static-top">
@@ -103,10 +101,18 @@
 
     @yield('content')
 
+    <!-- Latest compiled and minified JavaScript -->
+    <script
+	    src="https://code.jquery.com/jquery-1.12.4.min.js"
+        integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+        crossorigin="anonymous">
+    </script>
+    <script 
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" 
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" 
+        crossorigin="anonymous">
+    </script>
     <!-- Scripts -->
     <script src="/js/trpz.js"></script>
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
 </body>
 </html>
