@@ -7935,7 +7935,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter) {
   function getHotels(destination) {
     $scope.missingDates = false;
     $scope.city = destination.name;
-    var hotelUrl = '/search-hotels?' +
+    var hotelUrl = '/admin/search-hotels?' +
     'destination=' + destination.destinationCode +
     '&start-date=' + $scope.startDate +
     '&end-date=' + $scope.endDate;
@@ -7964,7 +7964,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter) {
 
   function getActivities(destination) {
     $scope.missingDates = false;
-    var activityUrl = '/search-activities?' +
+    var activityUrl = '/admin/search-activities?' +
     'destination-id=' + destination.destinationId +
     '&start-date=' + $scope.startDate +
     '&end-date=' + $scope.endDate;
@@ -8008,7 +8008,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter) {
       hotelIds: getHotelIds(),
       activityIds: getActivityIds()
     }
-    $http.post('/packages/save', newPackage)
+    $http.post('/admin/packages/save', newPackage)
       .then(function(response) {
         console.log(response);
       })

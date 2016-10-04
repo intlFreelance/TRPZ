@@ -13,7 +13,6 @@ use App\Destination;
 use App\TouricoHotel;
 use App\TouricoActivity;
 use App\TouricoDestination;
-use App\Package;
 
 class PackageController extends Controller
 {
