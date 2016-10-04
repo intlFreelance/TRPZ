@@ -9,4 +9,10 @@ class Category extends Model
     protected $table = 'categories';
 
     protected $fillable = ['id','name'];
+
+
+    public function packages()
+    {
+        return $this->belongsToMany('App\Package');
+    }
 }
