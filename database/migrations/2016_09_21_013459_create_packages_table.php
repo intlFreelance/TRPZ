@@ -16,12 +16,13 @@ class CreatePackagesTable extends Migration
         Schema::create('packages', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('mainImage')->nullable();
+            $table->string('main_image');
             $table->text('description');
-            $table->integer('numberOfDays');
-            $table->date('startDate');
-            $table->date('endDate');
-            $table->string('markup');
+            $table->integer('number_of_days');
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->integer('hotel');
+            $table->float('markup', 2, 2);
         });
     }
 
