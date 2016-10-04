@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use Carbon\Carbon;
+use App\Package;
+use App\PackageHotel;
+use App\PackageActivity;
 use App\Destination;
 use App\TouricoHotel;
 use App\TouricoActivity;
@@ -43,18 +46,7 @@ class PackageController extends Controller
      */
     public function create()
     {
-        // $this->request->session()->forget('destinations');
-        $destinations = $this->request->session()->get('destinations', function() {
-          $allDestinations = $this->getAllDestinations();
-          $this->request->session()->put('destinations', $allDestinations);
-          return $allDestinations;
-        });
-
-        $data = [
-            'destinations' => $destinations->DestinationResult
-        ];
-
-        return view('admin.package.create', $data);
+        return view('admin.package.create');
     }
 
     private function getAllDestinations()
@@ -206,15 +198,58 @@ class PackageController extends Controller
         return response()->json($hotels);
     }
 
+    public function getActivities() {
+        $activity_api = new TouricoActivity;
+        $data = [
+            'SearchRequest'=>[
+                'fromDate'=>Carbon::parse($this->request->query('start-date'))->format('Y-m-d'),
+                'toDate'=>Carbon::parse($this->request->query('end-date'))->format('Y-m-d'),
+                'destinationIds'=>[
+                    'int'=>$this->request->query('destination-id')
+                ]
+            ]
+        ];
+        $activities = $activity_api->SearchActivityByDestinationIds($data);
+        if(isset($activities->Category) && !is_array($activities->Category))
+        {
+            $activities = ['Category'=>[$activities->Category]];
+        }
+        return response()->json($activities);
+    }
+
     /**
-     * Store a newly created resource in storage.
+     * Save a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function save()
     {
-        //
+        $package = new Package;
+        $package->name = $this->request->name;
+        $package->description = $this->request->description;
+        $package->numberOfDays = $this->request->numberOfDays;
+        $package->startDate = $this->request->startDate;
+        $package->endDate = $this->request->endDate;
+        $package->markup = $this->request->markup;
+        $package->save();
+
+        $hotelIds = [];
+        forEach($this->request->hotelIds as $hotelId) {
+            $hotelIds[] = new PackageHotel(['hotelId'=>$hotelId]);
+        }
+
+        $activityIds = [];
+        forEach($this->request->activityIds as $activityId) {
+            $activityIds[] = new PackageActivity(['activityId'=>$activityId]);
+        }
+
+        $package->packageHotels()->saveMany($hotelIds);
+        $package->packageActivities()->saveMany($activityIds);
+        return response()->json($package->id);
+
+
+        // foreach($this->request->hotelIds)
     }
 
     /**

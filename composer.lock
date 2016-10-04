@@ -350,6 +350,7 @@
         },
         {
             "name": "laravel/framework",
+<<<<<<< HEAD
             "version": "v5.3.15",
             "source": {
                 "type": "git",
@@ -360,6 +361,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/laravel/framework/zipball/f034a02f38db77d4b0b3e89942394cae456a627f",
                 "reference": "f034a02f38db77d4b0b3e89942394cae456a627f",
+=======
+            "version": "v5.3.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/framework.git",
+                "reference": "6febb0ee61999cde3bc7b2963c8903032bb22691"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/6febb0ee61999cde3bc7b2963c8903032bb22691",
+                "reference": "6febb0ee61999cde3bc7b2963c8903032bb22691",
+>>>>>>> TRPZ-3-Package-Builder
                 "shasum": ""
             },
             "require": {
@@ -474,6 +487,7 @@
                 "framework",
                 "laravel"
             ],
+<<<<<<< HEAD
             "time": "2016-09-29 22:13:17"
         },
         {
@@ -529,6 +543,9 @@
             "description": "HTML and Form Builders for the Laravel Framework",
             "homepage": "http://laravelcollective.com",
             "time": "2016-08-27 23:52:43"
+=======
+            "time": "2016-09-20 13:46:16"
+>>>>>>> TRPZ-3-Package-Builder
         },
         {
             "name": "league/flysystem",
@@ -2673,6 +2690,7 @@
         },
         {
             "name": "phpunit/phpunit",
+<<<<<<< HEAD
             "version": "5.5.6",
             "source": {
                 "type": "git",
@@ -2683,6 +2701,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/146e0fe0bb7f44d1cefade0c93e86fe0b206dd79",
                 "reference": "146e0fe0bb7f44d1cefade0c93e86fe0b206dd79",
+=======
+            "version": "5.5.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/phpunit.git",
+                "reference": "a57126dc681b08289fef6ac96a48e30656f84350"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/a57126dc681b08289fef6ac96a48e30656f84350",
+                "reference": "a57126dc681b08289fef6ac96a48e30656f84350",
+>>>>>>> TRPZ-3-Package-Builder
                 "shasum": ""
             },
             "require": {
@@ -2752,7 +2782,11 @@
                 "testing",
                 "xunit"
             ],
+<<<<<<< HEAD
             "time": "2016-10-03 07:48:45"
+=======
+            "time": "2016-09-21 14:40:13"
+>>>>>>> TRPZ-3-Package-Builder
         },
         {
             "name": "phpunit/phpunit-mock-objects",

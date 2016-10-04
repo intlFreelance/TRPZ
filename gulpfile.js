@@ -17,6 +17,7 @@ elixir(mix => {
     .copy('node_modules/bootstrap-sass/assets/fonts','public/fonts')
     .scripts([
       '../../../bower_components/angular/angular.min.js',
+      '../../../bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
       'app.js',
       'pages/*.js',
     ], 'public/js/trpz.js');

@@ -22,7 +22,6 @@
             'csrfToken' => csrf_token(),
         ]); ?>
     </script>
-    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 </head>
 <body>
     <nav class="navbar navbar-default navbar-static-top">

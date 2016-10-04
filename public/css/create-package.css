@@ -1,4 +1,7 @@
 /* Create Package Styles */
+a {
+    cursor: pointer;
+}
 .package-image {
     width: 400px; 
     height: 200px; 
@@ -10,16 +13,18 @@
     margin-right: 3%;
 }
 
+.activity-panel {
+    width: 30%;
+    margin-right: 3%;
+    height: 250px;
+}
+
 #destination-text span {
     cursor: pointer;
 }
 
 .added-hotel span {
     cursor: pointer;
-}
-
-#add-activity-button {
-    display: none;
 }
 
 .truncate {
