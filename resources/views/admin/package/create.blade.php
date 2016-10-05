@@ -64,7 +64,10 @@
                         </div>
                         </div>
                         <div class="col-sm-6">
-                            <div class="package-image"></div>
+                            <label>Image</label>
+                             <input type="file" ngf-select ng-model="imgUpload" name="file"    
+                            accept="image/*" ngf-max-size="2MB">
+                             <img ngf-thumbnail="imgUpload" class="thumb"/>
                         </div>
                     </div>
                     <div class="row">
@@ -220,7 +223,7 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-12">
-                            <button ng-click="submit()" class="btn btn-primary">Create Package</button>
+                            <button ng-click="submit(imgUpload)" class="btn btn-primary">Create Package</button>
                         </div>
                     </div>
                 </div>

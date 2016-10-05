@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Intervention\Image\Facades\Image;
 use App\Http\Requests;
 use Carbon\Carbon;
 use App\Category;
@@ -226,32 +228,54 @@ class PackageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function ajaxSavePackage()
+    public function ajaxSavePackage(Request $request)
     {
+        $data = \Illuminate\Support\Facades\Input::all();
+        $file = $data["imgUpload"];
+        $newPackage = json_decode($data["newPackage"], true);
+        
+        
         $package = new Package;
-        $package->name = $this->request->name;
-        $package->description = $this->request->description;
-        $package->numberOfDays = $this->request->numberOfDays;
-        $package->startDate = $this->request->startDate;
-        $package->endDate = $this->request->endDate;
-        $package->markup = $this->request->markup;
+        $package->name = $newPackage['name'];
+        $package->description = $newPackage['description'];
+        $package->numberOfDays = $newPackage['numberOfDays'];
+        $package->startDate = $newPackage['startDate'];
+        $package->endDate = $newPackage['endDate'];
+        $package->markup = $newPackage['markup'];
         $package->save();
+<<<<<<< HEAD
 
         $category = Category::find($this->request->categoryId);
         $package->categories()->save($category);
 
+=======
+        
+>>>>>>> 0954cac... Image Upload added to package
         $hotelIds = [];
-        forEach($this->request->hotelIds as $hotelId) {
+        forEach($newPackage['hotelIds'] as $hotelId) {
             $hotelIds[] = new PackageHotel(['hotelId'=>$hotelId]);
         }
 
         $activityIds = [];
-        forEach($this->request->activityIds as $activityId) {
+        forEach($newPackage['activityIds'] as $activityId) {
             $activityIds[] = new PackageActivity(['activityId'=>$activityId]);
         }
 
         $package->packageHotels()->saveMany($hotelIds);
         $package->packageActivities()->saveMany($activityIds);
+        
+        if ($file!=null) {
+            $ext = $file->getClientOriginalExtension();
+            $imageName = str_random(15).'.'.$ext;
+            if (!file_exists(public_path().'/uploads/packages')) {
+                mkdir(public_path().'/uploads/packages',0777, true);
+            }
+            
+            Image::make($file)->save(public_path().'/uploads/packages/'.$imageName);
+            $package->mainImage = $imageName;
+            $package->save();
+        }
+        
         return response()->json($package->id);
     }
 

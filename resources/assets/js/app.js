@@ -1,6 +1,7 @@
 var app = angular.module('app', [
   'ui.bootstrap',
-  'textAngular'
+  'textAngular',
+  'ngFileUpload'
 ])
   .config(function($interpolateProvider) {
     $interpolateProvider.startSymbol('<%');

@@ -1,4 +1,4 @@
-app.controller('PackageController', function($scope, $http, $log, $filter) {
+app.controller('PackageController', function($scope, $http, $log, $filter, Upload) {
   $scope.destinationSegments = [];
   $scope.destinationSegmentIds = [];
   $scope.getDestinations = getDestinations;
@@ -134,7 +134,9 @@ app.controller('PackageController', function($scope, $http, $log, $filter) {
     $scope.addedActivities.splice(indexToRemove, 1);
   }
 
-  function submit() {
+  function submit(file) {
+    var formData = new FormData();
+    formData.append("imgUpload", file);
     var newPackage = {
       name: $scope.name,
       categoryId: $scope.categoryId,
@@ -145,9 +147,12 @@ app.controller('PackageController', function($scope, $http, $log, $filter) {
       markup: $scope.markup,
       hotelIds: getHotelIds(),
       activityIds: getActivityIds()
-    }
-    $http.post('/admin/save-package', newPackage)
-      .then(function(response) {
+    };
+    formData.append("newPackage", JSON.stringify(newPackage));
+    $http.post('/admin/save-package', formData,{
+       headers: {'Content-Type': undefined },
+       transformRequest: angular.identity
+    }).then(function(response) {
         console.log(response);
       })
       .catch(function(error) {

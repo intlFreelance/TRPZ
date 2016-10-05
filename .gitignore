@@ -7,3 +7,4 @@ Homestead.json
 Homestead.yaml
 .env
 /app/_ide_helper.php
+/public/uploads/*
