@@ -13,6 +13,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
   $scope.removeActivity = removeActivity;
   $scope.addedActivities = [];
   $scope.submit = submit;
+  $scope.isArray = angular.isArray;
   
   getDestinations(null);
   
@@ -78,7 +79,6 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
     '&end-date=' + $filter('date')($scope.endDate, 'yyyy-MM-dd');
     $http.get(hotelUrl)
       .then(function(response) {
-        console.log(response.data);
         $scope.hotels = response.data.Hotel;
       })
       .catch(function(error) {
@@ -107,7 +107,6 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
     '&end-date=' + $filter('date')($scope.endDate, 'yyyy-MM-dd');
     $http.get(activityUrl)
       .then(function(response) {
-        console.log(response.data);
         $scope.activityCategories = response.data.Category;
       })
       .catch(function(error) {
@@ -119,6 +118,9 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
   function selectActivityCategory(category) {
     selectedActivityCategory = category;
     $scope.activities = category.Activities.Activity;
+    if (!angular.isArray(category.Activities.Activity)) {
+      $scope.activities = [$scope.activities];
+    }
   }
 
   function addActivity(activity) {
@@ -126,7 +128,6 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
     if (alreadyAddedIndex < 0) {
       $scope.addedActivities.push(activity);
     }
-    console.log($scope.addedActivities);
   }
 
   function removeActivity(activity) {

@@ -224,11 +224,14 @@
                                     <div class="panel-body">
                                         <div class="row">
                                             <div class="col-sm-5">
-                                            <%activity.thumb%>
                                                 <img width="100" height:"100" src="<%activity.thumbURL%>"/>
                                             </div>
                                             <div class="col-sm-7">
-                                                <%activity.currency%><br>
+                                                Adult: <%activity.ActivityOptions.ActivityOption.Availabilities.Availability.adultPrice%>&nbsp;<%activity.currency%><br>
+                                                Child: <%activity.ActivityOptions.ActivityOption.Availabilities.Availability.childPrice%>&nbsp;<%activity.currency%><br>
+                                                <span ng-if="isArray(activity.ActivityOptions.ActivityOption)">
+                                                    Unit: <%activity.ActivityOptions.ActivityOption[0].Availabilities.Availability.unitPrice%>&nbsp;<%activity.currency%><br>
+                                                </span>
                                                 <button ng-click="addActivity(activity);" class="btn btn-default">Add to Package</button>
                                             </div>
                                         </div>
