@@ -228,12 +228,11 @@ class PackageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function ajaxSavePackage(Request $request)
+    public function ajaxSavePackage()
     {
         $data = \Illuminate\Support\Facades\Input::all();
         $file = $data["imgUpload"];
         $newPackage = json_decode($data["newPackage"], true);
-        
         
         $package = new Package;
         $package->name = $newPackage['name'];
@@ -242,15 +241,13 @@ class PackageController extends Controller
         $package->startDate = $newPackage['startDate'];
         $package->endDate = $newPackage['endDate'];
         $package->markup = $newPackage['markup'];
+        $package->numberOfPeople = $newPackage['numberOfPeople'];
+        $package->dealEndDate = Carbon::parse($newPackage['dealEnd'])->format('Y-m-d h:m:s');
         $package->save();
-<<<<<<< HEAD
 
-        $category = Category::find($this->request->categoryId);
+        $category = Category::find($newPackage['categoryId']);
         $package->categories()->save($category);
 
-=======
-        
->>>>>>> 0954cac... Image Upload added to package
         $hotelIds = [];
         forEach($newPackage['hotelIds'] as $hotelId) {
             $hotelIds[] = new PackageHotel(['hotelId'=>$hotelId]);
@@ -264,7 +261,7 @@ class PackageController extends Controller
         $package->packageHotels()->saveMany($hotelIds);
         $package->packageActivities()->saveMany($activityIds);
         
-        if ($file!=null) {
+        if ($file) {
             $ext = $file->getClientOriginalExtension();
             $imageName = str_random(15).'.'.$ext;
             if (!file_exists(public_path().'/uploads/packages')) {

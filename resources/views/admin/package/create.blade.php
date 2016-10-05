@@ -31,37 +31,58 @@
                                 </div>
                             </div>
                             <div class="row">
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                    <label>Number of Days</label>
-                                    <input ng-model="numberOfDays" type="number" class="form-control">
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Number of Days</label>
+                                        <input ng-model="numberOfDays" type="number" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Start Date</label>
+                                        <input 
+                                            type="text" 
+                                            uib-datepicker-popup="MM/dd/yyyy"
+                                            is-open="dateStart.open" 
+                                            ng-focus="dateStart.open=true" 
+                                            ng-model="startDate" 
+                                            class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>End Date</label>
+                                        <input 
+                                            type="text" 
+                                            uib-datepicker-popup="MM/dd/yyyy"
+                                            is-open="dateEnd.open" 
+                                            ng-focus="dateEnd.open=true" 
+                                            ng-model="endDate" 
+                                            class="form-control">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                    <label>Start Date</label>
-                                    <input 
-                                        type="text" 
-                                        uib-datepicker-popup="MM/dd/yyyy"
-                                        is-open="dateStart.open" 
-                                        ng-focus="dateStart.open=true" 
-                                        ng-model="startDate" 
-                                        class="form-control">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Number of People</label>
+                                        <input ng-model="numberOfPeople" type="number" class="form-control">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                    <label>End Date</label>
-                                    <input 
-                                        type="text" 
-                                        uib-datepicker-popup="MM/dd/yyyy"
-                                        is-open="dateEnd.open" 
-                                        ng-focus="dateEnd.open=true" 
-                                        ng-model="endDate" 
-                                        class="form-control">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Deal Ends</label>
+                                        <input 
+                                            type="text" 
+                                            uib-datepicker-popup="MM/dd/yyyy hh:mm a"
+                                            is-open="dealEnd.open" 
+                                            ng-focus="dealEnd.open=true" 
+                                            ng-model="dealEnd" 
+                                            class="form-control">
+                                    </div>
                                 </div>
+                                <div class="col-sm-2"></div>
                             </div>
-                        </div>
                         </div>
                         <div class="col-sm-6">
                             <label>Image</label>

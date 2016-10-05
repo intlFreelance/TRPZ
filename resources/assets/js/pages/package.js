@@ -144,6 +144,8 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
       numberOfDays: $scope.numberOfDays,
       startDate: $filter('date')($scope.startDate, 'yyyy-MM-dd'),
       endDate: $filter('date')($scope.endDate, 'yyyy-MM-dd'),
+      numberOfPeople: $scope.numberOfPeople,
+      dealEnd: $filter('date')($scope.dealEnd, 'yyyy-MM-dd H:mm'),
       markup: $scope.markup,
       hotelIds: getHotelIds(),
       activityIds: getActivityIds()
