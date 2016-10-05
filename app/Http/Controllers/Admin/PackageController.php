@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use Carbon\Carbon;
+use App\Category;
 use App\Package;
 use App\PackageHotel;
 use App\PackageActivity;
@@ -45,7 +46,11 @@ class PackageController extends Controller
      */
     public function create()
     {
-        return view('admin.package.create');
+        $data = [
+            'categories' => Category::all()
+        ];
+
+        return view('admin.package.create', $data);
     }
 
     private function getAllDestinations()
@@ -231,6 +236,9 @@ class PackageController extends Controller
         $package->endDate = $this->request->endDate;
         $package->markup = $this->request->markup;
         $package->save();
+
+        $category = Category::find($this->request->categoryId);
+        $package->categories()->save($category);
 
         $hotelIds = [];
         forEach($this->request->hotelIds as $hotelId) {

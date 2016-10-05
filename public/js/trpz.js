@@ -10107,8 +10107,8 @@ app.controller('PackageController', function($scope, $http, $log, $filter) {
     $scope.city = destination.name;
     var hotelUrl = '/admin/search-hotels?' +
     'destination=' + destination.destinationCode +
-    '&start-date=' + $scope.startDate +
-    '&end-date=' + $scope.endDate;
+    '&start-date=' + $filter('date')($scope.startDate, 'yyyy-MM-dd') +
+    '&end-date=' + $filter('date')($scope.endDate, 'yyyy-MM-dd');
     $http.get(hotelUrl)
       .then(function(response) {
         console.log(response.data);
@@ -10136,8 +10136,8 @@ app.controller('PackageController', function($scope, $http, $log, $filter) {
     $scope.missingDates = false;
     var activityUrl = '/admin/search-activities?' +
     'destination-id=' + destination.destinationId +
-    '&start-date=' + $scope.startDate +
-    '&end-date=' + $scope.endDate;
+    '&start-date=' + $filter('date')($scope.startDate, 'yyyy-MM-dd') +
+    '&end-date=' + $filter('date')($scope.endDate, 'yyyy-MM-dd');
     $http.get(activityUrl)
       .then(function(response) {
         console.log(response.data);
@@ -10170,6 +10170,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter) {
   function submit() {
     var newPackage = {
       name: $scope.name,
+      categoryId: $scope.categoryId,
       description: $scope.description,
       numberOfDays: $scope.numberOfDays,
       startDate: $filter('date')($scope.startDate, 'yyyy-MM-dd'),

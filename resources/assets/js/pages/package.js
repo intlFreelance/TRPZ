@@ -137,6 +137,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter) {
   function submit() {
     var newPackage = {
       name: $scope.name,
+      categoryId: $scope.categoryId,
       description: $scope.description,
       numberOfDays: $scope.numberOfDays,
       startDate: $filter('date')($scope.startDate, 'yyyy-MM-dd'),

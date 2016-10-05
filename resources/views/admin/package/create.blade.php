@@ -8,12 +8,22 @@
         <div class="col-md-10 col-md-offset-1">
             <div class="panel panel-default">
                 <div class="panel-heading">Create a Package</div>
-
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="row">
-                                <div class="col-sm-12">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Choose Category</label>
+                                        <select ng-model="categoryId" class="form-control">   
+                                            <option value="">Category</option>
+                                            @foreach($categories as $category)
+                                                <option value="{{$category->id}}">{{$category->name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
                                     <div class="form-group">
                                         <label>Package Name</label>
                                         <input ng-model="name" type="text" class="form-control">
