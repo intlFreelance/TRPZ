@@ -14,6 +14,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
   $scope.addedActivities = [];
   $scope.submit = submit;
   $scope.isArray = angular.isArray;
+  $scope.extraValidation = extraValidation;
   
   getDestinations(null);
   
@@ -38,7 +39,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
       $log.error('Failed to load destination', error);
     });
   }
-
+  
   function getCitiesWithoutState(emptyState) {
     var destinationPath = $scope.destinationSegmentIds.join('/');
     destinationPath += '/' + emptyState[0].id;
@@ -135,7 +136,9 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
     $scope.addedActivities.splice(indexToRemove, 1);
   }
 
-  function submit(file) {
+  function submit(file, form) {
+      if(!form.$valid ||  !extraValidation())
+          return;
     var formData = new FormData();
     formData.append("imgUpload", file);
     var newPackage = {
@@ -177,5 +180,28 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
       ids.push(activity.activityId);
     });
     return ids;
+  }
+  function extraValidation(){
+      $scope.startDateMessage="";
+      $scope.dealEndMessage="";
+      var valid = $scope.addedActivities.length > 0  && $scope.addedHotels.length > 0;
+      var currDate = new Date();
+      var startDate = $scope.startDate;
+      var endDate = $scope.endDate;
+      var dealEnd = $scope.dealEnd;
+      startDate.setHours(0,0,0,0);
+      currDate.setHours(0,0,0,0);
+      if(startDate < currDate){
+        $scope.startDateMessage = "Start Date must be on or after current date.";
+        valid = false;
+      }else if(startDate > endDate){
+        $scope.startDateMessage = "Start Date must be on or before End Date date.";
+        valid = false;
+      }
+      if(dealEnd >= startDate ){
+          $scope.dealEndMessage = "Deal Ends must be before Start Date";
+          valid = false;
+      }
+      return valid;
   }
 });
