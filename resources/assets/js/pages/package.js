@@ -16,7 +16,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
   $scope.addedActivities = [];
   $scope.submit = submit;
   $scope.isArray = angular.isArray;
-  $scope.extraValidation = extraValidation;
+  $scope.nonFormValidation = nonFormValidation;
   
   getDestinations(null);
   
@@ -145,7 +145,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
   }
 
   function submit(file, form) {
-    if (!form.$valid || !extraValidation()) {
+    if (!form.$valid || !nonFormValidation()) {
           return;
     }
 
@@ -193,27 +193,37 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
     });
     return ids;
   }
-  function extraValidation(){
-      $scope.startDateMessage="";
-      $scope.dealEndMessage="";
-      var valid = $scope.addedActivities.length > 0  && $scope.addedHotels.length > 0;
-      var currDate = new Date();
-      var startDate = $scope.startDate;
-      var endDate = $scope.endDate;
-      var dealEnd = $scope.dealEnd;
-      startDate.setHours(0,0,0,0);
-      currDate.setHours(0,0,0,0);
-      if(startDate < currDate){
-        $scope.startDateMessage = "Start Date must be on or after current date.";
-        valid = false;
-      }else if(startDate > endDate){
-        $scope.startDateMessage = "Start Date must be on or before End Date date.";
-        valid = false;
-      }
-      if(dealEnd >= startDate ){
-          $scope.dealEndMessage = "Deal Ends must be before Start Date";
-          valid = false;
-      }
-      return valid;
+
+  function dateValidation() {
+    var currDate = new Date();
+    var startDate = $scope.startDate;
+    var endDate = $scope.endDate;
+    var dealEnd = $scope.dealEnd;
+    if (startDate < currDate) {
+      $scope.startDateMessage = "Start Date must be on or after current date.";
+      return false;
+    } else if(startDate >= endDate) {
+      $scope.startDateMessage = "Start Date must be before End Date date.";
+      return false;
+    }
+    if (dealEnd >= startDate ) {
+      $scope.dealEndMessage = "Deal Ends must be before Start Date";
+      return false;
+    }
+    $scope.startDateMessage = '';
+    $scope.dealEndMessage = '';
+    return true;
+  }
+
+  function hotelValidation() {
+    if ($scope.addedHotels.length < 1) {
+      return false;
+    }
+    return true;
+  }
+
+  function nonFormValidation() {
+      return dateValidation() && hotelValidation();
+      
   }
 });

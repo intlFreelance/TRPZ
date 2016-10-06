@@ -241,7 +241,7 @@ class PackageController extends Controller
         $package->startDate = $newPackage['startDate'];
         $package->endDate = $newPackage['endDate'];
         $package->numberOfPeople = $newPackage['numberOfPeople'];
-        $package->dealEndDate = Carbon::parse($newPackage['dealEnd'])->format('Y-m-d h:m:s');
+        $package->dealEndDate = $newPackage['dealEnd'];
         $package->retailPrice = $newPackage['retailPrice'];
         $package->trpzPrice = $newPackage['trpzPrice'];
         $package->jetSetGoPrice = $newPackage['jetSetGoPrice'];
@@ -256,14 +256,15 @@ class PackageController extends Controller
         forEach($newPackage['hotelIds'] as $hotelId) {
             $hotelIds[] = new PackageHotel(['hotelId'=>$hotelId]);
         }
-
-        $activityIds = [];
-        forEach($newPackage['activityIds'] as $activityId) {
-            $activityIds[] = new PackageActivity(['activityId'=>$activityId]);
-        }
-
         $package->packageHotels()->saveMany($hotelIds);
-        $package->packageActivities()->saveMany($activityIds);
+
+        if (isset($newPackage['activityIds']) && count($newPackage['activityIds']) > 0) {
+            $activityIds = [];
+            forEach($newPackage['activityIds'] as $activityId) {
+                $activityIds[] = new PackageActivity(['activityId'=>$activityId]);
+            }
+            $package->packageActivities()->saveMany($activityIds);
+        }
         
         if ($file) {
             $ext = $file->getClientOriginalExtension();
