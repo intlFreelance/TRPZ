@@ -16,7 +16,7 @@
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label>Choose Category</label>
-                                            <select ng-model="categoryId" name="categoryId" class="form-control" required>   
+                                            <select ng-model="categoryId" name="categoryId" class="form-control">   
                                                 <option value>Category</option>
                                                 @foreach($categories as $category)
                                                     <option value="{{$category->id}}">{{$category->name}}</option>
@@ -148,14 +148,32 @@
                         <div class="row">
                             <div class="col-sm-2">
                                 <div class="form-group">
-                                    <label>Markup %</label>
-                                    <input ng-model="markup" name="markup" type="number" class="form-control" required>
-                                    <span style="color:red" ng-show="myForm.markup.$invalid && (myForm.$submitted  || myForm.markup.$touched)">
-                                                <span ng-show="myForm.markup.$error.required">Markup required.</span>
+                                    <label>Retail Price</label>
+                                    <input ng-model="retailPrice" name="retailPrice" type="number" class="form-control" required>
+                                    <span style="color:red" ng-show="myForm.retailPrice.$invalid && (myForm.$submitted || myForm.retailPrice.$touched)">
+                                        <span ng-show="myForm.retailPrice.$error.required">Retail Price required.</span>
                                     </span>
                                 </div>
                             </div>
-                            <div class="col-sm-10"></div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label>TRPZ Price</label>
+                                    <input ng-model="trpzPrice" name="trpzPrice" type="number" class="form-control" required>
+                                    <span style="color:red" ng-show="myForm.trpzPrice.$invalid && (myForm.$submitted || myForm.trpzPrice.$touched)">
+                                        <span ng-show="myForm.trpzPrice.$error.required">TRPZ Price required.</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label>Jet Set Go Price</label>
+                                    <input ng-model="jetSetGoPrice" name="jetSetGoPrice" type="number" class="form-control" required>
+                                    <span style="color:red" ng-show="myForm.jetSetGoPrice.$invalid && (myForm.$submitted || myForm.jetSetGoPrice.$touched)">
+                                        <span ng-show="myForm.jetSetGoPrice.$error.required">Jet Set Go Price required.</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6"></div>
                         </div>
                         <div class="row">
                             <div class="col-sm-12">
@@ -214,7 +232,7 @@
                         <div>
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <h4>Add Hotels</h4>
+                                    <h4>Add Hotels<img ng-show="activitiesLoading" class="loading" src="{{ url('img/trpzLoading.gif') }}"/></h4>
                                 </div>
                             </div>
                             <div class="row">
@@ -230,15 +248,20 @@
                                     <div
                                         ng-repeat="hotel in hotels"
                                         class="hotel-panel panel panel-default pull-left">
-                                        <div class="panel-heading truncate"><%hotel.name%></div>
+                                        <div class="panel-heading"><%hotel.name%></div>
                                         <div class="panel-body">
                                             <div class="row">
-                                                <div class="col-sm-5">
+                                                <div class="col-sm-2">
                                                     <img width="100" height:"100" src="<%hotel.thumb%>"/>
                                                 </div>
-                                                <div class="col-sm-7">
+                                                <div class="col-sm-10">
                                                     <%hotel.minAverPrice + ' ' + hotel.currency%><br>
                                                     <button ng-click="addHotel(hotel);" class="select-hotel btn btn-default">Add to Package</button>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <p><%hotel.desc%></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -249,7 +272,7 @@
                         <div>
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <h4>Add Activities</h4>
+                                    <h4>Add Activities<img ng-show="activitiesLoading" class="loading" src="{{ url('img/trpzLoading.gif') }}"/></h4>
                                 </div>
                             </div>
                             <div class="row">
@@ -270,13 +293,13 @@
                                     <div
                                         ng-repeat="activity in activities"
                                         class="activity-panel panel panel-default pull-left">
-                                         <div class="panel-heading truncate"><%activity.name%></div>
+                                         <div class="panel-heading"><%activity.name%></div>
                                         <div class="panel-body">
                                             <div class="row">
-                                                <div class="col-sm-5">
+                                                <div class="col-sm-2">
                                                     <img width="100" height:"100" src="<%activity.thumbURL%>"/>
                                                 </div>
-                                                <div class="col-sm-7">
+                                                <div class="col-sm-10">
                                                     Adult: <%activity.ActivityOptions.ActivityOption.Availabilities.Availability.adultPrice%>&nbsp;<%activity.currency%><br>
                                                     Child: <%activity.ActivityOptions.ActivityOption.Availabilities.Availability.childPrice%>&nbsp;<%activity.currency%><br>
                                                     <span ng-if="isArray(activity.ActivityOptions.ActivityOption)">
@@ -287,7 +310,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-sm-12">
-                                                    <p><%activity.description.substr(0, 120) + '...'%></p>
+                                                    <p><%activity.description%></p>
                                                 </div>
                                             </div>
                                         </div>

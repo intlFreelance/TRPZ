@@ -240,13 +240,17 @@ class PackageController extends Controller
         $package->numberOfDays = $newPackage['numberOfDays'];
         $package->startDate = $newPackage['startDate'];
         $package->endDate = $newPackage['endDate'];
-        $package->markup = $newPackage['markup'];
         $package->numberOfPeople = $newPackage['numberOfPeople'];
         $package->dealEndDate = Carbon::parse($newPackage['dealEnd'])->format('Y-m-d h:m:s');
+        $package->retailPrice = $newPackage['retailPrice'];
+        $package->trpzPrice = $newPackage['trpzPrice'];
+        $package->jetSetGoPrice = $newPackage['jetSetGoPrice'];
         $package->save();
 
-        $category = Category::find($newPackage['categoryId']);
-        $package->categories()->save($category);
+        if (isset($newPackage['categoryId'])) {
+            $category = Category::find($newPackage['categoryId']);
+            $package->categories()->save($category);
+        }
 
         $hotelIds = [];
         forEach($newPackage['hotelIds'] as $hotelId) {

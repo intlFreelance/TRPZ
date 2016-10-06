@@ -9,14 +9,11 @@ a {
 }
 
 .hotel-panel {
-    width: 30%;
-    margin-right: 3%;
+    width: 100%;
 }
 
 .activity-panel {
-    width: 30%;
-    margin-right: 3%;
-    height: 250px;
+    width: 100%;
 }
 
 #destination-text span {

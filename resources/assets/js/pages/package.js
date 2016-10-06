@@ -4,6 +4,8 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
   $scope.getDestinations = getDestinations;
   $scope.getDestinationByBreadcrumb = getDestinationByBreadcrumb;
   $scope.missingDates = false;
+  $scope.hotelsLoading = false;
+  $scope.activitiesLoading = false;
   $scope.addHotel = addHotel;
   $scope.removeHotel = removeHotel;
   $scope.addedHotels = [];
@@ -72,6 +74,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
   }
 
   function getHotels(destination) {
+    $scope.hotelsLoading = true;
     $scope.missingDates = false;
     $scope.city = destination.name;
     var hotelUrl = '/admin/search-hotels?' +
@@ -81,9 +84,11 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
     $http.get(hotelUrl)
       .then(function(response) {
         $scope.hotels = response.data.Hotel;
+        $scope.hotelsLoading = false;
       })
       .catch(function(error) {
         $scope.missingDates = true;
+        $scope.hotelsLoading = false;
         $log.error('Failed to load hotels', error);
       });
   }
@@ -101,6 +106,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
   }
 
   function getActivities(destination) {
+    $scope.activitiesLoading = true;
     $scope.missingDates = false;
     var activityUrl = '/admin/search-activities?' +
     'destination-id=' + destination.destinationId +
@@ -109,9 +115,11 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
     $http.get(activityUrl)
       .then(function(response) {
         $scope.activityCategories = response.data.Category;
+        $scope.activitiesLoading = false;
       })
       .catch(function(error) {
         $scope.missingDates = true;
+        $scope.activitiesLoading = false;
         $log.error('Failed to load Activities', error);
       });
   }
@@ -137,8 +145,10 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
   }
 
   function submit(file, form) {
-      if(!form.$valid ||  !extraValidation())
+    if (!form.$valid || !extraValidation()) {
           return;
+    }
+
     var formData = new FormData();
     formData.append("imgUpload", file);
     var newPackage = {
@@ -150,7 +160,9 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
       endDate: $filter('date')($scope.endDate, 'yyyy-MM-dd'),
       numberOfPeople: $scope.numberOfPeople,
       dealEnd: $filter('date')($scope.dealEnd, 'yyyy-MM-dd H:mm'),
-      markup: $scope.markup,
+      retailPrice: $scope.retailPrice,
+      trpzPrice: $scope.trpzPrice,
+      jetSetGoPrice: $scope.jetSetGoPrice,
       hotelIds: getHotelIds(),
       activityIds: getActivityIds()
     };
