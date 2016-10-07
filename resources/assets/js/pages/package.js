@@ -21,6 +21,9 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
   getDestinations(null);
   
   function getDestinations(destination) {
+    $scope.hotels = [];
+    $scope.activityCategories = [];
+    $scope.activities = [];
     $scope.city = '';
     if (destination && destination.destinationCode) {
       getHotels(destination);
@@ -106,6 +109,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
   }
 
   function getActivities(destination) {
+    $scope.activityCategories = [];
     $scope.activitiesLoading = true;
     $scope.missingDates = false;
     var activityUrl = '/admin/search-activities?' +
@@ -114,7 +118,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
     '&end-date=' + $filter('date')($scope.endDate, 'yyyy-MM-dd');
     $http.get(activityUrl)
       .then(function(response) {
-        $scope.activityCategories = response.data.Category;
+        $scope.activityCategories = parseActivities(response.data.Category);
         $scope.activitiesLoading = false;
       })
       .catch(function(error) {
@@ -126,10 +130,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
 
   function selectActivityCategory(category) {
     selectedActivityCategory = category;
-    $scope.activities = category.Activities.Activity;
-    if (!angular.isArray(category.Activities.Activity)) {
-      $scope.activities = [$scope.activities];
-    }
+    $scope.activities = category.activities;
   }
 
   function addActivity(activity) {
@@ -227,3 +228,59 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
       
   }
 });
+
+function parseActivities(categories) {
+    var activityCategories = [];
+    if (!angular.isArray(categories)) {
+      if (!categories || Object.keys(categories).length === 0) {
+        return [];
+      }
+      categories = [categories];
+    }
+    categories.forEach(function parseCategories(category) {
+      var parsedCategory = {};
+      parsedCategory['categoryId'] = category.categoryId;
+      parsedCategory['categoryName'] = category.categoryName;
+      parsedCategory['activities'] = [];
+      if (!angular.isArray(category.Activities.Activity)) {
+        category.Activities.Activity = [category.Activities.Activity];
+      }
+      category.Activities.Activity.forEach(function(activity) {
+        var parsedActivity = {};
+        parsedActivity['activityId'] = activity.activityId;
+        parsedActivity['currency'] = activity.currency;
+        parsedActivity['name'] = activity.name;
+        parsedActivity['starsLevel'] = activity.starsLevel;
+        parsedActivity['thumbURL'] = activity.thumbURL;
+        parsedActivity['description'] = activity.description;
+        parsedActivity['address'] = activity.Location.address;
+        parsedActivity['city'] = activity.Location.city;
+        parsedActivity['countryCode'] = activity.Location.countryCode;
+        parsedActivity['searchingCity'] = activity.Location.searchingCity;
+        parsedActivity['options'] = [];
+        if (!angular.isArray(activity.ActivityOptions.ActivityOption)) {
+          activity.ActivityOptions.ActivityOption = [activity.ActivityOptions.ActivityOption];
+        }
+        activity.ActivityOptions.ActivityOption.forEach(function(activityOption) {
+          var parsedOption = {};
+          parsedOption['name'] = activityOption.name;
+          parsedOption['type'] = activityOption.type;
+          parsedOption['availabilities'] = [];
+          if (!angular.isArray(activityOption.Availabilities.Availability)) {
+            activityOption.Availabilities.Availability = [activityOption.Availabilities.Availability];
+          }
+          activityOption.Availabilities.Availability.forEach(function(availability) {
+            var parsedAvailability = {};
+            parsedAvailability['adultPrice'] = availability.adultPrice;
+            parsedAvailability['childPrice'] = availability.childPrice;
+            parsedAvailability['unitPrice'] = availability.unitPrice;
+            parsedOption.availabilities.push(parsedAvailability);
+          });
+          parsedActivity.options.push(parsedOption);
+        });
+        parsedCategory.activities.push(parsedActivity);
+      });
+      activityCategories.push(parsedCategory);
+    });
+    return activityCategories;
+  }

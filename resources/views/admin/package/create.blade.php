@@ -299,14 +299,18 @@
                                             <div class="row">
                                                 <div class="col-sm-2">
                                                     <img width="100" height:"100" src="<%activity.thumbURL%>"/>
+                                                    <div style="margin:10px 0;">
+                                                        <button ng-click="addActivity(activity);" class="btn btn-default">Add to Package</button>
+                                                    </div>
                                                 </div>
                                                 <div class="col-sm-10">
-                                                    Adult: <%activity.ActivityOptions.ActivityOption.Availabilities.Availability.adultPrice%>&nbsp;<%activity.currency%><br>
-                                                    Child: <%activity.ActivityOptions.ActivityOption.Availabilities.Availability.childPrice%>&nbsp;<%activity.currency%><br>
-                                                    <span ng-if="isArray(activity.ActivityOptions.ActivityOption)">
-                                                        Unit: <%activity.ActivityOptions.ActivityOption[0].Availabilities.Availability.unitPrice%>&nbsp;<%activity.currency%><br>
-                                                    </span>
-                                                    <button ng-click="addActivity(activity);" class="btn btn-default">Add to Package</button>
+                                                    City: <%activity.city%><br>
+                                                    <span class="activity-options" ng-repeat="activityOption in activity.options">
+                                                        <%activityOption.name + '/' + activityOption.type%> -&nbsp;
+                                                        Adults: <%activityOption.availabilities[0].adultPrice%>&nbsp;<%activity.currency%>&nbsp;
+                                                        Child: <%activityOption.availabilities[0].childPrice%>&nbsp;<%activity.currency%>&nbsp;
+                                                        Unit: <%activityOption.availabilities[0].unitPrice%>&nbsp;<%activity.currency%>&nbsp;
+                                                    <span><br>
                                                 </div>
                                             </div>
                                             <div class="row">
