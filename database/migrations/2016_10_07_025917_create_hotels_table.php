@@ -28,7 +28,7 @@ class CreateHotelsTable extends Migration
             $table->string('currency');
             $table->string('thumb');
             $table->integer('starsLevel');
-            $table->text('countryCode');
+            $table->text('description');
         });
     }
 

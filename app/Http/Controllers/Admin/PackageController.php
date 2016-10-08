@@ -16,6 +16,7 @@ use App\Destination;
 use App\TouricoHotel;
 use App\TouricoActivity;
 use App\TouricoDestination;
+use App\Hotel;
 
 class PackageController extends Controller
 {
@@ -253,8 +254,25 @@ class PackageController extends Controller
         }
 
         $hotelIds = [];
-        forEach($newPackage['hotelIds'] as $hotelId) {
-            $hotelIds[] = new PackageHotel(['hotelId'=>$hotelId]);
+        forEach($newPackage['hotels'] as $hotel) {
+            $newHotel = new Hotel();
+            $newHotel->hotelId = $hotel["hotelId"];
+            $newHotel->name = $hotel["name"];
+            $newHotel->countryCode = $hotel["Location"]["countryCode"];
+            $newHotel->stateCode = $hotel["Location"]["stateCode"];
+            $newHotel->city = $hotel["Location"]["city"];
+            $newHotel->address = $hotel["Location"]["address"];
+            $newHotel->longitude = $hotel["Location"]["longitude"];
+            $newHotel->latitude = $hotel["Location"]["latitude"];
+            $newHotel->category = $hotel["category"];
+            $newHotel->minAverPrice = $hotel["minAverPrice"];
+            $newHotel->currency = $hotel["currency"];
+            $newHotel->thumb = $hotel["thumb"];
+            $newHotel->starsLevel = $hotel["starsLevel"];
+            $newHotel->description = $hotel["desc"];
+            $newHotel->save();
+            
+            $hotelIds[] = new PackageHotel(['hotelId'=>$newHotel->id]);
         }
         $package->packageHotels()->saveMany($hotelIds);
 

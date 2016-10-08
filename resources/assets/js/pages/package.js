@@ -87,6 +87,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
     $http.get(hotelUrl)
       .then(function(response) {
         $scope.hotels = response.data.Hotel;
+        console.log($scope.hotels, "hotels");
         $scope.hotelsLoading = false;
       })
       .catch(function(error) {
@@ -164,7 +165,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
       retailPrice: $scope.retailPrice,
       trpzPrice: $scope.trpzPrice,
       jetSetGoPrice: $scope.jetSetGoPrice,
-      hotelIds: getHotelIds(),
+      hotels: $scope.addedHotels,
       activityIds: getActivityIds()
     };
     formData.append("newPackage", JSON.stringify(newPackage));
@@ -179,13 +180,6 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
       });
   }
 
-  function getHotelIds() {
-    var ids = [];
-    $scope.addedHotels.forEach(function(hotel) {
-      ids.push(hotel.hotelId);
-    });
-    return ids;
-  }
 
   function getActivityIds() {
     var ids = [];
