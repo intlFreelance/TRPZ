@@ -87,7 +87,6 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
     $http.get(hotelUrl)
       .then(function(response) {
         $scope.hotels = response.data.Hotel;
-        console.log($scope.hotels, "hotels");
         $scope.hotelsLoading = false;
       })
       .catch(function(error) {
@@ -166,7 +165,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
       trpzPrice: $scope.trpzPrice,
       jetSetGoPrice: $scope.jetSetGoPrice,
       hotels: $scope.addedHotels,
-      activityIds: getActivityIds()
+      activities: $scope.addedActivities
     };
     formData.append("newPackage", JSON.stringify(newPackage));
     $http.post('/admin/save-package', formData,{
@@ -180,14 +179,6 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
       });
   }
 
-
-  function getActivityIds() {
-    var ids = [];
-    $scope.addedActivities.forEach(function(activity) {
-      ids.push(activity.activityId);
-    });
-    return ids;
-  }
 
   function dateValidation() {
     var currDate = new Date();

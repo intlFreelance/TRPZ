@@ -17,6 +17,8 @@ use App\TouricoHotel;
 use App\TouricoActivity;
 use App\TouricoDestination;
 use App\Hotel;
+use App\Activity;
+use App\ActivityOption;
 
 class PackageController extends Controller
 {
@@ -255,7 +257,7 @@ class PackageController extends Controller
 
         $hotelIds = [];
         forEach($newPackage['hotels'] as $hotel) {
-            $newHotel = new Hotel();
+            $newHotel = new Hotel;
             $newHotel->hotelId = $hotel["hotelId"];
             $newHotel->name = $hotel["name"];
             $newHotel->countryCode = $hotel["Location"]["countryCode"];
@@ -275,14 +277,34 @@ class PackageController extends Controller
             $hotelIds[] = new PackageHotel(['hotelId'=>$newHotel->id]);
         }
         $package->packageHotels()->saveMany($hotelIds);
-
-        if (isset($newPackage['activityIds']) && count($newPackage['activityIds']) > 0) {
-            $activityIds = [];
-            forEach($newPackage['activityIds'] as $activityId) {
-                $activityIds[] = new PackageActivity(['activityId'=>$activityId]);
+        
+        $activityIds = [];
+        foreach($newPackage['activities'] as $activity){
+            $newActivity = new Activity;
+            $newActivity->activityId = $activity["activityId"];
+            $newActivity->name = $activity["name"];
+            $newActivity->currency = $activity["currency"];
+            $newActivity->thumbURL = $activity["thumbURL"];
+            $newActivity->countryCode = $activity["countryCode"];
+            $newActivity->city = $activity["city"];
+            $newActivity->address = $activity["address"];
+            $newActivity->starsLevel = $activity["starsLevel"];
+            $newActivity->description = $activity["description"];
+            $newActivity->save();
+            foreach($activity["options"] as $activityOption){
+                $newActivityOption = new ActivityOption;
+                $newActivityOption->name = $activityOption["name"];
+                $newActivityOption->type = $activityOption["type"];
+                $newActivityOption->adultPrice = $activityOption["availabilities"][0]["adultPrice"];
+                $newActivityOption->childPrice = $activityOption["availabilities"][0]["childPrice"];
+                $newActivityOption->unitPrice = $activityOption["availabilities"][0]["unitPrice"];
+                $newActivityOption->activity_id = $newActivity->id;
+                $newActivityOption->save();
             }
-            $package->packageActivities()->saveMany($activityIds);
+            $activityIds[] = new PackageActivity(['activityId'=>$newActivity->id]);
         }
+        $package->packageActivities()->saveMany($activityIds);
+
         
         if ($file) {
             $ext = $file->getClientOriginalExtension();
