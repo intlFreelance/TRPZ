@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Category;
 use Session;
+use Intervention\Image\Facades\Image;
 
 class CategoryController extends Controller
 {
@@ -42,6 +43,17 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $input = $request->all();
+
+        if($request->file())
+        {
+            $image = $request->file('image');
+            $filename  = time() . '.' . $image->getClientOriginalExtension();
+
+            $path = public_path('img/categories/' . $filename);
+
+            Image::make($image->getRealPath())->save($path);
+            $input['image'] = $filename;
+        }
 
         $category = Category::create($input);
 
@@ -108,7 +120,20 @@ class CategoryController extends Controller
           return redirect(route('categories.index'));
         }
 
-        $category = Category::find($id)->update($request->all());
+        $input = $request->all();
+
+        if($request->file())
+        {
+            $image = $request->file('image');
+            $filename  = time() . '.' . $image->getClientOriginalExtension();
+
+            $path = public_path('img/categories/' . $filename);
+
+            Image::make($image->getRealPath())->save($path);
+            $input['image'] = $filename;
+        }
+
+        $category = Category::find($id)->update($input);
 
         Session::flash('success','Category updated successfully.');
 

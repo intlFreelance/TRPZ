@@ -180,7 +180,7 @@ return [
 
         Artisaninweb\SoapWrapper\ServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
-        
+
     ],
 
     /*

@@ -1,11 +1,16 @@
 <!-- Id Field -->
 <div class="form-group">
     {!! Form::label('id', 'Id:') !!}
-    <p>{!! $client->id !!}</p>
+    <p>{!! $category->id !!}</p>
 </div>
 
 <!-- Name Field -->
 <div class="form-group">
     {!! Form::label('name', 'Name:') !!}
-    <p>{!! $client->name !!}</p>
+    <p>{!! $category->name !!}</p>
+</div>
+
+<div class="form-group">
+    {!! Form::label('image', 'Image:') !!}
+    <p><img src="{!! url('img/categories/'.$category->image) !!}" style="max-width:100%"/></p>
 </div>

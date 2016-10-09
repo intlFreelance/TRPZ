@@ -6,5 +6,7 @@
 Homestead.json
 Homestead.yaml
 .env
+.DS_Store
 /app/_ide_helper.php
 /public/uploads/*
+/public/img/categories/*

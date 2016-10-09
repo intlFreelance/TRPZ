@@ -10,7 +10,7 @@
 
 
         <div class="row">
-            {!! Form::model($category, ['route' => ['categories.update', $category->id], 'method' => 'patch']) !!}
+            {!! Form::model($category, ['route' => ['categories.update', $category->id], 'files' => true, 'method' => 'patch']) !!}
 
             @include('admin.categories.fields')
 

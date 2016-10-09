@@ -9,7 +9,7 @@
     </div>
 
     <div class="row">
-        {!! Form::open(['route' => 'categories.store']) !!}
+        {!! Form::open(['route' => 'categories.store', 'files' => true]) !!}
 
             @include('admin.categories.fields')
 
