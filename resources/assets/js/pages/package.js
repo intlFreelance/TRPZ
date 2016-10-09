@@ -16,11 +16,14 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
   $scope.addedActivities = [];
   $scope.submit = submit;
   $scope.isArray = angular.isArray;
-  $scope.extraValidation = extraValidation;
+  $scope.nonFormValidation = nonFormValidation;
   
   getDestinations(null);
   
   function getDestinations(destination) {
+    $scope.hotels = [];
+    $scope.activityCategories = [];
+    $scope.activities = [];
     $scope.city = '';
     if (destination && destination.destinationCode) {
       getHotels(destination);
@@ -106,6 +109,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
   }
 
   function getActivities(destination) {
+    $scope.activityCategories = [];
     $scope.activitiesLoading = true;
     $scope.missingDates = false;
     var activityUrl = '/admin/search-activities?' +
@@ -114,7 +118,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
     '&end-date=' + $filter('date')($scope.endDate, 'yyyy-MM-dd');
     $http.get(activityUrl)
       .then(function(response) {
-        $scope.activityCategories = response.data.Category;
+        $scope.activityCategories = parseActivities(response.data.Category);
         $scope.activitiesLoading = false;
       })
       .catch(function(error) {
@@ -126,10 +130,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
 
   function selectActivityCategory(category) {
     selectedActivityCategory = category;
-    $scope.activities = category.Activities.Activity;
-    if (!angular.isArray(category.Activities.Activity)) {
-      $scope.activities = [$scope.activities];
-    }
+    $scope.activities = category.activities;
   }
 
   function addActivity(activity) {
@@ -145,7 +146,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
   }
 
   function submit(file, form) {
-    if (!form.$valid || !extraValidation()) {
+    if (!form.$valid || !nonFormValidation()) {
           return;
     }
 
@@ -163,8 +164,8 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
       retailPrice: $scope.retailPrice,
       trpzPrice: $scope.trpzPrice,
       jetSetGoPrice: $scope.jetSetGoPrice,
-      hotelIds: getHotelIds(),
-      activityIds: getActivityIds()
+      hotels: $scope.addedHotels,
+      activities: $scope.addedActivities
     };
     formData.append("newPackage", JSON.stringify(newPackage));
     $http.post('/admin/save-package', formData,{
@@ -178,42 +179,93 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
       });
   }
 
-  function getHotelIds() {
-    var ids = [];
-    $scope.addedHotels.forEach(function(hotel) {
-      ids.push(hotel.hotelId);
-    });
-    return ids;
+
+  function dateValidation() {
+    var currDate = new Date();
+    var startDate = $scope.startDate;
+    var endDate = $scope.endDate;
+    var dealEnd = $scope.dealEnd;
+    if (startDate < currDate) {
+      $scope.startDateMessage = "Start Date must be on or after current date.";
+      return false;
+    } else if(startDate >= endDate) {
+      $scope.startDateMessage = "Start Date must be before End Date date.";
+      return false;
+    }
+    if (dealEnd >= startDate ) {
+      $scope.dealEndMessage = "Deal Ends must be before Start Date";
+      return false;
+    }
+    $scope.startDateMessage = '';
+    $scope.dealEndMessage = '';
+    return true;
   }
 
-  function getActivityIds() {
-    var ids = [];
-    $scope.addedActivities.forEach(function(activity) {
-      ids.push(activity.activityId);
-    });
-    return ids;
+  function hotelValidation() {
+    if ($scope.addedHotels.length < 1) {
+      return false;
+    }
+    return true;
   }
-  function extraValidation(){
-      $scope.startDateMessage="";
-      $scope.dealEndMessage="";
-      var valid = $scope.addedActivities.length > 0  && $scope.addedHotels.length > 0;
-      var currDate = new Date();
-      var startDate = $scope.startDate;
-      var endDate = $scope.endDate;
-      var dealEnd = $scope.dealEnd;
-      startDate.setHours(0,0,0,0);
-      currDate.setHours(0,0,0,0);
-      if(startDate < currDate){
-        $scope.startDateMessage = "Start Date must be on or after current date.";
-        valid = false;
-      }else if(startDate > endDate){
-        $scope.startDateMessage = "Start Date must be on or before End Date date.";
-        valid = false;
-      }
-      if(dealEnd >= startDate ){
-          $scope.dealEndMessage = "Deal Ends must be before Start Date";
-          valid = false;
-      }
-      return valid;
+
+  function nonFormValidation() {
+      return dateValidation() && hotelValidation();
+      
   }
 });
+
+function parseActivities(categories) {
+    var activityCategories = [];
+    if (!angular.isArray(categories)) {
+      if (!categories || Object.keys(categories).length === 0) {
+        return [];
+      }
+      categories = [categories];
+    }
+    categories.forEach(function parseCategories(category) {
+      var parsedCategory = {};
+      parsedCategory['categoryId'] = category.categoryId;
+      parsedCategory['categoryName'] = category.categoryName;
+      parsedCategory['activities'] = [];
+      if (!angular.isArray(category.Activities.Activity)) {
+        category.Activities.Activity = [category.Activities.Activity];
+      }
+      category.Activities.Activity.forEach(function(activity) {
+        var parsedActivity = {};
+        parsedActivity['activityId'] = activity.activityId;
+        parsedActivity['currency'] = activity.currency;
+        parsedActivity['name'] = activity.name;
+        parsedActivity['starsLevel'] = activity.starsLevel;
+        parsedActivity['thumbURL'] = activity.thumbURL;
+        parsedActivity['description'] = activity.description;
+        parsedActivity['address'] = activity.Location.address;
+        parsedActivity['city'] = activity.Location.city;
+        parsedActivity['countryCode'] = activity.Location.countryCode;
+        parsedActivity['searchingCity'] = activity.Location.searchingCity;
+        parsedActivity['options'] = [];
+        if (!angular.isArray(activity.ActivityOptions.ActivityOption)) {
+          activity.ActivityOptions.ActivityOption = [activity.ActivityOptions.ActivityOption];
+        }
+        activity.ActivityOptions.ActivityOption.forEach(function(activityOption) {
+          var parsedOption = {};
+          parsedOption['name'] = activityOption.name;
+          parsedOption['type'] = activityOption.type;
+          parsedOption['availabilities'] = [];
+          if (!angular.isArray(activityOption.Availabilities.Availability)) {
+            activityOption.Availabilities.Availability = [activityOption.Availabilities.Availability];
+          }
+          activityOption.Availabilities.Availability.forEach(function(availability) {
+            var parsedAvailability = {};
+            parsedAvailability['adultPrice'] = availability.adultPrice;
+            parsedAvailability['childPrice'] = availability.childPrice;
+            parsedAvailability['unitPrice'] = availability.unitPrice;
+            parsedOption.availabilities.push(parsedAvailability);
+          });
+          parsedActivity.options.push(parsedOption);
+        });
+        parsedCategory.activities.push(parsedActivity);
+      });
+      activityCategories.push(parsedCategory);
+    });
+    return activityCategories;
+  }

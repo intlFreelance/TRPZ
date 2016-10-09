@@ -16,6 +16,9 @@ use App\Destination;
 use App\TouricoHotel;
 use App\TouricoActivity;
 use App\TouricoDestination;
+use App\Hotel;
+use App\Activity;
+use App\ActivityOption;
 
 class PackageController extends Controller
 {
@@ -241,7 +244,7 @@ class PackageController extends Controller
         $package->startDate = $newPackage['startDate'];
         $package->endDate = $newPackage['endDate'];
         $package->numberOfPeople = $newPackage['numberOfPeople'];
-        $package->dealEndDate = Carbon::parse($newPackage['dealEnd'])->format('Y-m-d h:m:s');
+        $package->dealEndDate = $newPackage['dealEnd'];
         $package->retailPrice = $newPackage['retailPrice'];
         $package->trpzPrice = $newPackage['trpzPrice'];
         $package->jetSetGoPrice = $newPackage['jetSetGoPrice'];
@@ -253,17 +256,55 @@ class PackageController extends Controller
         }
 
         $hotelIds = [];
-        forEach($newPackage['hotelIds'] as $hotelId) {
-            $hotelIds[] = new PackageHotel(['hotelId'=>$hotelId]);
+        forEach($newPackage['hotels'] as $hotel) {
+            $newHotel = new Hotel;
+            $newHotel->hotelId = $hotel["hotelId"];
+            $newHotel->name = $hotel["name"];
+            $newHotel->countryCode = $hotel["Location"]["countryCode"];
+            $newHotel->stateCode = $hotel["Location"]["stateCode"];
+            $newHotel->city = $hotel["Location"]["city"];
+            $newHotel->address = $hotel["Location"]["address"];
+            $newHotel->longitude = $hotel["Location"]["longitude"];
+            $newHotel->latitude = $hotel["Location"]["latitude"];
+            $newHotel->category = $hotel["category"];
+            $newHotel->minAverPrice = $hotel["minAverPrice"];
+            $newHotel->currency = $hotel["currency"];
+            $newHotel->thumb = $hotel["thumb"];
+            $newHotel->starsLevel = $hotel["starsLevel"];
+            $newHotel->description = $hotel["desc"];
+            $newHotel->save();
+            
+            $hotelIds[] = new PackageHotel(['hotelId'=>$newHotel->id]);
         }
-
-        $activityIds = [];
-        forEach($newPackage['activityIds'] as $activityId) {
-            $activityIds[] = new PackageActivity(['activityId'=>$activityId]);
-        }
-
         $package->packageHotels()->saveMany($hotelIds);
+        
+        $activityIds = [];
+        foreach($newPackage['activities'] as $activity){
+            $newActivity = new Activity;
+            $newActivity->activityId = $activity["activityId"];
+            $newActivity->name = $activity["name"];
+            $newActivity->currency = $activity["currency"];
+            $newActivity->thumbURL = $activity["thumbURL"];
+            $newActivity->countryCode = $activity["countryCode"];
+            $newActivity->city = $activity["city"];
+            $newActivity->address = $activity["address"];
+            $newActivity->starsLevel = $activity["starsLevel"];
+            $newActivity->description = $activity["description"];
+            $newActivity->save();
+            foreach($activity["options"] as $activityOption){
+                $newActivityOption = new ActivityOption;
+                $newActivityOption->name = $activityOption["name"];
+                $newActivityOption->type = $activityOption["type"];
+                $newActivityOption->adultPrice = $activityOption["availabilities"][0]["adultPrice"];
+                $newActivityOption->childPrice = $activityOption["availabilities"][0]["childPrice"];
+                $newActivityOption->unitPrice = $activityOption["availabilities"][0]["unitPrice"];
+                $newActivityOption->activity_id = $newActivity->id;
+                $newActivityOption->save();
+            }
+            $activityIds[] = new PackageActivity(['activityId'=>$newActivity->id]);
+        }
         $package->packageActivities()->saveMany($activityIds);
+
         
         if ($file) {
             $ext = $file->getClientOriginalExtension();

@@ -16,6 +16,10 @@ a {
     width: 100%;
 }
 
+.activity-options {
+    font-size: 11px;
+}
+
 #destination-text span {
     cursor: pointer;
 }
