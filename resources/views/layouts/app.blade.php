@@ -70,6 +70,7 @@
                             </a>
 
                             <ul class="dropdown-menu" role="menu">
+                                <li><a href="{{ url('admin/packages') }}"><i class="fa fa-eye"></i> View Packages</a></li>
                                 <li><a href="{{ url('admin/packages/create') }}"><i class="fa fa-plus"></i> Create Package</a></li>
                             </ul>
                         </li>

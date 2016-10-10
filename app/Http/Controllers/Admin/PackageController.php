@@ -41,7 +41,8 @@ class PackageController extends Controller
      */
     public function index()
     {
-      echo "Index";
+      $data["packages"] = Package::all();
+      return view('admin.packages.index',$data);
     }
 
     /**
@@ -55,7 +56,7 @@ class PackageController extends Controller
             'categories' => Category::all()
         ];
 
-        return view('admin.package.create', $data);
+        return view('admin.packages.create', $data);
     }
 
     private function getAllDestinations()
