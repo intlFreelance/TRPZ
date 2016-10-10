@@ -19,6 +19,7 @@ use App\TouricoDestination;
 use App\Hotel;
 use App\Activity;
 use App\ActivityOption;
+use Session;
 
 class PackageController extends Controller
 {
@@ -364,6 +365,20 @@ class PackageController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $package = Package::find($id);
+
+        if (empty($package)) {
+          Session::flash('error','Package not found');
+          return redirect(route('packages.index'));
+        }
+        Package::find($id)->delete();
+        if(!empty($package->mainImage)){
+            $imgPath = public_path().'/uploads/packages/'.$package->mainImage;
+            if(file_exists($imgPath)){
+                unlink($imgPath);
+            }
+        }
+        Session::flash('success','Package deleted successfully.');
+        return redirect(route('packages.index'));
     }
 }

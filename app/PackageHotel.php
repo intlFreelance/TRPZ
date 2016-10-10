@@ -13,4 +13,14 @@ class PackageHotel extends Model
     function package() {
         return $this->belongsTo('App\Package');
     }
+    function hotel(){
+        return $this->belongsTo('App\Hotel');
+    }
+    protected static function boot() {
+        parent::boot();
+
+        static::deleting(function($packageHotel) {
+            Hotel::find($packageHotel->hotelId)->delete();
+        });
+    }
 }

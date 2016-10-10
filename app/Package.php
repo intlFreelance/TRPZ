@@ -20,4 +20,17 @@ class Package extends Model
     function packageActivities() {
         return $this->hasMany('App\PackageActivity');
     }
+    
+    protected static function boot() {
+        parent::boot();
+
+        static::deleting(function($package) {
+            foreach($package->packageHotels as $packageHotel){
+                PackageHotel::find($packageHotel->id)->delete();
+            }
+             foreach($package->packageActivities as $packageActivity){
+                 PackageActivity::find($packageActivity->id)->delete();
+             }
+        });
+    }
 }

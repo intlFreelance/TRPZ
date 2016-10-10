@@ -13,4 +13,14 @@ class PackageActivity extends Model
     function package() {
         return $this->belongsTo('App\Package');
     }
+    function activity(){
+        return $this->belongsTo('App\Activity');
+    }
+    protected static function boot() {
+        parent::boot();
+
+        static::deleting(function($packageActivity) {
+            Activity::find($packageActivity->activityId)->delete();
+        });
+    }
 }

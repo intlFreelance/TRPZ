@@ -13,5 +13,11 @@ class Activity extends Model
         return $this->hasMany('App\PackageActivity');
     }
     public $timestamps = false;
-    
+    protected static function boot() {
+        parent::boot();
+
+        static::deleting(function($activity) {
+             $activity->activityOptions()->delete();
+        });
+    }
 }
