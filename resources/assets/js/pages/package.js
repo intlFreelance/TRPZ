@@ -30,6 +30,8 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
     $scope.activities = [];
     $scope.city = '';
     if (destination && destination.destinationCode) {
+      $scope.addedActivities = [];
+      $scope.addedHotels = [];
       getHotels(destination);
       getActivities(destination);
       return;
