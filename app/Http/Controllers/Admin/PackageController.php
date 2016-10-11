@@ -227,7 +227,22 @@ class PackageController extends Controller
         }
         return response()->json($activities);
     }
-
+    
+    public function ajaxGetPackage($id){
+        $package = Package::find($id);
+        $category = $package->categories[0];
+        $activities = [];
+        $hotels=[];
+        foreach($package->packageHotels as $packageHotel){
+            $hotels[] = Hotel::find($packageHotel->hotelId);
+        }
+        foreach($package->packageActivities as $packageActivity){
+            $activity = Activity::find($packageActivity->activityId);
+            $activities[] = $activity;
+        }
+        $response = ["package"=>$package, "category"=>$category, "hotels"=>$hotels, "activities"=>$activities];
+        return response()->json($response);
+    }
     /**
      * Save a newly created resource in storage.
      *
@@ -238,8 +253,12 @@ class PackageController extends Controller
         $data = \Illuminate\Support\Facades\Input::all();
         $file = $data["imgUpload"];
         $newPackage = json_decode($data["newPackage"], true);
-        
-        $package = new Package;
+        $isNewRecord = empty($newPackage["id"]);
+        if($isNewRecord){
+            $package = new Package;
+        }else{
+            $package = Package::find($newPackage["id"]);
+        }
         $package->name = $newPackage['name'];
         $package->description = $newPackage['description'];
         $package->numberOfDays = $newPackage['numberOfDays'];
@@ -251,12 +270,30 @@ class PackageController extends Controller
         $package->trpzPrice = $newPackage['trpzPrice'];
         $package->jetSetGoPrice = $newPackage['jetSetGoPrice'];
         $package->save();
-
-        if (isset($newPackage['categoryId'])) {
+        if($isNewRecord){
             $category = Category::find($newPackage['categoryId']);
             $package->categories()->save($category);
+        }else{
+            if($package->categories[0]->id != $newPackage["categoryId"]){
+                $package->categories()->detach();
+                $category = Category::find($newPackage['categoryId']);
+                $package->categories()->save($category);
+            }
         }
-
+        foreach($package->packageHotels as $packageHotel){
+            $dbHotel = Hotel::find($packageHotel->hotelId);
+            $found = false;
+            foreach($newPackage['hotels'] as $key => $hotel){
+                if($hotel["hotelId"] == $dbHotel->hotelId){
+                    $found = true;
+                    unset($newPackage['hotels'][$key]);
+                    break;
+                }
+            }
+            if(!$found){
+                PackageHotel::find($packageHotel->id)->delete();
+            }
+        }
         $hotelIds = [];
         forEach($newPackage['hotels'] as $hotel) {
             $newHotel = new Hotel;
@@ -280,6 +317,20 @@ class PackageController extends Controller
         }
         $package->packageHotels()->saveMany($hotelIds);
         
+        foreach($package->packageActivities as $packageActivity){
+            $dbActivity = Activity::find($packageActivity->activityId);
+            $found = false;
+            foreach($newPackage['activities'] as $key => $activity){
+                if($activity["activityId"] == $dbActivity->activityId){
+                    $found = true;
+                    unset($newPackage['activities'][$key]);
+                    break;
+                }
+            }
+            if(!$found){
+                PackageActivity::find($packageActivity->id)->delete();
+            }
+        }
         $activityIds = [];
         foreach($newPackage['activities'] as $activity){
             $newActivity = new Activity;
@@ -306,15 +357,15 @@ class PackageController extends Controller
             $activityIds[] = new PackageActivity(['activityId'=>$newActivity->id]);
         }
         $package->packageActivities()->saveMany($activityIds);
-
-        
-        if ($file) {
+        if (!empty($file) && $file != "undefined") {
             $ext = $file->getClientOriginalExtension();
             $imageName = str_random(15).'.'.$ext;
             if (!file_exists(public_path().'/uploads/packages')) {
                 mkdir(public_path().'/uploads/packages',0777, true);
             }
-            
+            if(!$isNewRecord && isset($package->mainImage)){
+                unlink(public_path().'/uploads/packages/'.$package->mainImage);
+            }
             Image::make($file)->save(public_path().'/uploads/packages/'.$imageName);
             $package->mainImage = $imageName;
             $package->save();
@@ -342,7 +393,15 @@ class PackageController extends Controller
      */
     public function edit($id)
     {
-        //
+        $package = Package::find($id);
+        $data = [
+            'categories' => Category::all()
+        ];
+        if (empty($package)) {
+            Session::flash('error','Package not found');
+            return redirect(route('admin.packages.index'));
+        }
+        return view('admin.packages.edit',$data)->with('package', $package);
     }
 
     /**

@@ -139,6 +139,10 @@ class CategoryController extends Controller
 
         return redirect(route('categories.index'));
     }
+    public function ajaxGetAll(){
+        $categories = Category::all();
+        return response()->json($categories);
+    }
 
     /**
      * Remove the specified Category from storage.

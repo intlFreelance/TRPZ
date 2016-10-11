@@ -25,6 +25,7 @@ class Package extends Model
         parent::boot();
 
         static::deleting(function($package) {
+            $package->categories()->detach();
             foreach($package->packageHotels as $packageHotel){
                 PackageHotel::find($packageHotel->id)->delete();
             }

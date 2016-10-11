@@ -17,8 +17,12 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
   $scope.submit = submit;
   $scope.isArray = angular.isArray;
   $scope.nonFormValidation = nonFormValidation;
+  $scope.loadModel = loadModel;
+  $scope.categories = [];
+  $scope.categoryId="";
   
   getDestinations(null);
+  getCategories();
   
   function getDestinations(destination) {
     $scope.hotels = [];
@@ -44,7 +48,14 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
       $log.error('Failed to load destination', error);
     });
   }
-  
+  function getCategories(){
+    $http.get('/admin/categories/all')
+    .then(function(response){
+        $scope.categories = response.data;
+    }).catch(function(error){
+        $log.error('Failed to load categories', error);
+    });
+  }
   function getCitiesWithoutState(emptyState) {
     var destinationPath = $scope.destinationSegmentIds.join('/');
     destinationPath += '/' + emptyState[0].id;
@@ -97,15 +108,26 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
   }
 
   function addHotel(hotel) {
-    var alreadyAddedIndex = $scope.addedHotels.indexOf(hotel);
-    if (alreadyAddedIndex < 0) {
+	var alreadyAdded = false;
+	$scope.addedHotels.forEach(function(addedHotel) {
+            if(!alreadyAdded){
+                if (parseInt(addedHotel.hotelId) === hotel.hotelId){
+                   alreadyAdded = true;
+                 }
+            }
+	});
+    if (!alreadyAdded) {
       $scope.addedHotels.push(hotel);
     }
   }
 
   function removeHotel(hotel) {
-    var indexToRemove = $scope.addedHotels.indexOf(hotel);
-    $scope.addedHotels.splice(indexToRemove, 1);
+    $scope.addedHotels.forEach(function(addedHotel) {
+	  if (parseInt(addedHotel.hotelId) === parseInt(hotel.hotelId)){
+            var indexToRemove = $scope.addedHotels.indexOf(addedHotel);
+            $scope.addedHotels.splice(indexToRemove, 1);
+          }
+    });
   }
 
   function getActivities(destination) {
@@ -134,18 +156,31 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
   }
 
   function addActivity(activity) {
-    var alreadyAddedIndex = $scope.addedActivities.indexOf(activity);
-    if (alreadyAddedIndex < 0) {
+    var alreadyAdded = false;
+    $scope.addedActivities.forEach(function(addedActivity) {
+        if(!alreadyAdded){
+            if (parseInt(addedActivity.activityId) === activity.activityId){
+               alreadyAdded = true;
+             }
+        }
+    });
+    if (!alreadyAdded) {
       $scope.addedActivities.push(activity);
     }
   }
 
   function removeActivity(activity) {
-    var indexToRemove = $scope.addedHotels.indexOf(activity);
-    $scope.addedActivities.splice(indexToRemove, 1);
+    $scope.addedActivities.forEach(function(addedActivity) {
+	  if (parseInt(addedActivity.activityId) === parseInt(activity.activityId)){
+            var indexToRemove = $scope.addedActivities.indexOf(addedActivity);
+            $scope.addedActivities.splice(indexToRemove, 1);
+          }
+    });
   }
 
   function submit(file, form) {
+      console.log(form.$valid,"form valid");
+      console.log(form,"form");
     if (!form.$valid || !nonFormValidation()) {
           return;
     }
@@ -153,6 +188,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
     var formData = new FormData();
     formData.append("imgUpload", file);
     var newPackage = {
+      id : $scope.id,
       name: $scope.name,
       categoryId: $scope.categoryId,
       description: $scope.description,
@@ -160,7 +196,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
       startDate: $filter('date')($scope.startDate, 'yyyy-MM-dd'),
       endDate: $filter('date')($scope.endDate, 'yyyy-MM-dd'),
       numberOfPeople: $scope.numberOfPeople,
-      dealEnd: $filter('date')($scope.dealEnd, 'yyyy-MM-dd H:mm'),
+      dealEnd: $filter('date')($scope.dealEnd, 'yyyy-MM-dd hh:mm'),
       retailPrice: $scope.retailPrice,
       trpzPrice: $scope.trpzPrice,
       jetSetGoPrice: $scope.jetSetGoPrice,
@@ -178,7 +214,32 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
         $log.error('Failed to create package', error);
       });
   }
-
+  
+  function loadModel(id){
+    $http.get('/admin/get-package/'+id)
+    .then(function(response){
+        var package = response.data.package;
+        var hotels = response.data.hotels;
+        var activities = response.data.activities;
+        var category = response.data.category;
+        $scope.id = package.id;
+        $scope.name = package.name;
+        $scope.categoryId = parseInt(category.id);
+        $scope.description = package.description;
+        $scope.numberOfDays = package.numberOfDays;
+        $scope.startDate = new Date(package.startDate);
+        $scope.endDate = new Date(package.endDate);
+        $scope.numberOfPeople = package.numberOfPeople;
+        $scope.dealEnd = new Date(package.dealEndDate);
+        $scope.retailPrice = parseFloat(package.retailPrice);
+        $scope.trpzPrice = parseFloat(package.trpzPrice);
+        $scope.jetSetGoPrice = parseFloat(package.jetSetGoPrice);
+        $scope.addedHotels = hotels;
+        $scope.addedActivities  = activities;
+    }).catch(function(error){
+          console.log(error);
+    });
+  }
 
   function dateValidation() {
     var currDate = new Date();

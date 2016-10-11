@@ -23,8 +23,10 @@ Route::group(['prefix' => 'admin','namespace' => 'Admin', 'middleware'=>'auth'],
   Route::get('search-hotels', 'PackageController@getHotels');
   Route::get('search-activities', 'PackageController@getActivities');
   Route::post('save-package', 'PackageController@ajaxSavePackage');
+  Route::get('categories/all', 'CategoryController@ajaxGetAll');
   Route::resource('packages', 'PackageController');
   Route::resource('categories', 'CategoryController');
+  Route::get('get-package/{id}', 'PackageController@ajaxGetPackage');
 });
 
 Auth::routes();
