@@ -1,7 +1,8 @@
 var app = angular.module('app', [
   'ui.bootstrap',
   'textAngular',
-  'ngFileUpload'
+  'ngFileUpload',
+  'ui.multiselect'
 ])
   .config(function($interpolateProvider) {
     $interpolateProvider.startSymbol('<%');

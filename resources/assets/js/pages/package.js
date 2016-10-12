@@ -1,4 +1,4 @@
-app.controller('PackageController', function($scope, $http, $log, $filter, Upload) {
+app.controller('PackageController', function($scope, $http, $log, $filter, Upload, $window) {
   $scope.destinationSegments = [];
   $scope.destinationSegmentIds = [];
   $scope.getDestinations = getDestinations;
@@ -9,7 +9,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
   $scope.addHotel = addHotel;
   $scope.removeHotel = removeHotel;
   $scope.addedHotels = [];
-  $scope.categories = [];
+  $scope.selectedCategories = [];
   $scope.selectActivityCategory = selectActivityCategory;
   $scope.addActivity = addActivity;
   $scope.removeActivity = removeActivity;
@@ -19,7 +19,6 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
   $scope.nonFormValidation = nonFormValidation;
   $scope.loadModel = loadModel;
   $scope.categories = [];
-  $scope.categoryId="";
   
   getDestinations(null);
   getCategories();
@@ -181,8 +180,8 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
   }
 
   function submit(file, form) {
-      console.log(form.$valid,"form valid");
-      console.log(form,"form");
+      // console.log(form.$valid,"form valid");
+      // console.log(form,"form");
     if (!form.$valid || !nonFormValidation()) {
           return;
     }
@@ -192,7 +191,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
     var newPackage = {
       id : $scope.id,
       name: $scope.name,
-      categoryId: $scope.categoryId,
+      categories: $scope.selectedCategories,
       description: $scope.description,
       numberOfDays: $scope.numberOfDays,
       startDate: $filter('date')($scope.startDate, 'yyyy-MM-dd'),
@@ -210,7 +209,8 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
        headers: {'Content-Type': undefined },
        transformRequest: angular.identity
     }).then(function(response) {
-        console.log(response);
+        // console.log(response);
+        $window.location.href = '/admin/packages';
       })
       .catch(function(error) {
         $log.error('Failed to create package', error);
@@ -223,10 +223,10 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
         var package = response.data.package;
         var hotels = response.data.hotels;
         var activities = response.data.activities;
-        var category = response.data.category;
+        var categories = response.data.categories;
         $scope.id = package.id;
         $scope.name = package.name;
-        $scope.categoryId = parseInt(category.id);
+        $scope.selectedCategories = categories;
         $scope.description = package.description;
         $scope.numberOfDays = package.numberOfDays;
         $scope.startDate = new Date(package.startDate);
@@ -272,8 +272,14 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
   }
 
   function nonFormValidation() {
-      return dateValidation() && hotelValidation();
+      return dateValidation() && hotelValidation() && categoriesValidation();
       
+  }
+  function categoriesValidation(){
+    if ($scope.selectedCategories.length < 1) {
+      return false;
+    }
+    return true;  
   }
 });
 

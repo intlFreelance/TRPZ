@@ -24,4 +24,11 @@ class Package extends Model
     function packageActivities() {
         return $this->hasMany('App\PackageActivity');
     }
+    public function categoriesNames(){
+        $categoriesNames = "";
+        foreach($this->categories as $category){
+            $categoriesNames .= "$category->name, ";
+        }
+        return rtrim($categoriesNames,', ' );
+    }
 }

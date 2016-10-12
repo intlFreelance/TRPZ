@@ -23,6 +23,7 @@ elixir(mix => {
       '../../../bower_components/textAngular/dist/textAngular-sanitize.min.js',
       '../../../bower_components/textAngular/dist/textAngular.min.js',
       '../../../bower_components/ng-file-upload/ng-file-upload.min.js',
+      '../../../bower_components/angular-bootstrap-multiselect/angular-bootstrap-multiselect.js',
       'app.js',
       'pages/*.js',
     ], 'public/js/trpz.js');

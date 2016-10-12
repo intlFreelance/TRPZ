@@ -230,7 +230,9 @@ class PackageController extends Controller
     
     public function ajaxGetPackage($id){
         $package = Package::find($id);
-        $category = $package->categories[0];
+        $package->startDate = Carbon::parse($package->startDate)->format('m/d/Y');
+        $package->startDate = Carbon::parse($package->startDate)->format('m/d/Y');
+        $categories = $package->categories;
         $activities = [];
         $hotels=[];
         foreach($package->packageHotels as $packageHotel){
@@ -240,7 +242,7 @@ class PackageController extends Controller
             $activity = Activity::find($packageActivity->activityId);
             $activities[] = $activity;
         }
-        $response = ["package"=>$package, "category"=>$category, "hotels"=>$hotels, "activities"=>$activities];
+        $response = ["package"=>$package, "categories"=>$categories, "hotels"=>$hotels, "activities"=>$activities];
         return response()->json($response);
     }
     /**
@@ -270,16 +272,25 @@ class PackageController extends Controller
         $package->trpzPrice = $newPackage['trpzPrice'];
         $package->jetSetGoPrice = $newPackage['jetSetGoPrice'];
         $package->save();
-        if($isNewRecord){
-            $category = Category::find($newPackage['categoryId']);
-            $package->categories()->save($category);
-        }else{
-            if($package->categories[0]->id != $newPackage["categoryId"]){
-                $package->categories()->detach();
-                $category = Category::find($newPackage['categoryId']);
-                $package->categories()->save($category);
+        
+        foreach($package->categories as $dbCategory){
+            $found = false;
+            foreach($newPackage['categories'] as $key => $category){
+                if($category["id"] == $dbCategory->id){
+                    $found = true;
+                    unset($newPackage['categories'][$key]);
+                    break;
+                }
+            }
+            if(!$found){
+                $package->categories()->detach($dbCategory);
             }
         }
+        foreach($newPackage['categories'] as $category){
+            $newCategory = Category::find($category["id"]);
+            $package->categories()->save($newCategory);
+        }
+        
         foreach($package->packageHotels as $packageHotel){
             $dbHotel = Hotel::find($packageHotel->hotelId);
             $found = false;
@@ -431,12 +442,7 @@ class PackageController extends Controller
           return redirect(route('packages.index'));
         }
         Package::find($id)->delete();
-        if(!empty($package->mainImage)){
-            $imgPath = public_path().'/uploads/packages/'.$package->mainImage;
-            if(file_exists($imgPath)){
-                unlink($imgPath);
-            }
-        }
+        
         Session::flash('success','Package deleted successfully.');
         return redirect(route('packages.index'));
     }

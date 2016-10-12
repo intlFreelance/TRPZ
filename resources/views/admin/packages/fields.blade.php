@@ -4,13 +4,16 @@
         <div class="row">
             <div class="col-sm-6">
                 <div class="form-group">
-                    <label>Choose Category</label>
-                    <select ng-model="categoryId" name="categoryId" class="form-control" required>
-                        <option value>Category</option>
-                        <option ng-repeat="category in categories" value="<% category.id %>" ng-selected="categoryId && categoryId === category.id"><%category.name%></option>
-                    </select>
-                    <span style="color:red" ng-show="packageForm.categoryId.$invalid && (packageForm.$submitted  || packageForm.categoryId.$touched )">
-                        <span ng-show="packageForm.categoryId.$error.required">Category is required.</span>
+                    <label>Choose Categories</label>
+                    <multiselect 
+                        ng-model="selectedCategories" 
+                        options="category.name for category in categories" 
+                        data-multiple="true" 
+                        data-compare-by="id"
+                        name="selectedCategories"  
+                        required></multiselect>
+                    <span style="color:red" ng-show="selectedCategories.length < 1 && (packageForm.$submitted  || packageForm.selectedCategories.$touched )">
+                        Select at least one Category.
                     </span>
                 </div>
             </div>
