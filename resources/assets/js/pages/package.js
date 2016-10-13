@@ -192,7 +192,12 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
       id : $scope.id,
       name: $scope.name,
       categories: $scope.selectedCategories,
-      description: $scope.description,
+      amenities : $scope.amenities,
+      highlights : $scope.highlights,
+      finePrint : $scope.finePrint,
+      tripItinerary : $scope.tripItinerary,
+      frequentlyAskedQuestions : $scope.frequentlyAskedQuestions,
+      otherNotes : $scope.otherNotes,
       numberOfDays: $scope.numberOfDays,
       startDate: $filter('date')($scope.startDate, 'yyyy-MM-dd'),
       endDate: $filter('date')($scope.endDate, 'yyyy-MM-dd'),
@@ -227,7 +232,12 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
         $scope.id = package.id;
         $scope.name = package.name;
         $scope.selectedCategories = categories;
-        $scope.description = package.description;
+        $scope.amenities = package.amenities;
+        $scope.highlights = package.highlights;
+        $scope.finePrint = package.finePrint;
+        $scope.tripItinerary = package.tripItinerary;
+        $scope.frequentlyAskedQuestions = package.frequentlyAskedQuestions;
+        $scope.otherNotes = package.otherNotes;
         $scope.numberOfDays = package.numberOfDays;
         $scope.startDate = new Date(package.startDate);
         $scope.endDate = new Date(package.endDate);

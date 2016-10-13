@@ -125,17 +125,53 @@
     </div>
     </div>
     <div class="row">
-    <div class="col-sm-12">
-        <div class="form-group">
-            <label>Description</label>
-            <text-angular name="description" ng-model="description" required></text-angular>
-            <span style="color:red" ng-show="packageForm.description.$invalid && (packageForm.$submitted || packageForm.description.$touched)">
-                <span ng-show="packageForm.description.$error.required">Description is required.</span>
-            </span>
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label>Amenities</label>
+                <text-angular name="amenities" ng-model="amenities"></text-angular>
+            </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label>Highlights</label>
+                <text-angular name="highlights" ng-model="highlights"></text-angular>
+            </div>
+        </div>
     </div>
-
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label>Fine Print</label>
+                <text-angular name="finePrint" ng-model="finePrint"></text-angular>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label>Trip Itinerary</label>
+                <text-angular name="tripItinerary" ng-model="tripItinerary"></text-angular>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label>Frequently Asked Questions</label>
+                <text-angular name="frequentlyAskedQuestions" ng-model="frequentlyAskedQuestions"></text-angular>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label>Other Notes</label>
+                <text-angular name="otherNotes" ng-model="otherNotes"></text-angular>
+            </div>
+        </div>
+    </div>
     <div class="row">
     <div class="col-sm-2">
         <div class="form-group">
