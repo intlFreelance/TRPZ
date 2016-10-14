@@ -20,4 +20,10 @@ class Customer extends Model
     protected $casts = [
         'address' => 'array',
     ];
+    function transactions(){
+        return $this->hasMany('App\Transaction');
+    }
+    function getFullName(){
+        return "{$this->firstName} {$this->lastName}";
+    }
 }

@@ -27,6 +27,7 @@ Route::group(['prefix' => 'admin','namespace' => 'Admin', 'middleware'=>'auth'],
   Route::resource('packages', 'PackageController');
   Route::resource('categories', 'CategoryController');
   Route::resource('customers', 'CustomerController');
+  Route::resource('purchases', 'PurchaseController');
   Route::get('get-package/{id}', 'PackageController@ajaxGetPackage');
 });
 
