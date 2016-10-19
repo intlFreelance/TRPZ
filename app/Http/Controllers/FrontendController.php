@@ -19,4 +19,9 @@ class FrontendController extends Controller
     {
       return view('frontend.about');
     }
+    
+    public function category($id){
+        $data['category'] = Category::find($id);
+        return view('frontend.category', $data);
+    }
 }

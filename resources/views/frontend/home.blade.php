@@ -19,9 +19,9 @@
             <div class="category-container-title">
                 <h3>{!! $category->name !!}</h3>
             </div>
-            <a href="#" class="button hero-button">View</a>
+            <a href="{!! url('category/'.$category->id) !!}" class="button hero-button">View</a>
         </div>
-        <div class="category-container-title category-container-title-after">
+        <div class="category-container-title">
             <h3>{!! $category->name !!}</h3>
         </div>
     </div>

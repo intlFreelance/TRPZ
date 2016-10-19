@@ -320,9 +320,6 @@ a.purple-button{
     margin-top: 100px;
     margin-bottom: 30px;
 }
-.category-container-title-after{
-    visibility: hidden;  
-}
 .category-container-title h3 {
     font-size: 45px;
     margin: 0;
@@ -375,9 +372,6 @@ a.hero-button:hover{
         font-size: 28px;
         margin: 0;    
     }
-    .category-container-title-after{
-        visibility: visible;    
-    }
 }
 @media screen and (max-width: 768px) {
     .category-container{
@@ -392,7 +386,30 @@ a.hero-button:hover{
     a.hero-button{
         display: none;
     }
-    .category-container-title-after{
-        visibility: visible;   
-    }
+}
+.category{
+    background: #662d91;
+    margin: 0 auto;
+}
+.category h1 {
+    color: #ffffff;
+    font-weight: 600;
+    padding: 30px 0;
+    font-size: 42px;
+    line-height: 38px;
+    margin: 0;
+}
+.packages-container a{
+    text-decoration: none;
+}
+.package-container-title{
+    text-align: center;
+    padding-top: 100px;
+}
+.package-container-title h3{
+    color: #ffffff;
+    font-size: 45px;
+    margin: 0;
+    font-weight: 900;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }

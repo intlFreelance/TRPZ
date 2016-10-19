@@ -13,6 +13,7 @@
 
 Route::get('/', 'FrontendController@index');
 Route::get('about', 'FrontendController@about');
+Route::get('category/{id}', 'FrontendController@category');
 Route::group(['prefix' => 'admin','namespace' => 'Admin', 'middleware'=>'auth'], function () {
   Route::get('/', 'AdminController@index');
   Route::get('hotels', 'AdminController@hotels');
