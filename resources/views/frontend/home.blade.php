@@ -13,7 +13,7 @@
     </div>
 </div>
 @foreach($categories as $category)
-<div class="container-full category-container category-container-image" style="background-image: url( {!! url('img/categories/'.$category->image) !!} )">
+<div class="container-full category-container category-container-image" style="background-image: url( {!! url('uploads/categories/'.$category->image) !!} )">
     <div class="box">
         <div class="overlay">
             <div class="category-container-title">

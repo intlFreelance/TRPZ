@@ -12,5 +12,5 @@
 
 <div class="form-group">
     {!! Form::label('image', 'Image:') !!}
-    <p><img src="{!! url('img/categories/'.$category->image) !!}" style="max-width:100%"/></p>
+    <p><img src="{!! url('uploads/categories/'.$category->image) !!}" style="max-width:100%"/></p>
 </div>

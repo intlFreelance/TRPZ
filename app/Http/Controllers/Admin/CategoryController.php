@@ -44,15 +44,15 @@ class CategoryController extends Controller
     {
         $input = $request->all();
 
-        if($request->file())
-        {
-            $image = $request->file('image');
-            $filename  = time() . '.' . $image->getClientOriginalExtension();
-
-            $path = public_path('img/categories/' . $filename);
-
-            Image::make($image->getRealPath())->save($path);
-            $input['image'] = $filename;
+        if ($request->file()) {
+            $file = $request->file('image');
+            $ext = $file->getClientOriginalExtension();
+            $imageName = str_random(15).'.'.$ext;
+            if (!file_exists(public_path().'/uploads/categories')) {
+                mkdir(public_path().'/uploads/categories',0777, true);
+            }
+            Image::make($file)->save(public_path().'/uploads/categories/'.$imageName);
+            $input['image'] = $imageName;
         }
 
         $category = Category::create($input);
@@ -119,21 +119,22 @@ class CategoryController extends Controller
 
           return redirect(route('categories.index'));
         }
-
-        $input = $request->all();
-
-        if($request->file())
-        {
-            $image = $request->file('image');
-            $filename  = time() . '.' . $image->getClientOriginalExtension();
-
-            $path = public_path('img/categories/' . $filename);
-
-            Image::make($image->getRealPath())->save($path);
-            $input['image'] = $filename;
+        $input = $request->all();        
+        if ($request->file()) {
+            $file = $request->file('image');
+            $ext = $file->getClientOriginalExtension();
+            $imageName = str_random(15).'.'.$ext;
+            if (!file_exists(public_path().'/uploads/categories')) {
+                mkdir(public_path().'/uploads/categories',0777, true);
+            }
+            if(isset($category->image) && file_exists(public_path().'/uploads/categories/'.$category->image)){
+                unlink(public_path().'/uploads/categories/'.$category->image);
+            }
+            Image::make($file)->save(public_path().'/uploads/categories/'.$imageName);
+            $input['image'] = $imageName;
         }
 
-        $category = Category::find($id)->update($input);
+        $category->update($input);
 
         Session::flash('success','Category updated successfully.');
 
@@ -160,9 +161,11 @@ class CategoryController extends Controller
 
           return redirect(route('categories.index'));
         }
-
+        
         Category::find($id)->delete();
-
+        if(isset($category->image) && file_exists(public_path().'/uploads/categories/'.$category->image)){
+                unlink(public_path().'/uploads/categories/'.$category->image);
+        }
         Session::flash('success','Category deleted successfully.');
 
         return redirect(route('categories.index'));
