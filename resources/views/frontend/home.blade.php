@@ -7,4 +7,25 @@
     <p class="hero-subtext"><i class="fa fa-map-marker" aria-hidden="true"></i> Honolulu, HI • From $799</p>
   </div>
 </div>
+<div class="container-full cta-banner">
+    <div id="homepage-cta-banner">
+        <p>Win a trip to Chiang Mai! <a href="#" class="purple-button button" style="margin-left: 20px;">View Details</a></p>
+    </div>
+</div>
+@foreach($categories as $category)
+<div class="container-full category-container category-container-image" style="background-image: url( {!! url('img/categories/'.$category->image) !!} )">
+    <div class="box">
+        <div class="overlay">
+            <div class="category-container-title">
+                <h3>{!! $category->name !!}</h3>
+            </div>
+            <a href="#" class="button hero-button">View</a>
+        </div>
+        <div class="category-container-title category-container-title-after">
+            <h3>{!! $category->name !!}</h3>
+        </div>
+    </div>
+</div>
+    
+@endforeach
 @endsection

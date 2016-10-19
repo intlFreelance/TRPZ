@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use App\Category;
 
 class FrontendController extends Controller
 {
     public function index()
     {
-      return view('frontend.home');
+        $data['categories'] = Category::all();
+        return view('frontend.home', $data);
     }
 
     public function about()
