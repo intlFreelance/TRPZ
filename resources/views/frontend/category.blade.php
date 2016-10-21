@@ -9,7 +9,7 @@
 <div class="packages-container">
     @foreach($category->packages as $package)
     <div class="package-container">
-        <a href="{!! url('package/'.$package->id) !!}">
+        <a href="{!! url('/category/'.$category->id.'/package/'.$package->id) !!}">
             <div class="container-full category-container category-container-image" style="background-image: url( {!! url('uploads/packages/'.$package->mainImage) !!} )">
                 <div class="package-container-title"> <h3>{!! $package->name !!}</h3> </div>
             </div>    

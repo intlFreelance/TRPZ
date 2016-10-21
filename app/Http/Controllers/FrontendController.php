@@ -24,4 +24,9 @@ class FrontendController extends Controller
         $data['category'] = Category::find($id);
         return view('frontend.category', $data);
     }
+    public function package($categoryId, $id){
+        $data['category'] = Category::find($categoryId);
+        $data['package'] = \App\Package::find($id);
+        return view('frontend.package', $data);
+    }
 }
