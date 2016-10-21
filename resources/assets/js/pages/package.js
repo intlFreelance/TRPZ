@@ -239,10 +239,10 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
         $scope.frequentlyAskedQuestions = package.frequentlyAskedQuestions;
         $scope.otherNotes = package.otherNotes;
         $scope.numberOfDays = package.numberOfDays;
-        $scope.startDate = new Date(package.startDate);
-        $scope.endDate = new Date(package.endDate);
+        $scope.startDate = package.startDate;
+        $scope.endDate = package.endDate;
         $scope.numberOfPeople = package.numberOfPeople;
-        $scope.dealEnd = new Date(package.dealEndDate);
+        $scope.dealEnd = package.dealEndDate;
         $scope.retailPrice = parseFloat(package.retailPrice);
         $scope.trpzPrice = parseFloat(package.trpzPrice);
         $scope.jetSetGoPrice = parseFloat(package.jetSetGoPrice);

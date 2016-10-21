@@ -2,7 +2,8 @@ var app = angular.module('app', [
   'ui.bootstrap',
   'textAngular',
   'ngFileUpload',
-  'ui.multiselect'
+  'ui.multiselect',
+  'datetimepicker'
 ])
   .config(function($interpolateProvider) {
     $interpolateProvider.startSymbol('<%');

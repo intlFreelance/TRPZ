@@ -45,9 +45,8 @@
                         <label>Start Date</label>
                         <input 
                             type="text" 
-                            uib-datepicker-popup="MM/dd/yyyy"
-                            is-open="dateStart.open" 
-                            ng-focus="dateStart.open=true" 
+                            datetimepicker
+                            datetimepicker-options="{format: 'MM/DD/YYYY'}"
                             ng-model="startDate" 
                             class="form-control"
                             name="startDate"
@@ -65,9 +64,8 @@
                         <label>End Date</label>
                         <input 
                             type="text" 
-                            uib-datepicker-popup="MM/dd/yyyy"
-                            is-open="dateEnd.open" 
-                            ng-focus="dateEnd.open=true" 
+                            datetimepicker
+                            datetimepicker-options="{format: 'MM/DD/YYYY'}"
                             ng-model="endDate" 
                             class="form-control"
                             name="endDate"
@@ -98,9 +96,8 @@
                         <input 
                             type="text" 
                             style="text-transform:uppercase"
-                            uib-datepicker-popup="MM/dd/yyyy hh:mm a"
-                            is-open="dealEnd.open" 
-                            ng-focus="dealEnd.open=true" 
+                            datetimepicker
+                            datetimepicker-options="<% dealEndsOptions %>"
                             ng-model="dealEnd" 
                             class="form-control"
                             name="dealEnd"

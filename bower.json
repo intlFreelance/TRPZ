@@ -22,6 +22,7 @@
     "ng-file-upload": "^12.2.12",
     "angular-bootstrap-multiselect": "^0.4.0",
     "moment": "^2.15.1",
-    "eonasdan-bootstrap-datetimepicker": "^4.17.43"
+    "eonasdan-bootstrap-datetimepicker": "^4.17.43",
+    "angular-bootstrap-datetimepicker-directive": "^0.1.3"
   }
 }

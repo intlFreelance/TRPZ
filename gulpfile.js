@@ -27,6 +27,9 @@ elixir(mix => {
       '../../../bower_components/textAngular/dist/textAngular.min.js',
       '../../../bower_components/ng-file-upload/ng-file-upload.min.js',
       '../../../bower_components/angular-bootstrap-multiselect/angular-bootstrap-multiselect.js',
+      '../../../bower_components/moment/min/moment.min.js',
+      '../../../bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
+      '../../../bower_components/angular-bootstrap-datetimepicker-directive/angular-bootstrap-datetimepicker-directive.min.js',
       'app.js',
       'pages/*.js',
     ], 'public/js/trpz.js');
