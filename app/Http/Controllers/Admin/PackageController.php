@@ -262,12 +262,12 @@ class PackageController extends Controller
             $package = Package::find($newPackage["id"]);
         }
         $package->name = $newPackage['name'];
-        $package->amenities = $newPackage['amenities'];
-        $package->highlights = $newPackage['highlights'];
-        $package->finePrint = $newPackage['finePrint'];
-        $package->tripItinerary = $newPackage['tripItinerary'];
-        $package->frequentlyAskedQuestions = $newPackage['frequentlyAskedQuestions'];
-        $package->otherNotes = $newPackage['otherNotes'];
+        $package->amenities = isset($newPackage['amenities']) ? $newPackage['amenities'] : "";
+        $package->highlights = isset($newPackage['highlights']) ? $newPackage['highlights'] : "";
+        $package->finePrint = isset($newPackage['finePrint']) ? $newPackage['finePrint'] : "";
+        $package->tripItinerary = isset($newPackage['tripItinerary']) ? $newPackage['tripItinerary'] : "";
+        $package->frequentlyAskedQuestions = isset($newPackage['frequentlyAskedQuestions']) ? $newPackage['frequentlyAskedQuestions'] : "";
+        $package->otherNotes = isset($newPackage['otherNotes']) ? $newPackage['otherNotes'] : "";
         $package->numberOfDays = $newPackage['numberOfDays'];
         $package->startDate = $newPackage['startDate'];
         $package->endDate = $newPackage['endDate'];
