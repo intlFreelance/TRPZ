@@ -126,12 +126,20 @@ html, body {
 .blue-container{
   background-color: #14599e;
 }
-
-.navbar-header{
-  width:100%;
+.main-navbar .dropdown a{
+  background-color: #14599e;  
+}
+.main-navbar .dropdown .dropdown-menu, .main-navbar .dropdown .dropdown-menu a{
+  background-color: #2e649c;    
+  padding: 10px 15px;
+}
+.main-navbar .open>a, .main-navbar .open>a:focus, .main-navbar .open>a:hover{
+  background-color: #14599e;      
+}
+.main-nav{
+  margin-left: 75px;
 }
 .navbar-nav{
-  margin-left: 130px;
   margin-top: 20px;
 }
 ul.nav li a{
@@ -161,6 +169,11 @@ ul.navbar-right li a{
   height: 4px;
   width: 100%;
 }
+.navbar {
+      margin: auto;
+      padding-bottom: 20px;
+      padding-right: 20px;
+  }
 .navbar-toggle{
   border-radius: 0px;
   float: left;
@@ -213,24 +226,6 @@ ul.navbar-right li a{
   .navbar-brand img{
     width: 180px;
     margin-left: -30px;
-  }
-  .small-nav li{
-    list-style: none;
-  }
-  .small-nav li a{
-    color: #ffffff;
-    padding: 27px 12px;
-    display: block;
-    font-size: 16px;
-    text-align: center;
-    -webkit-transition: all 0.5s;
-    transition: all 0.5s;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    border: 0px solid #999;
-    background-size: 100% 200%;
-    float:left;
   }
 }
 @media screen and (max-width: 480px){
@@ -557,4 +552,15 @@ a.hero-button:hover{
   top: 0; right: 0; bottom: 0; left: 0;
   background-color: inherit;
   content: ' ';
+}
+.blue-header{
+    color: #14599E;
+    font-weight: 600;
+    margin-bottom: 50px;
+    margin-top: 50px;
+}
+.full-width{
+  width:100% !important;
+  height: 50px;
+  padding: 15px;
 }

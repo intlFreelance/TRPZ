@@ -2,18 +2,21 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Notifications\CustomerResetPassword;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Customer extends Model
+class Customer extends Authenticatable
 {
+    use Notifiable;
     use SoftDeletes;
     protected $dates = [
         'created_at',
         'updated_at',
         'deleted_at'
     ];
-    protected $hidden = array('password');
+    protected $hidden = array('password','remember_token');
     
     protected $fillable = ['id','firstName','lastName', 'email', 'password', 'address'];
     
@@ -25,5 +28,10 @@ class Customer extends Model
     }
     function getFullName(){
         return "{$this->firstName} {$this->lastName}";
+    }
+    
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new CustomerResetPassword($token));
     }
 }
