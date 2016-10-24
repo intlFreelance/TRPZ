@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePackageActivities extends Migration
+class CreateHotelRoomtypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreatePackageActivities extends Migration
      */
     public function up()
     {
-        Schema::create('package_activities', function (Blueprint $table) {
+        Schema::create('hotel_roomtypes', function(Blueprint $table){
             $table->increments('id');
-            $table->string('activityId');
-            $table->integer('package_id')->unsigned();
+            $table->string('roomtypeId');
+            $table->integer('hotel_id')->unsigned();
         });
     }
 
@@ -27,6 +27,6 @@ class CreatePackageActivities extends Migration
      */
     public function down()
     {
-        Schema::drop('package_activities');
+        Schema::dropIfExists('hotel_roomtypes');
     }
 }

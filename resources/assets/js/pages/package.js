@@ -71,7 +71,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
 
   function storeDestination(destination) {
     if (destination) {
-      $scope.destinationSegments.push(destination)
+      $scope.destinationSegments.push(destination);
       $scope.destinationSegmentIds.push(destination.id);
     }
   }
@@ -92,10 +92,12 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
     $scope.hotelsLoading = true;
     $scope.missingDates = false;
     $scope.city = destination.name;
+    var endDate = new Date($scope.startDate);
+    endDate.setDate(endDate.getDate() + $scope.numberOfDays);
     var hotelUrl = '/admin/search-hotels?' +
     'destination=' + destination.destinationCode +
-    '&start-date=' + $filter('date')($scope.startDate, 'yyyy-MM-dd') +
-    '&end-date=' + $filter('date')($scope.endDate, 'yyyy-MM-dd');
+    '&start-date=' + $scope.startDate +
+    '&end-date=' +  $filter('date')(endDate, 'MM/dd/yyyy');
     $http.get(hotelUrl)
       .then(function(response) {
         $scope.hotels = response.data.Hotel;
@@ -135,10 +137,12 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
     $scope.activityCategories = [];
     $scope.activitiesLoading = true;
     $scope.missingDates = false;
+    var endDate = new Date($scope.startDate);
+    endDate.setDate(endDate.getDate() + $scope.numberOfDays);
     var activityUrl = '/admin/search-activities?' +
     'destination-id=' + destination.destinationId +
-    '&start-date=' + $filter('date')($scope.startDate, 'yyyy-MM-dd') +
-    '&end-date=' + $filter('date')($scope.endDate, 'yyyy-MM-dd');
+    '&start-date=' + $scope.startDate +
+    '&end-date=' + $filter('date')(endDate, 'yyyy-MM-dd');
     $http.get(activityUrl)
       .then(function(response) {
         $scope.activityCategories = parseActivities(response.data.Category);
@@ -255,9 +259,9 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
 
   function dateValidation() {
     var currDate = new Date();
-    var startDate = $scope.startDate;
-    var endDate = $scope.endDate;
-    var dealEnd = $scope.dealEnd;
+    var startDate = new Date($scope.startDate);
+    var endDate = new Date($scope.endDate);
+    var dealEnd = new Date($scope.dealEnd);
     if (startDate < currDate) {
       $scope.startDateMessage = "Start Date must be on or after current date.";
       return false;

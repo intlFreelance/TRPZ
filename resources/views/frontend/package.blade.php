@@ -73,6 +73,7 @@
         <div class="row">
             {!! Form::open(['route' => ['cart.add'], 'method' => 'post']) !!}
             <input type="hidden" value="{!! $package->id !!}" name="packageId" />
+            <input type="hidden" value="{!! $package->numberOfDays !!}" id="numberOfDays"/>
             <div class="container">
                 <div class="col-md-6">
                     <div class="col-md-12"><h3>Select Dates</h3></div>
@@ -85,14 +86,9 @@
                             </span>
                         @endif
                     </div>
-                    <div class="col-md-6 form-group {!! $errors->has('endDate') ? 'has-error' : '' !!}">
+                    <div class="col-md-6 form-group">
                         <label for="endDate" class="control-label">End Date</label>
-                        <input type="text" class="form-control" id="endDate" name="endDate" required/>
-                        @if ($errors->has('endDate'))
-                            <span class="help-block">
-                                <strong>{{ $errors->first('endDate') }}</strong>
-                            </span>
-                        @endif
+                        <input type="text" class="form-control" id="endDate" name="endDate" readonly/>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -176,18 +172,12 @@ $(function(){
         format: 'MM/DD/YYYY',
         minDate: moment("{!! $package->startDate !!}"),
         maxDate: moment("{!! $package->endDate !!}")
-    }).on("dp.change", function (e) {
-        $('#endDate').data("DateTimePicker").minDate(e.date);
-    });;
-    $("#endDate").datetimepicker({
-        format: 'MM/DD/YYYY',
-        minDate: moment("{!! $package->startDate !!}"),
-        maxDate: moment("{!! $package->endDate !!}")
-    }).on("dp.change", function (e) {
-            $('#startDate').data("DateTimePicker").maxDate(e.date);
-    });;
-     
-        
+    }).on("dp.hide", function (e) {
+        var endDate = new Date(e.date);
+        var numberOfDays = parseInt($("#numberOfDays").val());
+        endDate.setDate(endDate.getDate() + numberOfDays);
+        $('#endDate').val(moment(endDate).format('MM/DD/YYYY'));
+    }).val("");   
 });
 function initMap() {
     var map = new google.maps.Map(document.getElementById('package-map'), {

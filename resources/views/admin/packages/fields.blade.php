@@ -251,7 +251,7 @@
         </div>
         <div class="row">
         <div class="col-sm-12">
-            <p ng-show="missingDates" class="alert alert-danger">Please Choose valid start and end dates</p>
+            <p ng-show="missingDates" class="alert alert-danger">Please choose valid start date and number of days.</p>
         </div>
         </div>
         <div>
