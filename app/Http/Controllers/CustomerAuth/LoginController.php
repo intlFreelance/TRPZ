@@ -5,6 +5,7 @@ namespace App\Http\Controllers\CustomerAuth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -36,6 +37,7 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('customer.guest', ['except' => 'logout']);
+        $this->redirectTo = session('previousUrl') != null ? session('previousUrl') : '/';
     }
 
     /**
@@ -43,8 +45,9 @@ class LoginController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function showLoginForm()
+    public function showLoginForm(Request $request)
     {
+        $request->session()->put('url.intended',url()->previous());
         return view('customer.auth.login');
     }
 

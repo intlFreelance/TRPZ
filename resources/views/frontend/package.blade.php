@@ -71,16 +71,28 @@
             ?>
         </div>
         <div class="row">
+            {!! Form::open(['route' => ['cart.add'], 'method' => 'post']) !!}
+            <input type="hidden" value="{!! $package->id !!}" name="packageId" />
             <div class="container">
                 <div class="col-md-6">
                     <div class="col-md-12"><h3>Select Dates</h3></div>
-                    <div class="col-md-6 form-group">
-                        <label>Start Date</label>
-                        <input type="text" class="form-control" id="startDate"/>
+                    <div class="col-md-6 form-group {!! $errors->has('startDate') ? 'has-error' : '' !!}">
+                        <label for="startDate" class="control-label">Start Date</label>
+                        <input type="text" class="form-control" id="startDate" name="startDate" required/>
+                        @if ($errors->has('startDate'))
+                            <span class="help-block">
+                                <strong>{{ $errors->first('startDate') }}</strong>
+                            </span>
+                        @endif
                     </div>
-                    <div class="col-md-6 form-group">
-                        <label>End Date</label>
-                        <input type="text" class="form-control" id="endDate"/>
+                    <div class="col-md-6 form-group {!! $errors->has('endDate') ? 'has-error' : '' !!}">
+                        <label for="endDate" class="control-label">End Date</label>
+                        <input type="text" class="form-control" id="endDate" name="endDate" required/>
+                        @if ($errors->has('endDate'))
+                            <span class="help-block">
+                                <strong>{{ $errors->first('endDate') }}</strong>
+                            </span>
+                        @endif
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -121,7 +133,7 @@
                                 <p style="font-size: 14px;">Jet Set Go® offers you a whole new way pay for travel: by playing games! Download Jet Set Go® right now to stop paying for travel and start playing for travel!</p>
                             </div>
                         </div>
-                        <a href="#" class="button package-buttons" id="start-playing">Start Playing!</a>
+                        <input id="start-playing" class="button package-buttons" type="submit" name="jetSet" value="Start Playing!"/>
                     </div>
 
                 </div>
@@ -137,11 +149,11 @@
                                 <p style="font-size: 14px;">By booking your vacation package with Trpz™, you receive unmatched discounts on one of a kind vacation experiences.</p>
                             </div>
                         </div>
-
-                        <a href="#" id="book-now" class="button package-buttons">Book Now</a>
+                        <input type="submit" class="button package-buttons" id="book-now" name="trpz" value="Book Now" />
                     </div>
                 </div>
             </div>
+            {!! Form::close() !!}
         </div>
         @include('frontend.additional')    
     </div>

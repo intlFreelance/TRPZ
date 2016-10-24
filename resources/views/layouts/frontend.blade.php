@@ -40,7 +40,7 @@
                     {!! Auth::guard('customer')->user()->getFullName(); !!}
                     <span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                    <li><a href="#">Cart: 1 <span class="glyphicon glyphicon-shopping-cart"></span></a></li>
+                    <li><a href="{{ url('/cart/') }}">Cart: {!! Cart::count() !!} <span class="glyphicon glyphicon-shopping-cart"></span></a></li>
                     <li><a href="{{ url('/customer/logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
                              Log Out <i class="fa fa-power-off" aria-hidden="true"></i>
                         </a>
@@ -85,7 +85,7 @@
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                             @if(Auth::guard('customer')->check())
-                            <li><a href="#">Cart: 1 <span class="glyphicon glyphicon-shopping-cart"></span></a></li>
+                            <li><a href="{{ url('/cart/') }}">Cart: {!! Cart::count() !!} <span class="glyphicon glyphicon-shopping-cart"></span></a></li>
                              <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" >
                                     {!! Auth::guard('customer')->user()->getFullName(); !!}

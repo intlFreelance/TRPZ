@@ -52,3 +52,9 @@ Route::post('customer/password/reset', 'CustomerAuth\ResetPasswordController@res
 Route::get('customer/password/reset', 'CustomerAuth\ForgotPasswordController@showLinkRequestForm');
 Route::get('customer/password/reset/{token}', 'CustomerAuth\ResetPasswordController@showResetForm');
 
+//Shopping Cart
+Route::group(['middleware'=>'customer'], function () {
+    Route::get('cart/', 'CartController@index')->name('cart.index');
+    Route::post('cart/', 'CartController@add')->name('cart.add');
+    Route::delete('cart/{rowId}', 'CartController@destroy')->name('cart.destroy');
+});
