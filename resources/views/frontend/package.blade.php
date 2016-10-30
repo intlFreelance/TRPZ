@@ -27,8 +27,8 @@
             <div class="col-md-4">
                 <div class="row">
                     <div class="col-md-12 package-deal-ends">
-                        <p>Deal Ends:</p>
-                        <p id="dealEnds"></p>
+                            <p>Deal Ends:</p>
+                            <p id="dealEnds"></p>
                     </div>
                 </div>
                 
@@ -70,6 +70,7 @@
                 }
             ?>
         </div>
+        @if(!$noinputs)
         <div class="row">
             {!! Form::open(['route' => ['cart.add'], 'method' => 'post']) !!}
             <input type="hidden" value="{!! $package->id !!}" name="packageId" />
@@ -79,16 +80,25 @@
                     <div class="col-md-12"><h3>Select Dates</h3></div>
                     <div class="col-md-6 form-group {!! $errors->has('startDate') ? 'has-error' : '' !!}">
                         <label for="startDate" class="control-label">Start Date</label>
-                        <input type="text" class="form-control" id="startDate" name="startDate" required/>
-                        @if ($errors->has('startDate'))
-                            <span class="help-block">
-                                <strong>{{ $errors->first('startDate') }}</strong>
-                            </span>
+                        @if(isset($voucher))
+                            {!! Form::text('startDate', $package->startDate->format('m/d/Y'), [ 'class' => 'form-control', 'readonly'=>'readonly']) !!}
+                        @else
+                            {!! Form::text('startDate', null, ['id'=>'startDate', 'class' => 'form-control', 'required'=>'required']) !!}
+                            @if ($errors->has('startDate'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('startDate') }}</strong>
+                                </span>
+                            @endif
                         @endif
                     </div>
                     <div class="col-md-6 form-group">
                         <label for="endDate" class="control-label">End Date</label>
-                        <input type="text" class="form-control" id="endDate" name="endDate" readonly/>
+                        @if(isset($voucher))
+                            {!! Form::text('endDate', $package->startDate->addDays($package->numberOfDays)->format('m/d/Y'), [ 'class' => 'form-control', 'readonly'=>'readonly']) !!}
+                        @else
+                            {!! Form::text('endDate', null, ['id'=>'endDate', 'class' => 'form-control', 'required'=>'required', 'readonly'=>'readonly']) !!}
+                        @endif
+                        
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -96,27 +106,97 @@
                 </div>
             </div>
             <div class="container">
-                <div class="col-md-6">
-                    <div class="col-md-12 form-group">
-                        <h3>Room Type</h3>
-                        <select class="form-control"></select>
+                <div class="col-md-6 form-group">
+                    <h3>Hotel</h3>
+                     <?php $hotel = $package->packageHotels[0]->hotel; ?>
+                    <div class="panel panel-default">
+                       <div class="panel-heading">{!! $hotel->name !!}</div>
+                       <div class="panel-body">
+                           <div class="row">
+                               <div class="col-md-3">
+                                   <img src="{!! $hotel->thumb !!}" />
+                               </div>
+                               <div class="col-md-9">
+                                   <p >{!! $hotel->description !!}</p>
+                               </div>
+                           </div>
+                           <div class="row">
+                               <div class="col-md-12">
+                                   <p >{!! $hotel->address !!}</p>
+                               </div>
+                           </div>
+                       </div>
                     </div>
-
+                </div>
+                <div class="col-md-6 form-group">
+                    <h3>Room Type</h3>
+                    @if(isset($voucher))
+                        {!! Form::text('roomTypeId', !isset($hotel->hotelRoomtypes[0]) ? "" : $hotel->hotelRoomtypes[0]->roomtype->name, [ 'class' => 'form-control', 'readonly'=>'readonly']) !!}
+                    @else
+                     {!! Form::select('roomTypeId', 
+                            DB::table('roomTypes')->join('hotel_roomtypes', 'roomTypes.id', '=', 'hotel_roomtypes.roomtypeId')->where('hotel_roomtypes.hotel_id', '=' , $hotel->id)->pluck('roomTypes.name', 'roomTypes.id') , 
+                            null, 
+                            ['placeholder' => '', 'class'=>'form-control']
+                        ); 
+                     !!}
+                    @endif
                 </div>
             </div>
             <div class="container">
-                <div class="col-md-12 form-group">
-                    <h3>Activity Type</h3>
-                    <ul>
+                <div class="col-md-6 form-group pad30">
+                    <h3>Activities</h3>
+                     @if(!isset($voucher))
+                    <select class="form-control" class="activityId" id="activityId" name="activityIds[]" multiple="multiple">
                         @foreach($package->packageActivities as $packageActivity)
                             <?php $activity = App\Activity::find($packageActivity->activityId); ?>
-                        <li><img src="{!! $activity->thumbURL !!}" class="activity-image"/> {!! $activity->name !!}</li>
+                        <option value="{!! $activity->id !!}"> {!! $activity->name !!}</option>
                         @endforeach
-                    </ul>
+                    </select>
+                     @endif
                 </div>
+                <div class="col-md-6">
+                    
+                </div>
+                <div class="col-md-12 activities">
+                    @foreach($package->packageActivities as $key => $packageActivity)
+                        <?php $activity = App\Activity::find($packageActivity->activityId); ?>
+                    <div class="col-md-4 {!! !(isset($voucher) && $key <= 2) ? 'activity-item' : ''!!}" id="activity-{!! $activity->id !!}">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">{!! $activity->name !!}</div>
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-xs-4">
+                                            <img src="{!! $activity->thumbURL !!}"/>
+                                        </div>
+                                        <div class="col-xs-8">
+                                            <p>{!! $activity->description !!}</p>
+                                        </div>
+                                        
+                                        <div class="col-xs-12">
+                                            <label>Options</label>
+                                            @if(isset($voucher))
+                                            <p>{!! $activity->activityOptions[0]->name !!}</p> 
+                                            @else
+                                                <select class="form-control activity-options" name="activityOptions[{!! $activity->id !!}][]" id="activityOptions_{!! $activity->id !!}" multiple="multiple">
+                                                    @foreach($activity->activityOptions as $option)
+                                                    <option value="{!! $option->id !!}"> {!! $option->name !!}</option>
+                                                    @endforeach
+                                                </select>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                        
             </div>
+            @endif
+            @if(!$nonav)
             <div class="container">
-                <div class="col-md-12"><h3>Package Pricing Options</h3></div>
+                <div class="col-md-12 pad30"><h3>Package Pricing Options</h3></div>
                 <div class="col-md-6">
                     <div class="package-pricing2">
                         <div class="package-pricing2-description">
@@ -149,13 +229,16 @@
                     </div>
                 </div>
             </div>
+            @endif
             {!! Form::close() !!}
         </div>
-        @include('frontend.additional')    
+        @if(!$nonav)
+            @include('frontend.additional')    
+        @endif
     </div>
 
-                
-       
+
+
  <script>
 $(function(){
     var now = moment(new Date());
@@ -166,7 +249,6 @@ $(function(){
     }else{
         var dealEnds = "expired";
     }
-    
     $("#dealEnds").html(dealEnds);
     $("#startDate").datetimepicker({
         format: 'MM/DD/YYYY',
@@ -177,7 +259,43 @@ $(function(){
         var numberOfDays = parseInt($("#numberOfDays").val());
         endDate.setDate(endDate.getDate() + numberOfDays);
         $('#endDate').val(moment(endDate).format('MM/DD/YYYY'));
-    }).val("");   
+    }).val("");
+    $("#hotelId").on("change", function(){
+        $("#roomTypeId").empty().append('<option value></option>');
+        $("#hotel-panel").hide();
+        $("#hotel-name").html("");
+        $("#hotel-thumb").attr("src", "");
+        $("#hotel-description").html("");
+        $("#hotel-address").html("");
+        var hotelId = $(this).val();
+        if(hotelId=="") return;
+        $.get("/hotel/"+hotelId, function(data){
+            var roomTypes = data.roomTypes;
+            var hotel = data.hotel;
+            $.each(roomTypes, function(i, roomType){
+                $("#roomTypeId").append('<option value="'+ roomType.id +'">'+ roomType.name +'</option>');
+            });
+            $("#hotel-panel").show();
+            $("#hotel-name").html(hotel.name);
+            $("#hotel-thumb").attr("src", hotel.thumb);
+            $("#hotel-description").html(hotel.description);
+            $("#hotel-address").html(hotel.address);
+        });
+    });
+    $("#activityId").multiselect({
+        buttonWidth: '100%',
+        onChange: function(option, checked, select) {
+            var activityId = $(option).val();
+            if(checked){
+                $("#activity-"+activityId).show();
+            }else{
+                $('#activityOptions_'+activityId).multiselect('deselectAll', false);
+                $('#activityOptions_'+activityId).multiselect('updateButtonText');
+                $("#activity-"+activityId).hide();
+            }
+        }
+    });
+    $(".activity-options").multiselect({buttonWidth: '100%'});
 });
 function initMap() {
     var map = new google.maps.Map(document.getElementById('package-map'), {

@@ -11,10 +11,10 @@ class PackageHotel extends Model
     protected $fillable = ['hotelId'];
     
     function package() {
-        return $this->belongsTo('App\Package');
+        return $this->belongsTo('App\Package', 'package_id');
     }
     function hotel(){
-        return $this->belongsTo('App\Hotel');
+        return $this->belongsTo('App\Hotel', 'hotelId');
     }
     protected static function boot() {
         parent::boot();

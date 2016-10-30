@@ -19,6 +19,7 @@ class CartController extends Controller{
         $this->validate($request, [
             'startDate' => 'required',
             'endDate' => 'required',
+            'roomTypeId'=>'required'
         ]);
         $input = $request->all();
         foreach(Cart::content() as $row){
@@ -34,12 +35,22 @@ class CartController extends Controller{
         }else if(isset($input["trpz"])){
             $price = $package->trpzPrice;
         }
-        
+        $activities = [];
+        foreach($input['activityIds'] as $activityId){
+            $activities[] = [
+                "id" => $activityId,
+                "options" => isset($input['activityOptions'][$activityId]) ? $input['activityOptions'][$activityId] :  []
+            ];
+        }
         Cart::add($package->id, $package->name, 1, $price, 
         [
-            'startDate' =>  $input['startDate'], 
-            'endDate'=>     $input['endDate']
+            'startDate'         => $input['startDate'], 
+            'endDate'           => $input['endDate'],
+            'hotelId'           => $package->packageHotels[0]->hotelId,
+            'roomTypeId'        => $input['roomTypeId'],
+            'activities'        => $activities
         ])->setTaxRate(0);
+        
         return redirect(route('cart.index'));
     }
 }

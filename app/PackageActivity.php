@@ -11,10 +11,10 @@ class PackageActivity extends Model
     protected $fillable = ['activityId'];
     
     function package() {
-        return $this->belongsTo('App\Package');
+        return $this->belongsTo('App\Package', 'package_id');
     }
     function activity(){
-        return $this->belongsTo('App\Activity');
+        return $this->belongsTo('App\Activity', 'activityId');
     }
     protected static function boot() {
         parent::boot();

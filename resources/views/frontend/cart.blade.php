@@ -6,9 +6,6 @@
         <div class="col-md-10 col-md-offset-1">
             <div class="col-md-12">
                 <h1 class="blue-header">Your Cart</h1>
-                <?php
-                    #Cart::add('192ao12', 'Package 1', 1, 923.99);
-                ?>
                 @if(Cart::count() == 0)
                 <p>Your cart is currently empty</p>
                 <p>
@@ -62,7 +59,7 @@
                 </table>
                 <p class="pull-right">
                     <a href="{!!  url('/') !!}" class="btn btn-primary">Return to shop <i class="fa fa-shopping-basket" aria-hidden="true"></i></a>
-                    <a href="#" class="btn btn-warning">Checkout <i class="fa fa-sign-out" aria-hidden="true"></i></a>
+                    <a href="{!!  url('/payment') !!}" class="btn btn-warning">Checkout <i class="fa fa-sign-out" aria-hidden="true"></i></a>
                 </p>
             @endif
             </div>

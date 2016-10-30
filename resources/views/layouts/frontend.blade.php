@@ -17,6 +17,7 @@
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
     <link href="/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" />
     <!-- Scripts -->
     <script>
         window.Laravel = <?php echo json_encode([
@@ -26,6 +27,7 @@
     <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 </head>
 <body>
+    @if(!(isset($nonav) && $nonav))
     <div id="sideNavigation">
       <div id="exit_nav" class="transition"><i class="fa fa-times transition" onclick="hideSidebar()"></i></div>
       <nav class="menu-mobile-menu-container">
@@ -63,9 +65,10 @@
         </ul>
       </nav>
     </div>
+    @endif
     <div id="full-page-cover"></div>
     <div id="full-page">
-      <div class="container-full blue-container">
+      <div class="container-full blue-container"> 
           <nav class="navbar main-navbar" role="navigation">
               <div class="container-fluid">
                 <div class="navbar-header">
@@ -74,9 +77,10 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                       </button>
-                      <a class="navbar-brand" href="{{url('/')}}"><img src="{{ url('img/TRPZ-logo.png') }}"/></a>
+                      <a class="navbar-brand" href="{{!(isset($nonav) && $nonav) ?  url('/') :  "#" }}"><img src="{{ url('img/TRPZ-logo.png') }}"/></a>
                 </div>
                 <div class="collapse navbar-collapse" id="myNavbar">
+                    @if(!(isset($nonav) && $nonav))
                     <ul class="nav navbar-nav main-nav">
                         <li class="active"><a href="{{url('/')}}">Home</a></li>
                         <li><a href="#">About</a></li>
@@ -111,10 +115,10 @@
                               </li>
                             @endif
                     </ul>
+                    @endif  
                 </div>
               </div>
-          </nav>
-                    
+          </nav>      
         </div>
           
       </div>
@@ -137,5 +141,6 @@
     <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
     <script src="/js/moment.min.js"></script>
     <script src="/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>
 </body>
 </html>

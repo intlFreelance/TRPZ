@@ -14,7 +14,10 @@
 Route::get('/', 'FrontendController@index');
 Route::get('about', 'FrontendController@about');
 Route::get('category/{id}', 'FrontendController@category');
-Route::get('category/{categoryId}/package/{id}', 'FrontendController@package');
+Route::get('category/{categoryId}/package/{id}/{option?}/{parameter?}', 'FrontendController@package');
+Route::get('hotel/{id}','FrontendController@getHotel');
+Route::get('payment','FrontendController@payment')->middleware('customer');
+Route::post('payment',  'FrontendController@makePayment')->name('payment')->middleware('customer');
 Route::group(['prefix' => 'admin','namespace' => 'Admin', 'middleware'=>'auth'], function () {
   Route::get('/', 'AdminController@index');
   Route::get('hotels', 'AdminController@hotels');

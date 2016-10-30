@@ -9,11 +9,11 @@ class HotelRoomtype extends Model {
     
     protected $fillable = ['roomTypeId'];
     function roomtype() {
-        return $this->belongsTo('App\Roomtype');
+        return $this->belongsTo('App\Roomtype', 'roomtypeId');
     }
     
     function hotel(){
-        return $this->belongsTo('App\Hotel');
+        return $this->belongsTo('App\Hotel','hotel_id');
     }
     
     protected static function boot() {
