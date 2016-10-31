@@ -119,14 +119,14 @@ This hotel is located on the shores of Lake Las Vegas. The nearest town of Hende
                                 <div class="panel-heading">Grand Canyon Explorer Tour - Demo</div>
                                 <div class="panel-body">
                                     <div class="row">
-                                        <div class="col-xs-4">
+                                        <div class="col-md-4">
                                             <img src="http://image1.urlforimages.com/1239114/Airplane4_Thumbnailed.jpg"/>
                                         </div>
-                                        <div class="col-xs-8">
+                                        <div class="col-md-8">
                                             <p>Demo - Experience the adventure of a lifetime with a flight to the Grand Canyon!</p>
                                         </div>
                                         
-                                        <div class="col-xs-12">
+                                        <div class="col-md-12">
                                             <label>Options</label>
                                                                                         <p>10:00am Tour</p> 
                                                                                     </div>
@@ -140,14 +140,14 @@ This hotel is located on the shores of Lake Las Vegas. The nearest town of Hende
                                 <div class="panel-heading">Las Vegas Night Tour - Demo</div>
                                 <div class="panel-body">
                                     <div class="row">
-                                        <div class="col-xs-4">
+                                        <div class="col-md-4">
                                             <img src="http://image1.urlforimages.com/1297218/LVNight-3_Thumb.jpg"/>
                                         </div>
-                                        <div class="col-xs-8">
+                                        <div class="col-md-8">
                                             <p>Demo - As dusk falls, the city comes to life illuminated by the dazzling neon lights Las Vegas is famous for.</p>
                                         </div>
                                         
-                                        <div class="col-xs-12">
+                                        <div class="col-md-12">
                                             <label>Options</label>
                                                                                         <p>Panoramic Night Tour Ticket</p> 
                                                                                     </div>
@@ -161,14 +161,14 @@ This hotel is located on the shores of Lake Las Vegas. The nearest town of Hende
                                 <div class="panel-heading">Champagne Night Strip Tour - Demo</div>
                                 <div class="panel-body">
                                     <div class="row">
-                                        <div class="col-xs-4">
+                                        <div class="col-md-4">
                                             <img src="http://image1.urlforimages.com/1323569/LasVegasWelcomeSign_Thumbnailed.jpg"/>
                                         </div>
-                                        <div class="col-xs-8">
+                                        <div class="col-md-8">
                                             <p>Demo - Enjoy the evening just like a rock star as you experience the Amazing Las Vegas Strip.</p>
                                         </div>
                                         
-                                        <div class="col-xs-12">
+                                        <div class="col-md-12">
                                             <label>Options</label>
                                                                                         <p>Tour Ticket</p> 
                                                                                     </div>
@@ -428,14 +428,14 @@ This hotel is located on the shores of Lake Las Vegas. The nearest town of Hende
                                 <div class="panel-heading">Grand Canyon Explorer Tour - Demo</div>
                                 <div class="panel-body">
                                     <div class="row">
-                                        <div class="col-xs-4">
+                                        <div class="col-md-4">
                                             <img src="http://image1.urlforimages.com/1239114/Airplane4_Thumbnailed.jpg"/>
                                         </div>
-                                        <div class="col-xs-8">
+                                        <div class="col-md-8">
                                             <p>Demo - Experience the adventure of a lifetime with a flight to the Grand Canyon!</p>
                                         </div>
                                         
-                                        <div class="col-xs-12">
+                                        <div class="col-md-12">
                                             <label>Options</label>
                                                                                         <p>10:00am Tour</p> 
                                                                                     </div>
@@ -449,14 +449,14 @@ This hotel is located on the shores of Lake Las Vegas. The nearest town of Hende
                                 <div class="panel-heading">Las Vegas Night Tour - Demo</div>
                                 <div class="panel-body">
                                     <div class="row">
-                                        <div class="col-xs-4">
+                                        <div class="col-md-4">
                                             <img src="http://image1.urlforimages.com/1297218/LVNight-3_Thumb.jpg"/>
                                         </div>
-                                        <div class="col-xs-8">
+                                        <div class="col-md-8">
                                             <p>Demo - As dusk falls, the city comes to life illuminated by the dazzling neon lights Las Vegas is famous for.</p>
                                         </div>
                                         
-                                        <div class="col-xs-12">
+                                        <div class="col-md-12">
                                             <label>Options</label>
                                                                                         <p>Panoramic Night Tour Ticket</p> 
                                                                                     </div>
@@ -470,14 +470,14 @@ This hotel is located on the shores of Lake Las Vegas. The nearest town of Hende
                                 <div class="panel-heading">Champagne Night Strip Tour - Demo</div>
                                 <div class="panel-body">
                                     <div class="row">
-                                        <div class="col-xs-4">
+                                        <div class="col-md-4">
                                             <img src="http://image1.urlforimages.com/1323569/LasVegasWelcomeSign_Thumbnailed.jpg"/>
                                         </div>
-                                        <div class="col-xs-8">
+                                        <div class="col-md-8">
                                             <p>Demo - Enjoy the evening just like a rock star as you experience the Amazing Las Vegas Strip.</p>
                                         </div>
                                         
-                                        <div class="col-xs-12">
+                                        <div class="col-md-12">
                                             <label>Options</label>
                                                                                         <p>Tour Ticket</p> 
                                                                                     </div>

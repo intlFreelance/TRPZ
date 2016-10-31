@@ -169,14 +169,14 @@
                                 <div class="panel-heading">{!! $activity->name !!}</div>
                                 <div class="panel-body">
                                     <div class="row">
-                                        <div class="col-xs-4">
+                                        <div class="col-md-4">
                                             <img src="{!! $activity->thumbURL !!}"/>
                                         </div>
-                                        <div class="col-xs-8">
+                                        <div class="col-md-8">
                                             <p>{!! $activity->description !!}</p>
                                         </div>
                                         
-                                        <div class="col-xs-12">
+                                        <div class="col-md-12">
                                             <label>Options</label>
                                             @if($nonav)
                                             <p>{!! $activity->activityOptions[0]->name !!}</p> 

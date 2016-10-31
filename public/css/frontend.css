@@ -361,9 +361,6 @@ a.hero-button:hover{
     }
 }
 @media screen and (max-width: 768px) {
-    .category-container{
-        height: 173px;
-    }
     .category-container-title h3 {
         float: left;
         font-size: 22px;
@@ -433,6 +430,14 @@ a.hero-button:hover{
     font-size: 18px;
     color: white;
     padding-top: 20px;
+}
+.package-deal-ends-nonav{
+    background-color: #662d91;
+    height: 200px;
+    text-align: center;
+    font-size: 18px;
+    color: white;
+    padding-top: 60px;
 }
 .package-learn-more {
     background-color: #55a218;
