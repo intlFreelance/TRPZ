@@ -72,11 +72,13 @@
           <nav class="navbar main-navbar" role="navigation">
               <div class="container-fluid">
                 <div class="navbar-header">
+                    @if(!(isset($nonav) && $nonav))
                       <button type="button" class="navbar-toggle" onclick="showSidebar()">
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                       </button>
+                    @endif
                       <a class="navbar-brand" href="{{!(isset($nonav) && $nonav) ?  url('/') :  "#" }}"><img src="{{ url('img/TRPZ-logo.png') }}"/></a>
                 </div>
                 <div class="collapse navbar-collapse" id="myNavbar">

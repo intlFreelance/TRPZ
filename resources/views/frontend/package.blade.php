@@ -26,12 +26,12 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="row">
-                    <div class="col-md-12 package-deal-ends">
+                    <div class="col-md-12 {!! $nonav ? 'package-deal-ends-nonav' : 'package-deal-ends' !!}" >
                             <p>Deal Ends:</p>
                             <p id="dealEnds"></p>
                     </div>
                 </div>
-                
+                @if(!$nonav)
                 <div class="row">
                     <div class="col-md-12 package-learn-more">
                         <a href="#">
@@ -39,7 +39,7 @@
                         </a>
                     </div>
                 </div>
-                
+                @endif
             </div>
             <div class="col-md-8">
                 <div class="row">
@@ -105,8 +105,9 @@
                     <div class="col-md-12"><h3>Package Options</h3></div>
                 </div>
             </div>
+            @endif
             <div class="container">
-                <div class="col-md-6 form-group">
+                <div class="col-md-{!! $noinputs ? '12' : '6' !!} form-group">
                     <h3>Hotel</h3>
                      <?php $hotel = $package->packageHotels[0]->hotel; ?>
                     <div class="panel panel-default">
@@ -128,6 +129,7 @@
                        </div>
                     </div>
                 </div>
+                @if(!$noinputs)
                 <div class="col-md-6 form-group">
                     <h3>Room Type</h3>
                     @if(isset($voucher))
@@ -141,11 +143,13 @@
                      !!}
                     @endif
                 </div>
+                @endif
             </div>
+            
             <div class="container">
                 <div class="col-md-6 form-group pad30">
                     <h3>Activities</h3>
-                     @if(!isset($voucher))
+                     @if(!$nonav)
                     <select class="form-control" class="activityId" id="activityId" name="activityIds[]" multiple="multiple">
                         @foreach($package->packageActivities as $packageActivity)
                             <?php $activity = App\Activity::find($packageActivity->activityId); ?>
@@ -160,7 +164,7 @@
                 <div class="col-md-12 activities">
                     @foreach($package->packageActivities as $key => $packageActivity)
                         <?php $activity = App\Activity::find($packageActivity->activityId); ?>
-                    <div class="col-md-4 {!! !(isset($voucher) && $key <= 2) ? 'activity-item' : ''!!}" id="activity-{!! $activity->id !!}">
+                    <div class="col-md-4 {!! !($nonav && $key <= 2) ? 'activity-item' : ''!!}" id="activity-{!! $activity->id !!}">
                             <div class="panel panel-default">
                                 <div class="panel-heading">{!! $activity->name !!}</div>
                                 <div class="panel-body">
@@ -174,7 +178,7 @@
                                         
                                         <div class="col-xs-12">
                                             <label>Options</label>
-                                            @if(isset($voucher))
+                                            @if($nonav)
                                             <p>{!! $activity->activityOptions[0]->name !!}</p> 
                                             @else
                                                 <select class="form-control activity-options" name="activityOptions[{!! $activity->id !!}][]" id="activityOptions_{!! $activity->id !!}" multiple="multiple">
@@ -193,7 +197,7 @@
                 </div>
                         
             </div>
-            @endif
+            
             @if(!$nonav)
             <div class="container">
                 <div class="col-md-12 pad30"><h3>Package Pricing Options</h3></div>

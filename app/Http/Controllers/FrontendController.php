@@ -130,4 +130,21 @@ class FrontendController extends Controller
         $data['purchase'] = $purchase;
         return view('frontend.confirmation', $data);
     }
+    
+    public function staticPackage($option=null, $parameter=null){
+        $data['nonav'] = false;
+        $data['voucher'] = false;
+        if(isset($option)){
+            switch ($option){
+                case "nonav":
+                    $data['nonav'] = true;
+                break;
+                case "voucher":
+                    $data['voucher'] = true;
+                break;   
+            }
+        }
+         
+        return view('frontend.static-package', $data);
+    }
 }

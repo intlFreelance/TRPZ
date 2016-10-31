@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Package extends Model
 {
     use SoftDeletes;
-    protected $dates = ['deleted_at', 'startDate', 'endDate', 'dealEndDate'];
-    
+    protected $dates = ['startDate', 'endDate'];
+    protected $dateFormat = 'm/d/Y';
+
     public function categories()
     {
         return $this->belongsToMany('App\Category');

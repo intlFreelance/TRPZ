@@ -15,6 +15,7 @@ Route::get('/', 'FrontendController@index');
 Route::get('about', 'FrontendController@about');
 Route::get('category/{id}', 'FrontendController@category');
 Route::get('category/{categoryId}/package/{id}/{option?}/{parameter?}', 'FrontendController@package');
+Route::get('static-package/{option?}/{parameter?}','FrontendController@staticPackage');
 Route::get('hotel/{id}','FrontendController@getHotel');
 Route::get('payment','FrontendController@payment')->middleware('customer');
 Route::post('payment',  'FrontendController@makePayment')->name('payment')->middleware('customer');
