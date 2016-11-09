@@ -232,9 +232,6 @@ class PackageController extends Controller
     
     public function ajaxGetPackage($id){
         $package = Package::find($id);
-        $package->startDate = Carbon::parse($package->startDate)->format('m/d/Y');
-        $package->endDate = Carbon::parse($package->endDate)->format('m/d/Y');
-        $package->dealEndDate = Carbon::parse($package->dealEndDate)->format('m/d/Y H:i:s');
         $categories = $package->categories;
         $activities = [];
         $hotels=[];
@@ -272,13 +269,14 @@ class PackageController extends Controller
         $package->frequentlyAskedQuestions = isset($newPackage['frequentlyAskedQuestions']) ? $newPackage['frequentlyAskedQuestions'] : "";
         $package->otherNotes = isset($newPackage['otherNotes']) ? $newPackage['otherNotes'] : "";
         $package->numberOfDays = $newPackage['numberOfDays'];
-        $package->startDate = Carbon::parse($newPackage['startDate'])->format('Y-m-d');
-        $package->endDate = Carbon::parse($newPackage['endDate'])->format('Y-m-d');
+        $package->startDate = Carbon::createFromFormat('m/d/Y',$newPackage['startDate'])->format('Y-m-d');
+        $package->endDate = Carbon::createFromFormat('m/d/Y', $newPackage['endDate'])->format('Y-m-d');
         $package->numberOfPeople = $newPackage['numberOfPeople'];
         $package->dealEndDate = Carbon::parse($newPackage['dealEnd'])->format('Y-m-d H:i:s');
         $package->retailPrice = $newPackage['retailPrice'];
         $package->trpzPrice = $newPackage['trpzPrice'];
         $package->jetSetGoPrice = $newPackage['jetSetGoPrice'];
+        
         $package->save();
         
         foreach($package->categories as $dbCategory){

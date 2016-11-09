@@ -9,7 +9,7 @@ class Package extends Model
 {
     use SoftDeletes;
     protected $dates = ['startDate', 'endDate'];
-    protected $dateFormat = 'm/d/Y';
+    protected $dateFormat = 'Y-m-d';
 
     public function categories()
     {

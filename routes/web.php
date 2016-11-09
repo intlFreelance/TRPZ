@@ -19,6 +19,7 @@ Route::get('static-package/{option?}/{parameter?}','FrontendController@staticPac
 Route::get('hotel/{id}','FrontendController@getHotel');
 Route::get('payment','FrontendController@payment')->middleware('customer');
 Route::post('payment',  'FrontendController@makePayment')->name('payment')->middleware('customer');
+//Route::get('confirmation/{id}', 'FrontendController@confirmation');
 Route::group(['prefix' => 'admin','namespace' => 'Admin', 'middleware'=>'auth'], function () {
   Route::get('/', 'AdminController@index');
   Route::get('hotels', 'AdminController@hotels');

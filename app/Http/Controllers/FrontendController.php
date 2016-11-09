@@ -131,6 +131,12 @@ class FrontendController extends Controller
         return view('frontend.confirmation', $data);
     }
     
+    public function confirmation($id){
+        $purchase = Purchase:: find($id);
+        $data['purchase'] = $purchase;
+        return view('frontend.confirmation', $data);
+    }
+    
     public function staticPackage($option=null, $parameter=null){
         $data['nonav'] = false;
         $data['voucher'] = false;

@@ -138,7 +138,7 @@
                      {!! Form::select('roomTypeId', 
                             DB::table('roomTypes')->join('hotel_roomtypes', 'roomTypes.id', '=', 'hotel_roomtypes.roomtypeId')->where('hotel_roomtypes.hotel_id', '=' , $hotel->id)->pluck('roomTypes.name', 'roomTypes.id') , 
                             null, 
-                            ['placeholder' => '', 'class'=>'form-control']
+                            ['placeholder' => '', 'class'=>'form-control', 'required'=>'required']
                         ); 
                      !!}
                     @endif
@@ -181,7 +181,7 @@
                                             @if($nonav)
                                             <p>{!! $activity->activityOptions[0]->name !!}</p> 
                                             @else
-                                                <select class="form-control activity-options" name="activityOptions[{!! $activity->id !!}][]" id="activityOptions_{!! $activity->id !!}" multiple="multiple">
+                                                <select class="form-control activity-options" name="activityOptions[{!! $activity->id !!}][]" id="activityOptions_{!! $activity->id !!}">
                                                     @foreach($activity->activityOptions as $option)
                                                     <option value="{!! $option->id !!}"> {!! $option->name !!}</option>
                                                     @endforeach

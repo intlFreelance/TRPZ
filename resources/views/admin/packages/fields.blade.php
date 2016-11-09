@@ -257,14 +257,14 @@
         <div>
         <div class="row">
             <div class="col-sm-12">
-                <h4>Add Hotels<img ng-show="activitiesLoading" class="loading" src="{{ url('img/trpzLoading.gif') }}"/></h4>
+                <h4>Select Hotel<img ng-show="activitiesLoading" class="loading" src="{{ url('img/trpzLoading.gif') }}"/></h4>
             </div>
         </div>
         <div class="row">
             <div id="added-hotels" class="col-sm-12">
                 <p ng-repeat="hotel in addedHotels"><%hotel.name%>&nbsp;<span ng-click="removeHotel(hotel)" class="glyphicon glyphicon-remove"</p>
             </div>
-            <span style="color:red" ng-show="packageForm.$submitted  && addedHotels.length < 1">Select at least one Hotel.</span>
+            <span style="color:red" ng-show="packageForm.$submitted  && addedHotels.length < 1">Select a Hotel.</span>
         </div>
         <div class="row">
             <div id="hotels" class="col-sm-12">
@@ -281,7 +281,7 @@
                             </div>
                             <div class="col-sm-10">
                                 <%hotel.minAverPrice + ' ' + hotel.currency%><br>
-                                <button ng-click="addHotel(hotel);" class="select-hotel btn btn-default">Add to Package</button>
+                                <button ng-click="selectHotel(hotel);" class="select-hotel btn btn-default">Select</button>
                             </div>
                         </div>
                         <div class="row">

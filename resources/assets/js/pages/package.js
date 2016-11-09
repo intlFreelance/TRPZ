@@ -7,6 +7,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
   $scope.hotelsLoading = false;
   $scope.activitiesLoading = false;
   $scope.addHotel = addHotel;
+  $scope.selectHotel = selectHotel;
   $scope.removeHotel = removeHotel;
   $scope.addedHotels = [];
   $scope.selectedCategories = [];
@@ -109,7 +110,9 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
         $log.error('Failed to load hotels', error);
       });
   }
-
+  function selectHotel(hotel){
+      $scope.addedHotels[0] = hotel;
+  }
   function addHotel(hotel) {
 	var alreadyAdded = false;
 	$scope.addedHotels.forEach(function(addedHotel) {
@@ -243,10 +246,10 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
         $scope.frequentlyAskedQuestions = package.frequentlyAskedQuestions;
         $scope.otherNotes = package.otherNotes;
         $scope.numberOfDays = package.numberOfDays;
-        $scope.startDate = package.startDate;
-        $scope.endDate = package.endDate;
+        $scope.startDate = $filter('date')( package.startDate, 'MM/dd/yyyy');
+        $scope.endDate = $filter('date')( package.endDate, 'MM/dd/yyyy');
         $scope.numberOfPeople = package.numberOfPeople;
-        $scope.dealEnd = package.dealEndDate;
+        $scope.dealEnd = $filter('date')( new Date(package.dealEndDate), 'short');
         $scope.retailPrice = parseFloat(package.retailPrice);
         $scope.trpzPrice = parseFloat(package.trpzPrice);
         $scope.jetSetGoPrice = parseFloat(package.jetSetGoPrice);
