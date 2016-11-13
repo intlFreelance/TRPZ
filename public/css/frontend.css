@@ -26,13 +26,46 @@ html, body {
   line-height: 22px;
 }
 .footer{
-  min-height: 150px;
+    color: white;
+    padding: 45px;
+}
+.footer a{
+    color: white;
+}
+.footer a:hover{
+    text-decoration: none;
+}
+.footer .bold{
+    font-weight: bold;
+}
+.footer .category-list{
+    list-style: none;
+    padding-left: 3px;
+}
+.footer .category-list li{
+        padding: 7px 0;
+        font-size: 0.95em;
+}
+.footer .category-list li:first-child{
+    padding-top: 14px;
+}
+.footer .footer-brand{
+    text-align: right;
+    position: relative;
+    bottom: 80px;
+}
+.footer .footer-brand .footer-logo{
+    width: 150px;
+    margin-bottom: 10px;
 }
 .image-bg{
   min-height: 500px;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+}
+#footer-col4{
+    height: 0px;
 }
 @media screen and (max-width: 768px) {
     .image-bg {

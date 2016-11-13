@@ -128,10 +128,35 @@
       <div class="container-full blue-container footer">
         <div class="container">
           <div class="row">
-            <div class="col-md-3"></div>
-            <div class="col-md-3"></div>
-            <div class="col-md-3"></div>
-            <div class="col-md-3"><img src="{{ url('img/TRPZ-logo.png') }}"/></div>
+              <div class="col-sm-3">
+                  <div class="bold">Trpz Categories</div>
+                  <ul class="category-list">
+                        @foreach(App\Category::all() as $category)
+                        <li><a href="{{ url('category/'.$category->id) }}">{!! $category->name !!}</a></li>
+                        @endforeach
+                  </ul>
+              </div>
+              <div class="col-sm-3">
+                  <div class="bold">Sitemap</div>
+                  <ul class="category-list">
+                      <li><a href="{{ url('/') }}">Home</a></li>
+                      <li><a href="{{ url('/') }}">About</a></li>
+                      <li><a href="{{ url('/') }}">Contact</a></li>
+                  </ul>
+              </div>
+              <div class="col-sm-3">
+                  &nbsp;
+              </div>
+              <div class="col-sm-3">&nbsp;</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-9">&nbsp;</div>
+            <div class="col-sm-3" id="footer-col4">
+                <div class="footer-brand">
+                    <img class="footer-logo" src="{{ url('img/TRPZ-logo.png') }}"/>
+                    <p><a href="#">Privacy Policy </a> | <a href="#">Terms of Service</a></p>
+                </div>
+            </div>
           </div>
         </div>
       </div>
