@@ -33,7 +33,7 @@
       <nav class="menu-mobile-menu-container">
         <ul>
           <li class="menu-item"><a href="{{url('/')}}">Home</a></li>
-          <li class="menu-item"><a href="#">About</a></li>
+          <li class="menu-item"><a href="{{ url('/about') }}">About</a></li>
           <li class="menu-item"><a href="{{url('/category/'.App\Category::where('name','Featured')->first()->id)}}">Featured Trips</a></li>
           <li class="menu-item"><a href="{{url('/category/'.App\Category::where('name','Other')->first()->id)}}">Other Deals</a></li>
           @if(Auth::guard('customer')->check())
@@ -85,7 +85,7 @@
                     @if(!(isset($nonav) && $nonav))
                     <ul class="nav navbar-nav main-nav">
                         <li class="active"><a href="{{url('/')}}">Home</a></li>
-                        <li><a href="#">About</a></li>
+                        <li><a href="{{ url('/about') }}">About</a></li>
                         <li><a href="{{url('/category/'.App\Category::where('name','Featured')->first()->id)}}">Featured Trips</a></li>
                         <li><a href="{{url('/category/'.App\Category::where('name','Other')->first()->id)}}">Other Deals</a></li>
                     </ul>
@@ -140,8 +140,8 @@
                   <div class="bold">Sitemap</div>
                   <ul class="category-list">
                       <li><a href="{{ url('/') }}">Home</a></li>
-                      <li><a href="{{ url('/') }}">About</a></li>
-                      <li><a href="{{ url('/') }}">Contact</a></li>
+                      <li><a href="{{ url('/about') }}">About</a></li>
+                      <li><a href="#">Contact</a></li>
                   </ul>
               </div>
               <div class="col-sm-3">

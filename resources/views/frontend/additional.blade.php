@@ -2,7 +2,7 @@
     <div class="col-md-12">
         <div class="aditional-packages">
             <hr style="border-color: #14599e;">
-            <h2>Additional Adventure Packages</h2>
+            <h2>Featured Packages</h2>
         </div>
     </div>  
 </div>

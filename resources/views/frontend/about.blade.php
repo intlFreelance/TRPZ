@@ -1,16 +1,16 @@
 @extends('layouts.frontend')
 
 @section('content')
-<div class="container-full image-bg" style="background-image:url('{{ url('img/two_jack_lake_canada-1920x1080-1.jpg')}}')">
-  <div class="container hero">
-    <h2 style="padding-top:40px;">About (How it works)</h2>
-  </div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="col-md-12">
+                <h1 class="blue-header">About Us</h1>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="container main-content">
-  <p>Pellentesque vestibulum tortor a elit laoreet venenatis. In sed elit pharetra, efficitur lorem a, accumsan ligula. Aenean quis fringilla risus. Ut orci enim, convallis eu ipsum quis, lacinia bibendum eros. Donec sed arcu justo. Nunc condimentum felis nulla, consequat bibendum risus placerat id. Ut felis justo, euismod sit amet ligula eu, iaculis egestas ex. Nam lectus ipsum, aliquam ac risus non, faucibus accumsan dolor. Aliquam in nisl vitae ligula ultricies auctor. Sed nec facilisis neque, vitae eleifend leo. Fusce consectetur lectus risus, sed porta arcu sagittis eu. Aliquam pretium convallis nisi sit amet porta. Vestibulum tempor ante lacus.</p>
-  <p>Fusce id imperdiet ligula, sed pharetra neque. Aliquam commodo nec felis pellentesque malesuada. Aliquam quis mauris faucibus, imperdiet lacus at, iaculis lectus. Maecenas id tincidunt elit. Mauris ligula libero, eleifend vel porttitor at, mollis sed nibh. Ut et ante ex. Cras congue elit elit, sed congue neque molestie blandit. Proin tristique dignissim urna, eget blandit nisi congue sit amet. Nullam congue eleifend ex, vel mollis purus placerat quis. Vestibulum ultricies mi dui, quis volutpat nunc malesuada ut. Aliquam quis sagittis odio, at sollicitudin massa.</p>
-  <p>Nam eget tellus placerat, dignissim neque sed, aliquet ipsum. Donec sodales magna sed augue pretium blandit. Proin ac justo dui. Pellentesque lorem sem, consequat accumsan tortor vitae, aliquet rhoncus orci. Sed vel lacus elit. Proin scelerisque enim vitae leo mattis semper. Interdum et malesuada fames ac ante ipsum primis in faucibus. In hac habitasse platea dictumst. Vestibulum vestibulum mauris magna, vel commodo magna dictum non. Praesent efficitur nibh nec suscipit vestibulum. Donec scelerisque mollis feugiat. Phasellus nulla orci, gravida at semper in, porta eget lectus. Sed urna dolor, hendrerit non nisi vel, suscipit iaculis nisi. Duis elementum felis in quam consequat, a pretium turpis ultrices. Vestibulum egestas consectetur facilisis. Pellentesque vestibulum nisl sit amet enim ultrices, in suscipit diam rhoncus.</p>
-  <p>Suspendisse potenti. Morbi ac blandit neque. Suspendisse enim neque, suscipit in neque ac, euismod pulvinar turpis. Nulla aliquam metus purus. Maecenas in lobortis ipsum. Maecenas odio sem, sodales sit amet justo vitae, mollis vehicula felis. Integer ultrices nulla arcu, at consectetur nulla ullamcorper ac. Cras tempus dui id congue bibendum. Maecenas et magna sapien. Donec sed tempus nibh. Fusce pulvinar sem et massa maximus congue. Sed lectus tortor, tempor ac commodo quis, ullamcorper vitae dolor.</p>
-  <p>Aliquam nec aliquet urna. Vestibulum magna ante, viverra et ornare ac, porta sed massa. Aliquam euismod lectus lectus, pretium mollis lorem pretium vulputate. Donec condimentum metus non orci dignissim fringilla. Sed consectetur porttitor enim eu rutrum. Aliquam varius purus sed orci suscipit, id varius dui faucibus. Nam viverra vel ex sit amet commodo.</p>
+<div class="container-fluid">
+    @include('frontend.additional')    
 </div>
 @endsection
