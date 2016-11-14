@@ -34,8 +34,8 @@
         <ul>
           <li class="menu-item"><a href="{{url('/')}}">Home</a></li>
           <li class="menu-item"><a href="#">About</a></li>
-          <li class="menu-item"><a href="{{url('/category/'.App\Category::where('name','Other')->first()->id)}}">Featured Trips</a></li>
-          <li class="menu-item"><a href="#">Other Deals</a></li>
+          <li class="menu-item"><a href="#">Featured Trips</a></li>
+          <li class="menu-item"><a href="{{url('/category/'.App\Category::where('name','Other')->first()->id)}}">Other Deals</a></li>
           @if(Auth::guard('customer')->check())
              <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" >
