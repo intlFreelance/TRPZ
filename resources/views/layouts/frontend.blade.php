@@ -34,7 +34,7 @@
         <ul>
           <li class="menu-item"><a href="{{url('/')}}">Home</a></li>
           <li class="menu-item"><a href="#">About</a></li>
-          <li class="menu-item"><a href="#">Featured Trips</a></li>
+          <li class="menu-item"><a href="{{url('/category/'.App\Category::where('name','Featured')->first()->id)}}">Featured Trips</a></li>
           <li class="menu-item"><a href="{{url('/category/'.App\Category::where('name','Other')->first()->id)}}">Other Deals</a></li>
           @if(Auth::guard('customer')->check())
              <li class="dropdown">
@@ -86,7 +86,7 @@
                     <ul class="nav navbar-nav main-nav">
                         <li class="active"><a href="{{url('/')}}">Home</a></li>
                         <li><a href="#">About</a></li>
-                        <li><a href="#">Featured Trips</a></li>
+                        <li><a href="{{url('/category/'.App\Category::where('name','Featured')->first()->id)}}">Featured Trips</a></li>
                         <li><a href="{{url('/category/'.App\Category::where('name','Other')->first()->id)}}">Other Deals</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
