@@ -33,9 +33,9 @@
       <nav class="menu-mobile-menu-container">
         <ul>
           <li class="menu-item"><a href="{{url('/')}}">Home</a></li>
-          <li class="menu-item"><a href="#">About</a></li>
-          <li class="menu-item"><a href="#">Featured Trips</a></li>
-          <li class="menu-item"><a href="#">Other Deals</a></li>
+          <li class="menu-item"><a href="{{ url('/about') }}">About</a></li>
+          <li class="menu-item"><a href="{{url('/category/'.App\Category::where('name','Featured')->first()->id)}}">Featured Trips</a></li>
+          <li class="menu-item"><a href="{{url('/category/'.App\Category::where('name','Other')->first()->id)}}">Other Deals</a></li>
           @if(Auth::guard('customer')->check())
              <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" >
@@ -85,9 +85,9 @@
                     @if(!(isset($nonav) && $nonav))
                     <ul class="nav navbar-nav main-nav">
                         <li class="active"><a href="{{url('/')}}">Home</a></li>
-                        <li><a href="#">About</a></li>
-                        <li><a href="#">Featured Trips</a></li>
-                        <li><a href="#">Other Deals</a></li>
+                        <li><a href="{{ url('/about') }}">About</a></li>
+                        <li><a href="{{url('/category/'.App\Category::where('name','Featured')->first()->id)}}">Featured Trips</a></li>
+                        <li><a href="{{url('/category/'.App\Category::where('name','Other')->first()->id)}}">Other Deals</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                             @if(Auth::guard('customer')->check())
@@ -128,10 +128,35 @@
       <div class="container-full blue-container footer">
         <div class="container">
           <div class="row">
-            <div class="col-md-3"></div>
-            <div class="col-md-3"></div>
-            <div class="col-md-3"></div>
-            <div class="col-md-3"><img src="{{ url('img/TRPZ-logo.png') }}"/></div>
+              <div class="col-sm-3">
+                  <div class="bold">Trpz Categories</div>
+                  <ul class="category-list">
+                        @foreach(App\Category::getHomePageCategories() as $category)
+                        <li><a href="{{ url('category/'.$category->id) }}">{!! $category->name !!}</a></li>
+                        @endforeach
+                  </ul>
+              </div>
+              <div class="col-sm-3">
+                  <div class="bold">Sitemap</div>
+                  <ul class="category-list">
+                      <li><a href="{{ url('/') }}">Home</a></li>
+                      <li><a href="{{ url('/about') }}">About</a></li>
+                      <li><a href="#">Contact</a></li>
+                  </ul>
+              </div>
+              <div class="col-sm-3">
+                  &nbsp;
+              </div>
+              <div class="col-sm-3">&nbsp;</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-9">&nbsp;</div>
+            <div class="col-sm-3" id="footer-col4">
+                <div class="footer-brand">
+                    <img class="footer-logo" src="{{ url('img/TRPZ-logo.png') }}"/>
+                    <p><a href="#">Privacy Policy </a> | <a href="#">Terms of Service</a></p>
+                </div>
+            </div>
           </div>
         </div>
       </div>

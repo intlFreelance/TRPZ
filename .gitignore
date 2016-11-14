@@ -10,3 +10,4 @@ Homestead.yaml
 /app/_ide_helper.php
 /public/uploads/*
 /public/img/categories/*
+/nbproject

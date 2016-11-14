@@ -15,4 +15,9 @@ class Category extends Model
     {
         return $this->belongsToMany('App\Package');
     }
+    
+    public static function getHomePageCategories(){
+         return static::where('name', '<>', 'Other')->where('name', '<>', 'Featured')->get();
+    }
+    
 }

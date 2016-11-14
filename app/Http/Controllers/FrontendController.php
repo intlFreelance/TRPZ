@@ -21,7 +21,7 @@ class FrontendController extends Controller
 {
     public function index()
     {
-        $data['categories'] = Category::all();
+        $data['categories'] = Category::getHomePageCategories();
         return view('frontend.home', $data);
     }
 
