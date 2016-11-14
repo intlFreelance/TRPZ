@@ -34,7 +34,7 @@
         <ul>
           <li class="menu-item"><a href="{{url('/')}}">Home</a></li>
           <li class="menu-item"><a href="#">About</a></li>
-          <li class="menu-item"><a href="#">Featured Trips</a></li>
+          <li class="menu-item"><a href="{{url('/category/'.App\Category::where('name','Other')->first()->id)}}">Featured Trips</a></li>
           <li class="menu-item"><a href="#">Other Deals</a></li>
           @if(Auth::guard('customer')->check())
              <li class="dropdown">
@@ -87,7 +87,7 @@
                         <li class="active"><a href="{{url('/')}}">Home</a></li>
                         <li><a href="#">About</a></li>
                         <li><a href="#">Featured Trips</a></li>
-                        <li><a href="#">Other Deals</a></li>
+                        <li><a href="{{url('/category/'.App\Category::where('name','Other')->first()->id)}}">Other Deals</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                             @if(Auth::guard('customer')->check())
@@ -131,7 +131,7 @@
               <div class="col-sm-3">
                   <div class="bold">Trpz Categories</div>
                   <ul class="category-list">
-                        @foreach(App\Category::all() as $category)
+                        @foreach(App\Category::getHomePageCategories() as $category)
                         <li><a href="{{ url('category/'.$category->id) }}">{!! $category->name !!}</a></li>
                         @endforeach
                   </ul>
