@@ -10,21 +10,7 @@ class Hotel extends Model{
         return $this->hasMany('App\PackageHotel');
     }
     
-    function hotelRoomtypes(){
-        return $this->hasMany('App\HotelRoomtype');
-    }
     
     public $timestamps = false;
-    
-    protected static function boot() {
-        parent::boot();
-
-        static::deleting(function($hotel) {
-            foreach($hotel->hotelRoomtypes as $hotelRoomtype){
-                HotelRoomtype::find($hotelRoomtype->id)->delete();
-            }
-        });
-    }
-    
     
 }

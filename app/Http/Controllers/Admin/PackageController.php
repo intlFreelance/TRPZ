@@ -19,8 +19,6 @@ use App\TouricoDestination;
 use App\Hotel;
 use App\Activity;
 use App\ActivityOption;
-use App\Roomtype;
-use App\HotelRoomtype;
 use Session;
 
 class PackageController extends Controller
@@ -184,6 +182,7 @@ class PackageController extends Controller
     }
 
     public function getHotels() {
+        ini_set('max_execution_time', 600);
         $hotel_api = new TouricoHotel;
         $data = [
             'request'=>[
@@ -212,6 +211,7 @@ class PackageController extends Controller
     }
 
     public function getActivities() {
+        ini_set('max_execution_time', 600);
         $activity_api = new TouricoActivity;
         $data = [
             'SearchRequest'=>[
@@ -273,9 +273,9 @@ class PackageController extends Controller
         $package->endDate = Carbon::createFromFormat('m/d/Y', $newPackage['endDate'])->format('Y-m-d');
         $package->numberOfPeople = $newPackage['numberOfPeople'];
         $package->dealEndDate = Carbon::parse($newPackage['dealEnd'])->format('Y-m-d H:i:s');
-        $package->retailPrice = $newPackage['retailPrice'];
-        $package->trpzPrice = $newPackage['trpzPrice'];
-        $package->jetSetGoPrice = $newPackage['jetSetGoPrice'];
+        $package->retailMarkupPercentage = $newPackage['retailMarkupPercentage'];
+        $package->trpzMarkupPercentage = $newPackage['trpzMarkupPercentage'];
+        $package->jetSetGoMarkupPercentage= $newPackage['jetSetGoMarkupPercentage'];
         
         $package->save();
         
@@ -329,27 +329,6 @@ class PackageController extends Controller
             $newHotel->starsLevel = $hotel["starsLevel"];
             $newHotel->description = $hotel["desc"];
             $newHotel->save();
-            if(isset($hotel["RoomTypes"]["RoomType"])){
-                $roomTypeIds=[];
-                if(isset($hotel["RoomTypes"]["RoomType"][0])){
-                    $roomTypes = $hotel["RoomTypes"]["RoomType"];
-                    foreach($roomTypes as $roomType){
-                        $newRoomType = new Roomtype;
-                        $newRoomType->roomTypeId = $roomType['hotelRoomTypeId'];
-                        $newRoomType->name = $roomType['name'];
-                        $newRoomType->save();
-                        $roomTypeIds[] = new HotelRoomtype(['roomTypeId'=>$newRoomType->id]);
-                    }
-                }else{
-                    $newRoomType = new Roomtype;
-                    $roomType = $hotel["RoomTypes"]["RoomType"];
-                    $newRoomType->roomTypeId = $roomType['hotelRoomTypeId'];
-                    $newRoomType->name = $roomType['name'];
-                    $newRoomType->save();
-                    $roomTypeIds[] = new HotelRoomtype(['roomTypeId'=>$newRoomType->id]);
-                }   
-            }
-            $newHotel->hotelRoomtypes()->saveMany($roomTypeIds);
             $hotelIds[] = new PackageHotel(['hotelId'=>$newHotel->id]);
         }
         $package->packageHotels()->saveMany($hotelIds);
