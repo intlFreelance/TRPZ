@@ -48,7 +48,7 @@ class CartController extends Controller{
             'hotelId'           => $package->packageHotels[0]->hotelId,
             'roomTypeId'        => $input['roomTypeId'],
             'activities'        => $activities,
-            'boardBases'        =>$input['boardBases']
+            'boardBases'        => isset($input['boardBases']) ? $input['boardBases'] : []
         ])->setTaxRate(0);
         
         return redirect(route('cart.index'));
