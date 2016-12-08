@@ -17,8 +17,8 @@ use App\PurchasePackageActivity;
 use App\PurchasePackageActivityOption;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Facades\Auth;
-use stdClass;
 use App\TouricoHotel;
+use App\TouricoActivity;
 use Exception;
 
 
@@ -50,6 +50,20 @@ class FrontendController extends Controller
         $data['nonav'] = false;
         $data['noinputs'] = false;
         $data['voucher'] = null;
+        foreach($data['package']->packageActivities as $key => $packageActivity) {
+            $activity_api = new TouricoActivity;
+            $activityDetailsRequest = [
+                'ActivitiesIds'=>[
+                    'ActivityId'=>[
+                    'id'=>'1251794'
+                    ]
+                ]
+            ];
+            $data['package']
+                ->packageActivities[$key]
+                ->activity
+                ->details = $activity_api->getActivityDetails($activityDetailsRequest);
+        }
         if(isset($option)){
             switch ($option){
                 case "nonav":
@@ -62,13 +76,13 @@ class FrontendController extends Controller
                 break;   
             }
         }
-         
+        
         return view('frontend.package', $data);
     }
     public function getHotel($id){
         $hotel = Hotel::find($id);
         if(empty($hotel)){
-            return response("El hotel no fue encontrado.");
+            return response("Hotel not found.");
         }
         $roomTypes = [];
         foreach($hotel->hotelRoomtypes as $hotelRoomType){

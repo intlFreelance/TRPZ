@@ -168,8 +168,7 @@
                      @if(!$nonav)
                     <select class="form-control" class="activityId" id="activityId" name="activityIds[]" multiple="multiple">
                         @foreach($package->packageActivities as $packageActivity)
-                            <?php $activity = App\Activity::find($packageActivity->activityId); ?>
-                        <option value="{!! $activity->id !!}"> {!! $activity->name !!}</option>
+                        <option value="{!! $packageActivity->activity->id !!}"> {!! $packageActivity->activity->name !!}</option>
                         @endforeach
                     </select>
                      @endif
@@ -179,26 +178,25 @@
                 </div>
                 <div class="col-md-12 activities">
                     @foreach($package->packageActivities as $key => $packageActivity)
-                        <?php $activity = App\Activity::find($packageActivity->activityId); ?>
-                    <div class="col-md-4 {!! !($nonav && $key <= 2) ? 'activity-item' : ''!!}" id="activity-{!! $activity->id !!}">
+                        <div class="col-md-4 {!! !($nonav && $key <= 2) ? 'activity-item' : ''!!}" id="activity-{!! $packageActivity->activity->id !!}">
                             <div class="panel panel-default">
-                                <div class="panel-heading">{!! $activity->name !!}</div>
+                                <div class="panel-heading">{!! $packageActivity->activity->name !!}</div>
                                 <div class="panel-body">
                                     <div class="row">
                                         <div class="col-md-4">
-                                            <img src="{!! $activity->thumbURL !!}"/>
+                                            <img src="{!! $packageActivity->activity->thumbURL !!}"/>
                                         </div>
                                         <div class="col-md-8">
-                                            <p>{!! $activity->description !!}</p>
+                                            <p>{!! $packageActivity->activity->description !!}</p>
                                         </div>
                                         
                                         <div class="col-md-12">
                                             <label>Options</label>
                                             @if($nonav)
-                                            <p>{!! $activity->activityOptions[0]->name !!}</p> 
+                                            <p>{!! $packageActivity->activity->activityOptions[0]->name !!}</p> 
                                             @else
-                                                <select class="form-control activity-options" name="activityOptions[{!! $activity->id !!}][]" id="activityOptions_{!! $activity->id !!}">
-                                                    @foreach($activity->activityOptions as $option)
+                                                <select class="form-control activity-options" name="activityOptions[{!! $packageActivity->activity->id !!}][]" id="activityOptions_{!! $packageActivity->activity->id !!}">
+                                                    @foreach($packageActivity->activity->activityOptions as $option)
                                                     <option value="{!! $option->id !!}"> {!! $option->name !!}</option>
                                                     @endforeach
                                                 </select>
@@ -208,6 +206,19 @@
                                     
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-md-8 activity-item" id="activity-details-{!! $packageActivity->activity->id !!}">
+                            <h3>{!! $packageActivity->activity->name !!} Details</h3>
+                            @foreach($packageActivity
+                                ->activity
+                                ->details
+                                ->ActivityDetails
+                                ->Description
+                                ->LongDescription
+                                ->Fragments
+                                ->DescriptionFragment as $activityDesc)
+                                <p>{!! $activityDesc->value !!}</p>
+                            @endforeach
                         </div>
                     @endforeach
                 </div>
@@ -303,10 +314,12 @@ $(function(){
             var activityId = $(option).val();
             if(checked){
                 $("#activity-"+activityId).show();
+                $("#activity-details-"+activityId).show();
             }else{
                 $('#activityOptions_'+activityId).multiselect('deselectAll', false);
                 $('#activityOptions_'+activityId).multiselect('updateButtonText');
                 $("#activity-"+activityId).hide();
+                $("#activity-details-"+activityId).hide();
             }
         }
     });

@@ -49,4 +49,9 @@ class TouricoActivity extends SoapService {
         return $this->call('SearchActivityByDestinationIds',[$data])->SearchActivityByDestinationIdsResult->Categories;
     }
 
+    public function GetActivityDetails($data){
+       $this->header('http://schemas.tourico.com/webservices/authentication','AuthenticationHeader',config('tourico.activity_header'));
+       return $this->call('GetActivityDetails',[$data])->GetActivityDetailsResult->ActivitiesDetails;
+   }
+
 }
