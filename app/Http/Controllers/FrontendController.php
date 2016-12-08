@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use Carbon\Carbon;
 use App\Category;
+use App\Package;
 use App\Hotel;
 use App\Roomtype;
 use App\Transaction;
@@ -16,9 +17,18 @@ use App\PurchasePackageActivity;
 use App\PurchasePackageActivityOption;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Facades\Auth;
+use stdClass;
+use App\TouricoHotel;
+use Exception;
+
 
 class FrontendController extends Controller
 {
+    public function __construct(Request $request)
+    {
+        $this->request = $request;   
+    }
+    
     public function index()
     {
         $data['categories'] = Category::getHomePageCategories();
@@ -152,5 +162,145 @@ class FrontendController extends Controller
         }
          
         return view('frontend.static-package', $data);
+    }
+    public function getHotelPrice(){
+        try{
+            $package = Package::find($this->request->query('package-id'));
+            $roomTypeId = $this->request->query('roomType-id');
+            $hotelId=$this->request->query('hotel-id');
+            $startDate = Carbon::parse($this->request->query('start-date'))->format('Y-m-d');
+            $endDate = Carbon::parse($this->request->query('end-date'))->format('Y-m-d');
+            $hotel = $this->getTouricoHotel($hotelId, $startDate, $endDate);
+            $roomTypes = $hotel->RoomTypes->RoomType;
+            $roomType = null;
+            if(is_array($roomTypes)){
+                foreach($roomTypes as $iRoomType){
+                    if($iRoomType->hotelRoomTypeId == $roomTypeId){
+                        $roomType = $iRoomType;
+                        break;
+                    }
+                }
+            }else{
+                $roomType = $roomTypes;
+            }
+            $subTotal = 0;
+            
+            if(is_array($roomType->Occupancies->Occupancy)){
+                $ocupancy = $roomType->Occupancies->Occupancy[0];
+            }else{
+                $ocupancy = $roomType->Occupancies->Occupancy;
+            }
+            $breakdownPrices = $ocupancy->PriceBreakdown->Price;
+            $boardBases = null;
+            $supplements = null;
+            
+            if(isset($ocupancy->BoardBases->Boardbase)){
+                $boardBases = $ocupancy->BoardBases->Boardbase;
+            }
+            if(isset($ocupancy->SelctedSupplements->Supplement)){
+                $supplements = $ocupancy->SelctedSupplements->Supplement;
+            }
+            $supplementFeesArray = [
+                "AtProperty"=>[],
+                "Addition"=>[]
+            ];
+            $boardBasesArray = [];
+            $additionalFees = 0;
+            if(isset($supplements)){
+                if(!is_array($supplements)){
+                    $supplements = [$supplements];
+                }
+                foreach($supplements as $supplement){
+                    if($supplement->suppChargeType=="AtProperty" && $supplement->suppIsMandatory){
+                        $supplementFeesArray["AtProperty"][] = $supplement;
+                    }elseif($supplement->suppChargeType=="Addition" && $supplement->suppIsMandatory){
+                        $supplementFeesArray["Addition"][] = $supplement;
+                    }
+                }
+            }
+            if(isset($boardBases)){
+                if(!is_array($boardBases)){
+                 $boardBases = [$boardBases];
+                }
+                foreach($boardBases as $boardBase){
+                    if($boardBase->bbPublishPrice == 0){
+                        $boardBasesArray[] = $boardBase;
+                    }
+                }
+            }
+            foreach($breakdownPrices as $price){
+                $subTotal += floatval($price->valuePublish);
+            }
+            foreach($supplementFeesArray["Addition"] as $addFee){
+                $times = 1;
+                if(get_class($supplement) == "App\PerPersonSupplement"){
+                    $times = $package->numberOfPeople;
+                }
+                $additionalFees += $addFee->publishPrice * $times;
+            }
+            
+            $prices = [
+                "retail"=> "$ ".number_format(round($subTotal * (1 + $package->retailMarkupPercentage/100) + $additionalFees, 2),2),
+                "trpz"=> "$ ".number_format(round($subTotal * (1 + $package->trpzMarkupPercentage/100) + $additionalFees, 2),2),
+                "jetSetGo"=> "$ ".number_format(round($subTotal * (1 + $package->jetSetGoMarkupPercentage/100) + $additionalFees, 2),2)
+            ];
+            return response()->json(['success'=>true, 'prices'=>$prices, 'supplements'=>$supplementFeesArray, 'boardBases'=>$boardBasesArray]);
+        }catch(Exception $ex){
+            throw $ex;
+            return response()->json(["success"=>false, "message"=>$ex->getMessage()]);
+        }
+    }
+    private function getTouricoHotel($hotelId, $startDate, $endDate){
+        $hotel_api = new TouricoHotel();
+            $data = [
+                'request'=>[
+                    'HotelIdsInfo'=>[
+                        'HotelIdInfo'=>['id'=>$hotelId]
+                    ],
+                    'CheckIn'=>$startDate,
+                    'CheckOut'=>$endDate,
+                    'RoomsInformation'=>[
+                        'RoomInfo'=>[
+                            'AdultNum'=>'2',
+                            'ChildNum'=>'0'
+                        ]
+                    ],
+                    'MaxPrice'=>'0',
+                    'StarLevel'=>'0',
+                    'AvailableOnly'=>'true'
+                ]
+            ];
+            return $hotel_api->SearchHotelsById($data);
+    }
+    public function getHotelById(){
+        try{
+            $hotelId=$this->request->query('hotel-id');
+            $startDate = Carbon::parse($this->request->query('start-date'))->format('Y-m-d');
+            $endDate = Carbon::parse($this->request->query('end-date'))->format('Y-m-d');
+            $hotel = $this->getTouricoHotel($hotelId, $startDate, $endDate);
+            return response()->json(["success"=>true, "hotel"=>$hotel]);
+        }catch(Exception $ex){
+            return response()->json(["success"=>false, "message"=>$ex->getMessage()]);
+        }
+    }
+    public function getHotelCancellationPolicy(){
+        try{
+            $roomTypeId = $this->request->query('roomType-id');
+            $hotelId=$this->request->query('hotel-id');
+            $startDate = Carbon::parse($this->request->query('start-date'))->format('Y-m-d');
+            $endDate = Carbon::parse($this->request->query('end-date'))->format('Y-m-d');
+            $hotel_api = new TouricoHotel();
+            $data = [
+                "nResId"=>0,
+                "hotelId"=>$hotelId,
+                "hotelRoomTypeId"=>$roomTypeId,
+                "dtCheckIn"=>$startDate,
+                "dtCheckOut"=>$endDate
+            ];
+            $hotelPolicy = $hotel_api->GetCancellationPolicies($data);
+            return response()->json(["success"=>true, "HotelPolicy"=>$hotelPolicy]);
+        }catch(Exception $ex){
+            return response()->json(["success"=>false, "message"=>$ex->getMessage()]);
+        }
     }
 }

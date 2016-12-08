@@ -171,30 +171,36 @@
             </div>
         </div>
         <div class="row">
-        <div class="col-sm-2">
+        <div class="col-sm-4">
             <div class="form-group">
-                <label>Retail Price</label>
-                <input ng-model="retailPrice" name="retailPrice" type="number" class="form-control" required>
-                <span style="color:red" ng-show="packageForm.retailPrice.$invalid && (packageForm.$submitted || packageForm.retailPrice.$touched)">
-                    <span ng-show="packageForm.retailPrice.$error.required">Retail Price required.</span>
+                <label>Retail Markup Percentage</label>
+                <input ng-model="retailMarkupPercentage" name="retailMarkupPercentage" type="number" min="0" max="100" class="form-control" required>
+                <span style="color:red" ng-show="packageForm.retailMarkupPercentage.$invalid && (packageForm.$submitted || packageForm.retailMarkupPercentage.$touched)">
+                    <span ng-show="packageForm.retailMarkupPercentage.$error.required">Retail Markup Percentage required.</span>
+                    <span ng-show="packageForm.retailMarkupPercentage.$error.min">Retail Markup Percentage must be greater or equal than 0.</span>
+                    <span ng-show="packageForm.retailMarkupPercentage.$error.max">Retail Markup Percentage must be less or equal than 100.</span>
                 </span>
             </div>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-4">
             <div class="form-group">
-                <label>TRPZ Price</label>
-                <input ng-model="trpzPrice" name="trpzPrice" type="number" class="form-control" required>
-                <span style="color:red" ng-show="packageForm.trpzPrice.$invalid && (packageForm.$submitted || packageForm.trpzPrice.$touched)">
-                    <span ng-show="packageForm.trpzPrice.$error.required">TRPZ Price required.</span>
+                <label>TRPZ Markup Percentage</label>
+                <input ng-model="trpzMarkupPercentage" name="trpzMarkupPercentage" type="number" min="0" max="100" class="form-control" required>
+                <span style="color:red" ng-show="packageForm.trpzMarkupPercentage.$invalid && (packageForm.$submitted || packageForm.trpzMarkupPercentage.$touched)">
+                    <span ng-show="packageForm.trpzMarkupPercentage.$error.required">TRPZ Markup Percentage required.</span>
+                    <span ng-show="packageForm.trpzMarkupPercentage.$error.min">TRPZ Markup Percentage must be greater or equal than 0.</span>
+                    <span ng-show="packageForm.trpzMarkupPercentage.$error.max">TRPZ Markup Percentage must be less or equal than 100.</span>
                 </span>
             </div>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-4">
             <div class="form-group">
-                <label>Jet Set Go Price</label>
-                <input ng-model="jetSetGoPrice" name="jetSetGoPrice" type="number" class="form-control" required>
-                <span style="color:red" ng-show="packageForm.jetSetGoPrice.$invalid && (packageForm.$submitted || packageForm.jetSetGoPrice.$touched)">
-                    <span ng-show="packageForm.jetSetGoPrice.$error.required">Jet Set Go Price required.</span>
+                <label>Jet Set Go Markup Percentage</label>
+                <input ng-model="jetSetGoMarkupPercentage" name="jetSetGoMarkupPercentage" type="number" min="0" max="100" class="form-control" required>
+                <span style="color:red" ng-show="packageForm.jetSetGoMarkupPercentage.$invalid && (packageForm.$submitted || packageForm.jetSetGoMarkupPercentage.$touched)">
+                    <span ng-show="packageForm.jetSetGoMarkupPercentage.$error.required">Jet Set Go Markup Percentage required.</span>
+                    <span ng-show="packageForm.jetSetGoMarkupPercentage.$error.min">Jet Set Go Markup Percentage must be greater or equal than 0.</span>
+                    <span ng-show="packageForm.jetSetGoMarkupPercentage.$error.max">Jet Set Go Markup Percentage must be less or equal than 100.</span>
                 </span>
             </div>
         </div>

@@ -124,7 +124,9 @@ class CustomerController extends Controller
         ]);
          
         $input = $request->all();
-        if(!empty($input["password"])){
+        if(empty($input["password"])){
+            unset($input["password"]);
+        }else{
             $input["password"] = bcrypt($input["password"]);
         }
 

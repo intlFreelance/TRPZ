@@ -210,9 +210,9 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
       endDate: $filter('date')($scope.endDate, 'yyyy-MM-dd'),
       numberOfPeople: $scope.numberOfPeople,
       dealEnd: $filter('date')($scope.dealEnd, 'yyyy-MM-dd hh:mm'),
-      retailPrice: $scope.retailPrice,
-      trpzPrice: $scope.trpzPrice,
-      jetSetGoPrice: $scope.jetSetGoPrice,
+      retailMarkupPercentage: $scope.retailMarkupPercentage,
+      trpzMarkupPercentage: $scope.trpzMarkupPercentage,
+      jetSetGoMarkupPercentage: $scope.jetSetGoMarkupPercentage,
       hotels: $scope.addedHotels,
       activities: $scope.addedActivities
     };
@@ -250,9 +250,9 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
         $scope.endDate = $filter('date')( package.endDate, 'MM/dd/yyyy');
         $scope.numberOfPeople = package.numberOfPeople;
         $scope.dealEnd = $filter('date')( new Date(package.dealEndDate), 'short');
-        $scope.retailPrice = parseFloat(package.retailPrice);
-        $scope.trpzPrice = parseFloat(package.trpzPrice);
-        $scope.jetSetGoPrice = parseFloat(package.jetSetGoPrice);
+        $scope.retailMarkupPercentage = parseFloat(package.retailMarkupPercentage);
+        $scope.trpzMarkupPercentage = parseFloat(package.trpzMarkupPercentage);
+        $scope.jetSetGoMarkupPercentage = parseFloat(package.jetSetGoMarkupPercentage);
         $scope.addedHotels = hotels;
         $scope.addedActivities  = activities;
     }).catch(function(error){
