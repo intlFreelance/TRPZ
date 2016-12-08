@@ -3,9 +3,10 @@
 namespace App;
 
 use Artisaninweb\SoapWrapper\Extension\SoapService;
-
+class PerRoomSupplement{}
+class PerPersonSupplement{} 
 class TouricoHotel extends SoapService {
-
+    
     /**
      * @var string
      */
@@ -21,6 +22,13 @@ class TouricoHotel extends SoapService {
      *
      * @return mixed
      */
+    protected $options = [
+        "classmap" => [
+            "PerRoomSupplement" => "App\PerRoomSupplement",
+            "PerPersonSupplement" => "App\PerPersonSupplement"
+        ],
+    ];
+
     public function __construct()
     {
         if(!empty(config('tourico.hotel_wsdl')))
@@ -47,6 +55,10 @@ class TouricoHotel extends SoapService {
     {
         $this->header('http://schemas.tourico.com/webservices/authentication','AuthenticationHeader',config('tourico.hotel_header'));
         return $this->call('SearchHotels',[$data])->SearchHotelsResult->HotelList;
+    }
+    public function SearchHotelsById($data){
+        $this->header('http://schemas.tourico.com/webservices/authentication','AuthenticationHeader',config('tourico.hotel_header'));
+        return $this->call('SearchHotelsById',[$data])->SearchHotelsByIdResult->HotelList->Hotel;
     }
 
 }

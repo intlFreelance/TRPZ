@@ -180,9 +180,7 @@ class PackageController extends Controller
         }
       }
     }
-
     public function getHotels() {
-        ini_set('max_execution_time', 600);
         $hotel_api = new TouricoHotel;
         $data = [
             'request'=>[
@@ -211,7 +209,6 @@ class PackageController extends Controller
     }
 
     public function getActivities() {
-        ini_set('max_execution_time', 600);
         $activity_api = new TouricoActivity;
         $data = [
             'SearchRequest'=>[
