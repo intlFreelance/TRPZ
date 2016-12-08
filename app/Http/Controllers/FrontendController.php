@@ -240,9 +240,9 @@ class FrontendController extends Controller
             }
             
             $prices = [
-                "retail"=> "$ ".number_format(round($subTotal * (1 + $package->retailMarkupPercentage/100) + $additionalFees, 2),2),
-                "trpz"=> "$ ".number_format(round($subTotal * (1 + $package->trpzMarkupPercentage/100) + $additionalFees, 2),2),
-                "jetSetGo"=> "$ ".number_format(round($subTotal * (1 + $package->jetSetGoMarkupPercentage/100) + $additionalFees, 2),2)
+                "retail"=> number_format(round($subTotal * (1 + $package->retailMarkupPercentage/100) + $additionalFees, 2),2),
+                "trpz"=> number_format(round($subTotal * (1 + $package->trpzMarkupPercentage/100) + $additionalFees, 2),2),
+                "jetSetGo"=> number_format(round($subTotal * (1 + $package->jetSetGoMarkupPercentage/100) + $additionalFees, 2),2)
             ];
             return response()->json(['success'=>true, 'prices'=>$prices, 'supplements'=>$supplementFeesArray, 'boardBases'=>$boardBasesArray]);
         }catch(Exception $ex){
