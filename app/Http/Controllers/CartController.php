@@ -16,7 +16,6 @@ class CartController extends Controller{
         return redirect(route('cart.index'));
     }
     public function add(Request $request){
-        Cart::destroy();
         $this->validate($request, [
             'startDate' => 'required',
             'endDate' => 'required',
