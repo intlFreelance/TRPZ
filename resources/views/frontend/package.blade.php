@@ -383,7 +383,7 @@ function loadPrices(){
         $("#jetSetGo").val(data.prices.jetSetGo);
         if(data.supplements.AtProperty.length > 0 || data.supplements.Addition.length > 0 || data.boardBases.length > 0){ 
             $("#divAdditionalFees").show();
-            if(data.supplements.AtProperty.lenght > 0 || data.supplements.Addition.lenght > 0){
+            if(data.supplements.AtProperty.length > 0 || data.supplements.Addition.length > 0){
                 $("#tbladditionalFees").show();
             }else{
                 $("#tbladditionalFees").hide();
