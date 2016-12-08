@@ -75,7 +75,10 @@
             {!! Form::open(['route' => ['cart.add'], 'method' => 'post', 'id'=>'package-form']) !!}
             <input type="hidden" value="{!! $package->id !!}" name="packageId" id="packageId"/>
             <input type="hidden" value="{!! $package->numberOfDays !!}" id="numberOfDays"/>
-            <input type="hidden" id="priceType"/>
+            <input type="hidden" id="priceType" name="priceType"/>
+            <input type="hidden" id="trpz" name="trpz"/>
+            <input type="hidden" id="jetSetGo" name="jetSetGo"/>
+            <input type="hidden" id="retail" name="retail"/>
             <div class="container">
                 <div class="col-md-6">
                     <h3>Select Dates</h3>
@@ -136,7 +139,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <h3>Room Type</h3>
-                            <select id="roomTypeId" class="form-control" required></select>
+                            <select id="roomTypeId" name="roomTypeId" class="form-control" required></select>
                         </div>
                     </div>
                     <div class="row">
@@ -148,9 +151,8 @@
                                 </thead>
                                 <tbody></tbody>
                             </table>
-                            <ul id="ulBoardBases">
-                                
-                            </ul>
+                            <ul id="ulBoardBases"></ul>
+                            <div id="divBoardBases"></div>
                         </div>
                     </div>
                         
@@ -371,11 +373,14 @@ function loadPrices(){
             alert(data.message);
             return;
         }
-        $("#retailPrice").html(data.prices.retail).removeClass("text-muted");
-        $("#trpzPrice").html(data.prices.trpz).removeClass("text-muted");
-        $("#jetSetGoPrice").html(data.prices.jetSetGo).removeClass("text-muted");
-        $("#trpzPrice2").html(data.prices.trpz).removeClass("text-muted");
-        $("#jetSetGoPrice2").html(data.prices.jetSetGo).removeClass("text-muted");
+        $("#retailPrice").html("$ "+data.prices.retail).removeClass("text-muted");
+        $("#retail").val(data.prices.retail);
+        $("#trpzPrice").html("$ "+data.prices.trpz).removeClass("text-muted");
+        $("#trpzPrice2").html("$ "+data.prices.trpz).removeClass("text-muted");
+        $("#trpz").val(data.prices.trpz);
+        $("#jetSetGoPrice").html("$ "+data.prices.jetSetGo).removeClass("text-muted");
+        $("#jetSetGoPrice2").html("$ "+data.prices.jetSetGo).removeClass("text-muted");
+        $("#jetSetGo").val(data.prices.jetSetGo);
         if(data.supplements.AtProperty.length > 0 || data.supplements.Addition.length > 0 || data.boardBases.length > 0){ 
             $("#divAdditionalFees").show();
             if(data.supplements.AtProperty.lenght > 0 || data.supplements.Addition.lenght > 0){
@@ -395,8 +400,10 @@ function loadPrices(){
             $("#tbladditionalFees tbody").append("<tr><td>"+sup.suppName+"</td><td>"+sup.publishPrice+"</td><td>Included in price</td></tr>");
         });
          $("#ulBoardBases").empty();
+         $("#divBoardBases").empty();
         data.boardBases.forEach(function(bb, i){
             $("#ulBoardBases").append("<li id='"+bb.bbId+"'>"+bb.bbName+" is included</li>");
+            $("#divBoardBases").append("<input type='hidden' name='boardBases[]' value='"+bb.bbId+"'>");
         });
     });
 }

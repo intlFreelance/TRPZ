@@ -16,6 +16,7 @@ class CartController extends Controller{
         return redirect(route('cart.index'));
     }
     public function add(Request $request){
+        Cart::destroy();
         $this->validate($request, [
             'startDate' => 'required',
             'endDate' => 'required',
@@ -29,26 +30,26 @@ class CartController extends Controller{
             }
         }
         $package = Package::find($input['packageId']);
-        $price = $package->retailPrice;
-        if(isset($input["jetSet"])){
-            $price = $package->jetSetGoPrice;
-        }else if(isset($input["trpz"])){
-            $price = $package->trpzPrice;
-        }
+        
+        $price = floatval(str_replace(",","",$input[$input['priceType']]));
         $activities = [];
-        foreach($input['activityIds'] as $activityId){
-            $activities[] = [
-                "id" => $activityId,
-                "options" => isset($input['activityOptions'][$activityId]) ? $input['activityOptions'][$activityId] :  []
-            ];
+        if(isset($input['activityIds'])){
+            foreach($input['activityIds'] as $activityId){
+                $activities[] = [
+                    "id" => $activityId,
+                    "options" => isset($input['activityOptions'][$activityId]) ? $input['activityOptions'][$activityId] :  []
+                ];
+            }
         }
+        
         Cart::add($package->id, $package->name, 1, $price, 
         [
             'startDate'         => $input['startDate'], 
             'endDate'           => $input['endDate'],
             'hotelId'           => $package->packageHotels[0]->hotelId,
             'roomTypeId'        => $input['roomTypeId'],
-            'activities'        => $activities
+            'activities'        => $activities,
+            'boardBases'        =>$input['boardBases']
         ])->setTaxRate(0);
         
         return redirect(route('cart.index'));
