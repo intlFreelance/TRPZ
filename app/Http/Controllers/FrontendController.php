@@ -193,6 +193,7 @@ class FrontendController extends Controller
             $breakdownPrices = $ocupancy->PriceBreakdown->Price;
             $boardBases = null;
             $supplements = null;
+            
             if(isset($ocupancy->BoardBases->Boardbase)){
                 $boardBases = $ocupancy->BoardBases->Boardbase;
             }
@@ -281,6 +282,25 @@ class FrontendController extends Controller
         }catch(Exception $ex){
             return response()->json(["success"=>false, "message"=>$ex->getMessage()]);
         }
-        
+    }
+    public function getHotelCancellationPolicy(){
+        try{
+            $roomTypeId = $this->request->query('roomType-id');
+            $hotelId=$this->request->query('hotel-id');
+            $startDate = Carbon::parse($this->request->query('start-date'))->format('Y-m-d');
+            $endDate = Carbon::parse($this->request->query('end-date'))->format('Y-m-d');
+            $hotel_api = new TouricoHotel();
+            $data = [
+                "nResId"=>0,
+                "hotelId"=>$hotelId,
+                "hotelRoomTypeId"=>$roomTypeId,
+                "dtCheckIn"=>$startDate,
+                "dtCheckOut"=>$endDate
+            ];
+            $hotelPolicy = $hotel_api->GetCancellationPolicies($data);
+            return response()->json(["success"=>true, "HotelPolicy"=>$hotelPolicy]);
+        }catch(Exception $ex){
+            return response()->json(["success"=>false, "message"=>$ex->getMessage()]);
+        }
     }
 }

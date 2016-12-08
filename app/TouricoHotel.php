@@ -3,6 +3,7 @@
 namespace App;
 
 use Artisaninweb\SoapWrapper\Extension\SoapService;
+use Exception;
 class PerRoomSupplement{}
 class PerPersonSupplement{} 
 class TouricoHotel extends SoapService {
@@ -29,16 +30,15 @@ class TouricoHotel extends SoapService {
         ],
     ];
 
-    public function __construct()
-    {
-        if(!empty(config('tourico.hotel_wsdl')))
-        {
-            $this->wsdl(config('tourico.hotel_wsdl'))
-                 ->createClient();
-
-            return;
+    public function __construct(){
+        if(empty(config('tourico.hotel_wsdl'))){
+            throw new Exception("The variable 'tourico.wsdl' must be set.");
         }
-        throw new Exception("The variable 'wsdl' must be set.");
+        if(empty(config('tourico.hotel_header'))){
+            throw new Exception("The variable 'tourico.hotel_header' must be set.");
+        }
+        $this->wsdl(config('tourico.hotel_wsdl'))->createClient();
+        $this->header('http://schemas.tourico.com/webservices/authentication','AuthenticationHeader',config('tourico.hotel_header'));
     }
 
     /**
@@ -46,19 +46,17 @@ class TouricoHotel extends SoapService {
      *
      * @return mixed
      */
-    public function functions()
-    {
+    public function functions(){
         return $this->getFunctions();
     }
 
-    public function SearchHotels($data)
-    {
-        $this->header('http://schemas.tourico.com/webservices/authentication','AuthenticationHeader',config('tourico.hotel_header'));
+    public function SearchHotels($data){        
         return $this->call('SearchHotels',[$data])->SearchHotelsResult->HotelList;
     }
     public function SearchHotelsById($data){
-        $this->header('http://schemas.tourico.com/webservices/authentication','AuthenticationHeader',config('tourico.hotel_header'));
         return $this->call('SearchHotelsById',[$data])->SearchHotelsByIdResult->HotelList->Hotel;
     }
-
+    public function GetCancellationPolicies($data){
+        return $response = $this->call('GetCancellationPolicies',[$data]);
+    }
 }

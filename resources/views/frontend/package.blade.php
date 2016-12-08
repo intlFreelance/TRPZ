@@ -72,9 +72,10 @@
         </div>
         @if(!$noinputs)
         <div class="row">
-            {!! Form::open(['route' => ['cart.add'], 'method' => 'post']) !!}
+            {!! Form::open(['route' => ['cart.add'], 'method' => 'post', 'id'=>'package-form']) !!}
             <input type="hidden" value="{!! $package->id !!}" name="packageId" id="packageId"/>
             <input type="hidden" value="{!! $package->numberOfDays !!}" id="numberOfDays"/>
+            <input type="hidden" id="priceType"/>
             <div class="container">
                 <div class="col-md-6">
                     <h3>Select Dates</h3>
@@ -135,7 +136,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <h3>Room Type</h3>
-                            <select id="roomTypeId" class="form-control"></select>
+                            <select id="roomTypeId" class="form-control" required></select>
                         </div>
                     </div>
                     <div class="row">
@@ -226,7 +227,7 @@
                                 <p style="font-size: 14px;">Jet Set Go® offers you a whole new way pay for travel: by playing games! Download Jet Set Go® right now to stop paying for travel and start playing for travel!</p>
                             </div>
                         </div>
-                        <input id="start-playing" class="button package-buttons" type="submit" name="jetSet" value="Start Playing!"/>
+                        <input type="button" id="start-playing" class="button package-buttons"   value="Start Playing!" onclick="checkCancellationPolicy('jetSetGo');"/>
                     </div>
 
                 </div>
@@ -242,7 +243,7 @@
                                 <p style="font-size: 14px;">By booking your vacation package with Trpz™, you receive unmatched discounts on one of a kind vacation experiences.</p>
                             </div>
                         </div>
-                        <input type="submit" class="button package-buttons" id="book-now" name="trpz" value="Book Now" />
+                        <input type="button" id="book-now" class="button package-buttons"  value="Book Now" onclick="checkCancellationPolicy('trpz');" />
                     </div>
                 </div>
             </div>
@@ -253,9 +254,23 @@
             @include('frontend.additional')    
         @endif
     </div>
-
-
-
+<div class="modal fade" id="policy-modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Hotel Cancellation Policy</h4>
+      </div>
+      <div class="modal-body">
+          <div id="divCancellationPolicy"></div>
+      </div>
+      <div class="modal-footer">
+          <button type="button" id="btnAcceptPolicy" class="btn btn-primary">I Accept</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">I do not Accept</button>
+      </div>
+    </div>
+  </div>
+</div>
  <script>
 var roomTypes;
 var roomType;
@@ -280,28 +295,6 @@ $(function(){
         $('#endDate').val(moment(endDate).format('MM/DD/YYYY'));
         loadHotelInfo();
     }).val("");
-    $("#hotelId").on("change", function(){
-        $("#roomTypeId").empty().append('<option value></option>');
-        $("#hotel-panel").hide();
-        $("#hotel-name").html("");
-        $("#hotel-thumb").attr("src", "");
-        $("#hotel-description").html("");
-        $("#hotel-address").html("");
-        var hotelId = $(this).val();
-        if(hotelId=="") return;
-        $.get("/hotel/"+hotelId, function(data){
-            var roomTypes = data.roomTypes;
-            var hotel = data.hotel;
-            $.each(roomTypes, function(i, roomType){
-                $("#roomTypeId").append('<option value="'+ roomType.id +'">'+ roomType.name +'</option>');
-            });
-            $("#hotel-panel").show();
-            $("#hotel-name").html(hotel.name);
-            $("#hotel-thumb").attr("src", hotel.thumb);
-            $("#hotel-description").html(hotel.description);
-            $("#hotel-address").html(hotel.address);
-        });
-    });
     $("#activityId").multiselect({
         buttonWidth: '100%',
         onChange: function(option, checked, select) {
@@ -318,6 +311,9 @@ $(function(){
     $(".activity-options").multiselect({buttonWidth: '100%'});
     $("#roomTypeId").on("change", function(){
         loadPrices();
+    });
+    $("#btnAcceptPolicy").click(function(){
+        $("#package-form").submit();
     });
 });
 function initMap() {
@@ -362,6 +358,7 @@ function loadHotelInfo(){
     });
 }
 function loadPrices(){
+    if($("#roomTypeId").val() == "") return;
     var data = {
         'hotel-id' : $('#hotel-id').val(),
         'start-date' : $('#startDate').val(),
@@ -401,6 +398,24 @@ function loadPrices(){
         data.boardBases.forEach(function(bb, i){
             $("#ulBoardBases").append("<li id='"+bb.bbId+"'>"+bb.bbName+" is included</li>");
         });
+    });
+}
+function checkCancellationPolicy(button){
+    var formValid = $("#package-form")[0].checkValidity();
+    if(!formValid){
+        alert("Please select Travel Dates and Room Type");
+        return;
+    }
+    $("#priceType").val(button);
+    var data = {
+        'hotel-id' : $('#hotel-id').val(),
+        'start-date' : $('#startDate').val(),
+        'end-date' : $('#endDate').val(),
+        'roomType-id' : $('#roomTypeId').val()
+    };
+    $.get("/get-hotel-cancellation-policy", data, function(data){
+        $("#divCancellationPolicy").html(JSON.stringify(data));
+        $("#policy-modal").modal();
     });
 }
 </script>
