@@ -366,7 +366,7 @@ class FrontendController extends Controller
  }
 
     public function getActivityPrebook(){    
-        try{
+        //try{
             $activityId = $this->request->query('activityId');
             $date = Carbon::parse($this->request->query('date'))->format('Y-m-d');
             $optionId = $this->request->query('optionId');
@@ -376,12 +376,12 @@ class FrontendController extends Controller
                 'BookActivityOptions'=>[
                     'bookActivityOptions'=>[
                       'PreBookOption'=>[
-                        'ActivityId' => (string)($activity->activityId),
+                        'ActivityId' => '1237066', //(string)($activity->activityId),
                         'Date' =>  (string)($date),
-                        'OptionId' =>  (string)($activityOption->optionId),
+                        'OptionId' =>  '12429407', //(string)($activityOption->optionId)
                         'NumOfAdults'=>$this->request->query('numberOfPeople'),
                         'NumOfChildren'=>'0',
-                        'NumOfUnits'=> $activityOption->type == "PerPerson" ? '0' : '1'
+                        'NumOfUnits'=> '0'// $activityOption->type == "PerPerson" ? '0' : '1'
                       ]
                     ]
                 ]
@@ -389,8 +389,8 @@ class FrontendController extends Controller
             $activity_api = new TouricoActivity;
             $response = $activity_api->ActivityPreBook($data);
             return response()->json(["success"=>true, "response"=>$response]);
-        }catch(Exception $ex){
-            return response()->json(["success"=>false, "message"=>$ex->getMessage()]);
-        }
+        //}catch(Exception $ex){
+        //    return response()->json(["success"=>false, "message"=>$ex->getMessage()]);
+        //}
     }
 }
