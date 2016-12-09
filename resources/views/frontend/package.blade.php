@@ -434,7 +434,7 @@ function checkCancellationPolicy(button){
         'roomType-id' : $('#roomTypeId').val()
     };
     $.get("/get-hotel-cancellation-policy", data, function(data){
-        $("#divCancellationPolicy").html(JSON.stringify(data));
+        $("#divCancellationPolicy").html(data.HotelPolicy);
         $("#policy-modal").modal();
     });
 }

@@ -311,10 +311,76 @@ class FrontendController extends Controller
                 "dtCheckIn"=>$startDate,
                 "dtCheckOut"=>$endDate
             ];
-            $hotelPolicy = $hotel_api->GetCancellationPolicies($data);
+            $hotelPolicy = $this->convertPolicyDataToMessage($hotel_api->GetCancellationPolicies($data));
             return response()->json(["success"=>true, "HotelPolicy"=>$hotelPolicy]);
         }catch(Exception $ex){
             return response()->json(["success"=>false, "message"=>$ex->getMessage()]);
         }
+    }
+    private function convertPolicyDataToMessage($policy) {
+        $policyArray = $policy
+                        ->HotelPolicy
+                        ->RoomTypePolicy
+                        ->CancelPolicy
+                        ->CancelPenalty;
+
+        // return $policyArray;
+        $policyMessage = '';
+        foreach($policyArray as $singlePolicy) {
+           if ($singlePolicy->Deadline->OffsetUnitMultiplier == 0) {
+               if ($singlePolicy->AmountPercent->BasisType == "FullStay") {
+                   $policyMessage .= "After the cancellation deadline, the penalty is " . $singlePolicy->AmountPercent->Percent . "% of the cost for the full stay at this hotel.";
+               }
+               if ($singlePolicy->AmountPercent->BasisType == "Nights") {
+                   $policyMessage .= "After the cancellation deadline, the penalty is the cost of " . $singlePolicy->AmountPercent->NmbrOfNights . " night(s) stay at this hotel.";
+               }
+           }
+
+           if ($singlePolicy->Deadline->OffsetUnitMultiplier > 0) {
+              if ($singlePolicy->Deadline->OffsetDropTime == "AfterBooking") {
+                  $policyMessage .= "For cancellation " . $singlePolicy->Deadline->OffsetUnitMultiplier . " hour(s) after booking ";
+              }
+              if ($singlePolicy->Deadline->OffsetDropTime == "BeforeArrival") {
+                    $policyMessage .= "For cancellation " . $singlePolicy->Deadline->OffsetUnitMultiplier . " hour(s) prior to arrival ";
+              }
+              if (property_exists($singlePolicy->AmountPercent, "NmbrOfNights")) {
+                    $policyMessage .= "the cancellation penalty is " . $singlePolicy->AmountPercent->NmbrOfNights . " night(s) stay.";
+              }
+              if (property_exists($singlePolicy->AmountPercent, "Percent")) {
+                    $policyMessage .= "the cancellation penalty is " . $singlePolicy->AmountPercent->Percent . "% of the total stay amount.";
+              }
+              if (property_exists($singlePolicy->AmountPercent, "Amount")) {
+                    $policyMessage .= "the cancellation penalty is fixed at the amount of " . $singlePolicy->AmountPercent->Amount . " " . $singlePolicy->AmountPercent->CurrencyCode . ".";
+              } 
+           }
+           $policyMessage .= "<br>";
+        }
+
+        return $policyMessage;
+//         if (OffsetUnitMultiplier == 0) {
+//     if (BasisType == "FullStay") {
+//         "The cancellation penalty is " Percent " % of the cost for the full stay at this hotel.
+//     }
+//     if (BasisType == "Nights") {
+//         "The cancellation penalty is the cost of " NmbrOfNights " night(s) stay at this hotel.
+//     }
+// }
+// if (OffsetUnitMultiplier > 0) {
+//     if (OffsetDropTime == "AfterBooking") {
+//         "Cancellation is possible up to " OffsetUnitMultiplier " hour(s) after booking."
+//     }
+//     if (OffsetDropTime == "AfterBooking") {
+//         "Cancellation is possible " OffsetUnitMultiplier " hour(s) prior to arrival."
+//     }
+//     if (AmountPercent has property "NmbrOfNights") {
+//         "The cancellation penalty is " NmbrOfNights " night(s) stay."
+//     }
+//     if (AmountPercent has property "Percent") {
+//         "The cancellation penalty is " Percent "% of the total stay amount."
+//     }
+//     if (AmountPercent has property "Amount") {
+//         "The cancellation penalty is fixed at the amount of " Amount " " CurrencyCode "."
+//     }
+// }
     }
 }
