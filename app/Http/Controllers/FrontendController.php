@@ -55,7 +55,7 @@ class FrontendController extends Controller
             $activityDetailsRequest = [
                 'ActivitiesIds'=>[
                     'ActivityId'=>[
-                    'id'=>'1251794'
+                    'id'=>$packageActivity->activity->activityId
                     ]
                 ]
             ];
