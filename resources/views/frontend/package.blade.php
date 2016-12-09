@@ -80,6 +80,7 @@
             <input type="hidden" id="trpz" name="trpz"/>
             <input type="hidden" id="jetSetGo" name="jetSetGo"/>
             <input type="hidden" id="retail" name="retail"/>
+            <div id="divActivityForms"></div>
             <div class="container">
                 <div class="col-md-6">
                     <h3>Select Dates</h3>
@@ -364,7 +365,7 @@ $(function(){
         format: 'MM/DD/YYYY'
     }).on("dp.hide", function (e) {
         ActivityPreBook();
-    }).val("");
+    });
     
     $("#activityId").multiselect({
         buttonWidth: '100%',
@@ -374,7 +375,6 @@ $(function(){
             if(checked){
                 $("#activity-"+activityId).show();
                 $("#activity-details-"+activityId).show();
-                //var nActivityOptions = $('#activityOptions_'+activityId).children().length;
                 $("#activity-modal").modal();
             }else{
                 $('#activityOptions_'+activityId).multiselect('deselectAll', false);
@@ -398,16 +398,28 @@ $(function(){
         $("#package-form").submit();
     });
     $('#activity-modal').on('hidden.bs.modal', function () {
+        if(!activitySaved){
+            var activityId = $("#selectedActivityId").val();
+            $("#activityId").multiselect('deselect', activityId);
+            $('#activityOptions_'+activityId).multiselect('deselectAll', false);
+            $('#activityOptions_'+activityId).multiselect('updateButtonText');
+            $("#activity-"+activityId).hide();
+            $("#activity-details-"+activityId).hide();
+        }
+    });
+    $('#activity-modal').on('shown.bs.modal', function() {
+        activitySaved = false;
         $("#divActivityForm").empty();
         $("#divPassengersForm").empty();
         $("#ulCancellation").empty();
-        if(!activitySaved){
-            $("#activityId").multiselect('deselect', $("#selectedActivityId").val());
-        }
-    });
+        $("#activityDate").val("");
+    })
     $("#btnSaveActivity").click(function(){
         activitySaved = true;
-        console.log($("#activities-form").serializeJSON());
+        var activityId = $("#selectedActivityId").val();
+        var jsonForm = $("#activities-form").serializeJSON();
+        $("#divActivityForms").append("<input type='hidden' activityId='"+activityId+"' name='activityAdditions["+activityId+"][]' value='"+jsonForm+"' />");
+        $('#activity-modal').modal('toggle');
     });
 });
 function initMap() {
@@ -518,7 +530,6 @@ function checkCancellationPolicy(button){
     });
 }
 function ActivityPreBook(){
-    activitySaved = false;
     var activityId =  $("#selectedActivityId").val();
     var date = $("#activityDate").val();
     var optionId = $('#activityOptions_'+activityId).val();
@@ -537,8 +548,11 @@ function ActivityPreBook(){
             alert(data.message);
             return;
         }
-        var textAdditions = data.response.ActivitiesInfo.ActivityInfo.ActivityAdditions.TextAdditions.TextAddition;
-        var trueFalseAdditions = data.response.ActivitiesInfo.ActivityInfo.ActivityAdditions.TrueFalseAdditions ? data.response.ActivitiesInfo.ActivityInfo.ActivityAdditions.TrueFalseAdditions.TrueFalseAddition : [];
+        var activityInfo = data.response.ActivitiesInfo.ActivityInfo;
+        var textAdditions = activityInfo.ActivityAdditions.TextAdditions.TextAddition;
+        var trueFalseAdditions = activityInfo.ActivityAdditions.TrueFalseAdditions ? activityInfo.ActivityAdditions.TrueFalseAdditions.TrueFalseAddition : [];
+        //var numericAdditions = activityInfo.ActivityAdditions.NumericAdditions ? activityInfo.ActivityAdditions.NumericAdditions.NumericAddition : [];
+        //var numericAdditions = activityInfo.ActivityAdditions.NumericAdditions ? activityInfo.ActivityAdditions.NumericAdditions.NumericAddition : [];
         if(!Array.isArray(textAdditions)){
             textAdditions = [textAdditions];
         }
@@ -551,7 +565,7 @@ function ActivityPreBook(){
         trueFalseAdditions.forEach(function(addition, i){
             $("#divActivityForm").append("<div class='col-md-6'><label>"+addition.additionType+"</label><select class='form-control' name='optionAddition[additionTypeID"+addition.additionTypeID+"]'><option value='True'>Yes</option><option value='False'>No</option></select></div>");
         });
-        var passengers = data.response.ActivitiesInfo.ActivityInfo.Passengers.PassengerInfo;
+        var passengers = activityInfo.Passengers.PassengerInfo;
         if(!Array.isArray(passengers)){
             passengers = [passengers];
         }
@@ -568,7 +582,7 @@ function ActivityPreBook(){
                                                         
                                             );
         });
-        var cancellation = data.response.ActivitiesInfo.ActivityInfo.CancellationPolicy.CancellationPenalties.CancellationPenalty;
+        var cancellation = activityInfo.CancellationPolicy.CancellationPenalties.CancellationPenalty;
         if(!Array.isArray(cancellation)){
             cancellation = [cancellation];
         }

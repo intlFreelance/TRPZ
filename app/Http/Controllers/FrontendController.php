@@ -283,10 +283,14 @@ class FrontendController extends Controller
                     ],
                     'MaxPrice'=>'0',
                     'StarLevel'=>'0',
-                    'AvailableOnly'=>'true'
+                    'AvailableOnly'=>'false'
                 ]
             ];
-            return $hotel_api->SearchHotelsById($data);
+            $response = $hotel_api->SearchHotelsById($data);
+            if(!isset($response->Hotel)){
+                throw new Exception("This hotel is not available for the specified dates.");
+            }
+            return $response->Hotel;
     }
     public function getHotelById(){
         try{
@@ -377,7 +381,7 @@ class FrontendController extends Controller
                         'OptionId' =>  (string)($activityOption->optionId),
                         'NumOfAdults'=>$this->request->query('numberOfPeople'),
                         'NumOfChildren'=>'0',
-                        'NumOfUnits'=>'0'
+                        'NumOfUnits'=> $activityOption->type == "PerPerson" ? '0' : '1'
                       ]
                     ]
                 ]
