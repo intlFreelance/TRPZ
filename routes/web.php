@@ -22,6 +22,7 @@ Route::post('payment',  'FrontendController@makePayment')->name('payment')->midd
 Route::get('search-hotel-by-id', 'FrontendController@getHotelById');
 Route::get('get-hotel-price', 'FrontendController@getHotelPrice');
 Route::get('get-hotel-cancellation-policy', 'FrontendController@getHotelCancellationPolicy');
+Route::get('activity-prebook', 'FrontendController@getActivityPrebook');
 //Route::get('confirmation/{id}', 'FrontendController@confirmation');
 Route::group(['prefix' => 'admin','namespace' => 'Admin', 'middleware'=>'auth'], function () {
   Route::get('/', 'AdminController@index');

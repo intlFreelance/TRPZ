@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use Carbon\Carbon;
+use App\Activity;
+use App\ActivityOption;
 use App\Category;
 use App\Package;
 use App\Hotel;
@@ -357,30 +359,34 @@ class FrontendController extends Controller
         }
 
         return $policyMessage;
-//         if (OffsetUnitMultiplier == 0) {
-//     if (BasisType == "FullStay") {
-//         "The cancellation penalty is " Percent " % of the cost for the full stay at this hotel.
-//     }
-//     if (BasisType == "Nights") {
-//         "The cancellation penalty is the cost of " NmbrOfNights " night(s) stay at this hotel.
-//     }
-// }
-// if (OffsetUnitMultiplier > 0) {
-//     if (OffsetDropTime == "AfterBooking") {
-//         "Cancellation is possible up to " OffsetUnitMultiplier " hour(s) after booking."
-//     }
-//     if (OffsetDropTime == "AfterBooking") {
-//         "Cancellation is possible " OffsetUnitMultiplier " hour(s) prior to arrival."
-//     }
-//     if (AmountPercent has property "NmbrOfNights") {
-//         "The cancellation penalty is " NmbrOfNights " night(s) stay."
-//     }
-//     if (AmountPercent has property "Percent") {
-//         "The cancellation penalty is " Percent "% of the total stay amount."
-//     }
-//     if (AmountPercent has property "Amount") {
-//         "The cancellation penalty is fixed at the amount of " Amount " " CurrencyCode "."
-//     }
-// }
+ }
+
+    public function getActivityPrebook(){    
+        try{
+            $activityId = $this->request->query('activityId');
+            $date = Carbon::parse($this->request->query('date'))->format('Y-m-d');
+            $optionId = $this->request->query('optionId');
+            $activity = Activity::find($activityId);
+            $activityOption = ActivityOption::find($optionId);
+            $data = [
+                'BookActivityOptions'=>[
+                    'bookActivityOptions'=>[
+                      'PreBookOption'=>[
+                        'ActivityId' => (string)($activity->activityId),
+                        'Date' =>  (string)($date),
+                        'OptionId' =>  (string)($activityOption->optionId),
+                        'NumOfAdults'=>$this->request->query('numberOfPeople'),
+                        'NumOfChildren'=>'0',
+                        'NumOfUnits'=>'0'
+                      ]
+                    ]
+                ]
+            ];
+            $activity_api = new TouricoActivity;
+            $response = $activity_api->ActivityPreBook($data);
+            return response()->json(["success"=>true, "response"=>$response]);
+        }catch(Exception $ex){
+            return response()->json(["success"=>false, "message"=>$ex->getMessage()]);
+        }
     }
 }
