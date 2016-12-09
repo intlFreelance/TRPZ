@@ -75,6 +75,7 @@
             {!! Form::open(['route' => ['cart.add'], 'method' => 'post', 'id'=>'package-form']) !!}
             <input type="hidden" value="{!! $package->id !!}" name="packageId" id="packageId"/>
             <input type="hidden" value="{!! $package->numberOfDays !!}" id="numberOfDays"/>
+            <input type="hidden" value="{!! $package->numberOfPeople !!}" id="numberOfPeople"/>
             <input type="hidden" id="priceType" name="priceType"/>
             <input type="hidden" id="trpz" name="trpz"/>
             <input type="hidden" id="jetSetGo" name="jetSetGo"/>
@@ -195,7 +196,7 @@
                                             @if($nonav)
                                             <p>{!! $packageActivity->activity->activityOptions[0]->name !!}</p> 
                                             @else
-                                                <select class="form-control activity-options" name="activityOptions[{!! $packageActivity->activity->id !!}][]" id="activityOptions_{!! $packageActivity->activity->id !!}">
+                                            <select class="form-control activity-options" activityId="{!! $packageActivity->activity->id !!}" name="activityOptions[{!! $packageActivity->activity->id !!}][]" id="activityOptions_{!! $packageActivity->activity->id !!}">
                                                     @foreach($packageActivity->activity->activityOptions as $option)
                                                     <option value="{!! $option->id !!}"> {!! $option->name !!}</option>
                                                     @endforeach
@@ -284,9 +285,58 @@
     </div>
   </div>
 </div>
+<div class="modal fade" id="activity-modal" tabindex="-1" role="dialog">
+<form id="activities-form">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" >Activity</h4>
+      </div>
+      <div class="modal-body">
+          <div>
+            <ul class="nav nav-tabs" role="tablist">
+              <li role="presentation" class="active"><a href="#activity" aria-controls="activity" role="tab" data-toggle="tab">Activity Additions</a></li>
+              <li role="presentation"><a href="#passengers" aria-controls="passengers" role="tab" data-toggle="tab">Passengers</a></li>
+              <li role="presentation"><a href="#cancellation" aria-controls="cancellation" role="tab" data-toggle="tab">Cancellation Policy</a></li>
+            </ul>
+            <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="activity">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <input type="hidden" id="selectedActivityId" name="selectedActivityId"/>
+                                <label for="activityDate">Select Activity Date</label>
+                                <input type="text" id="activityDate" name="activityDate" class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="row" id="divActivityForm"></div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="passengers">
+                        <div class="row" id="divPassengersForm"></div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="cancellation">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <ul id="ulCancellation"></ul>
+                            </div>
+                        </div>
+                    </div>
+                
+            </div>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="btnSaveActivity" class="btn btn-primary">Accept</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</form>
+</div>
  <script>
 var roomTypes;
 var roomType;
+var activitySaved = false;
 $(function(){
     var now = moment(new Date());
     var end = moment("{!! $package->dealEndDate !!}");
@@ -305,16 +355,27 @@ $(function(){
         var endDate = new Date(e.date);
         var numberOfDays = parseInt($("#numberOfDays").val());
         endDate.setDate(endDate.getDate() + numberOfDays);
+        $("#activityDate").datetimepicker("minDate", moment(e.date));
+        $("#activityDate").datetimepicker("maxDate", moment(endDate));
         $('#endDate').val(moment(endDate).format('MM/DD/YYYY'));
         loadHotelInfo();
     }).val("");
+    $("#activityDate").datetimepicker({
+        format: 'MM/DD/YYYY'
+    }).on("dp.hide", function (e) {
+        ActivityPreBook();
+    }).val("");
+    
     $("#activityId").multiselect({
         buttonWidth: '100%',
         onChange: function(option, checked, select) {
             var activityId = $(option).val();
+            $("#selectedActivityId").val(activityId);
             if(checked){
                 $("#activity-"+activityId).show();
                 $("#activity-details-"+activityId).show();
+                //var nActivityOptions = $('#activityOptions_'+activityId).children().length;
+                $("#activity-modal").modal();
             }else{
                 $('#activityOptions_'+activityId).multiselect('deselectAll', false);
                 $('#activityOptions_'+activityId).multiselect('updateButtonText');
@@ -323,12 +384,30 @@ $(function(){
             }
         }
     });
-    $(".activity-options").multiselect({buttonWidth: '100%'});
+    $(".activity-options").multiselect({
+        buttonWidth: '100%',
+         onChange: function(option, checked, select) {
+             alert($(this).val());
+             $("#activity-modal").modal();
+         }
+    });
     $("#roomTypeId").on("change", function(){
         loadPrices();
     });
     $("#btnAcceptPolicy").click(function(){
         $("#package-form").submit();
+    });
+    $('#activity-modal').on('hidden.bs.modal', function () {
+        $("#divActivityForm").empty();
+        $("#divPassengersForm").empty();
+        $("#ulCancellation").empty();
+        if(!activitySaved){
+            $("#activityId").multiselect('deselect', $("#selectedActivityId").val());
+        }
+    });
+    $("#btnSaveActivity").click(function(){
+        activitySaved = true;
+        console.log($("#activities-form").serializeJSON());
     });
 });
 function initMap() {
@@ -436,6 +515,72 @@ function checkCancellationPolicy(button){
     $.get("/get-hotel-cancellation-policy", data, function(data){
         $("#divCancellationPolicy").html(data.HotelPolicy);
         $("#policy-modal").modal();
+    });
+}
+function ActivityPreBook(){
+    activitySaved = false;
+    var activityId =  $("#selectedActivityId").val();
+    var date = $("#activityDate").val();
+    var optionId = $('#activityOptions_'+activityId).val();
+    var data = {
+        activityId : activityId,
+        date : date,
+        optionId : optionId,
+        numberOfPeople : $("#numberOfPeople").val()
+    };
+    $("#divActivityForm").empty();
+    $("#divPassengersForm").empty();
+    $("#ulCancellation").empty();
+    
+    $.get("/activity-prebook", data, function(data){
+        if(!data.success){
+            alert(data.message);
+            return;
+        }
+        var textAdditions = data.response.ActivitiesInfo.ActivityInfo.ActivityAdditions.TextAdditions.TextAddition;
+        var trueFalseAdditions = data.response.ActivitiesInfo.ActivityInfo.ActivityAdditions.TrueFalseAdditions ? data.response.ActivitiesInfo.ActivityInfo.ActivityAdditions.TrueFalseAdditions.TrueFalseAddition : [];
+        if(!Array.isArray(textAdditions)){
+            textAdditions = [textAdditions];
+        }
+        if(!Array.isArray(trueFalseAdditions)){
+            trueFalseAdditions = [trueFalseAdditions];
+        }
+        textAdditions.forEach(function(addition, i){
+            $("#divActivityForm").append("<div class='col-md-6'><label>"+addition.additionType+"</label><textarea class='form-control' name='optionAddition[additionTypeID"+addition.additionTypeID+"]'></textarea></div>");
+        });
+        trueFalseAdditions.forEach(function(addition, i){
+            $("#divActivityForm").append("<div class='col-md-6'><label>"+addition.additionType+"</label><select class='form-control' name='optionAddition[additionTypeID"+addition.additionTypeID+"]'><option value='True'>Yes</option><option value='False'>No</option></select></div>");
+        });
+        var passengers = data.response.ActivitiesInfo.ActivityInfo.Passengers.PassengerInfo;
+        if(!Array.isArray(passengers)){
+            passengers = [passengers];
+        }
+        passengers.forEach(function(p, i){
+            $("#divPassengersForm").append(
+                                                "<div class='col-md-12'><h4>Passenger "+p.seqNumber+"</h4>"+
+                                                    "<div class='col-md-6'><label>First Name</label><input type='text' class='form-control' name='passenger[][firstName]'/></div>"+
+                                                    "<div class='col-md-6'><label>Last Name</label><input type='text' class='form-control' name='passenger[][lastName]'/></div>" + 
+                                                    (p.seqNumber == 1 ?
+                                                    "<div class='col-md-6'><label>Home Phone</label><input type='text' class='form-control' name='passenger[][homephone]'/></div>" +
+                                                    "<div class='col-md-6'><label>Mobile Phone</label><input type='text' class='form-control' name='passenger[][mobilephone]'/></div>" 
+                                                    : "" )+
+                                                "</div>"
+                                                        
+                                            );
+        });
+        var cancellation = data.response.ActivitiesInfo.ActivityInfo.CancellationPolicy.CancellationPenalties.CancellationPenalty;
+        if(!Array.isArray(cancellation)){
+            cancellation = [cancellation];
+        }
+        cancellation.forEach(function(c, i){
+            if(c.Deadline.unitsFromCheckIn == 0){
+                $("#ulCancellation").append("<li>After the cancellation deadline the penalty is "+c.Penalty.value+" "+c.Penalty.basisType+".</li>");
+            }else{
+                $("#ulCancellation").append("<li>Cancellation deadline is "+c.Deadline.unitsFromCheckIn+" "+c.Deadline.offsetUnit+" from check-in. Cancellation penalty is "+c.Penalty.value+" "+c.Penalty.basisType+".</li>");
+            }
+        });
+        
+       // alert(JSON.stringify(data));
     });
 }
 </script>

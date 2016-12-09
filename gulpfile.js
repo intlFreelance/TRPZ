@@ -19,6 +19,7 @@ elixir(mix => {
     .copy('bower_components/textAngular/dist/textAngular.css', 'public/css')
     .copy('bower_components/moment/min/moment.min.js','public/js')
     .copy('bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js','public/js')
+    .copy('bower_components/jquery-serialize-object/dist/jquery.serialize-object.min.js','public/js')
     .scripts([
       '../../../bower_components/angular/angular.min.js',
       '../../../bower_components/angular-bootstrap/ui-bootstrap-tpls.js',

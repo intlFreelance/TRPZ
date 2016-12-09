@@ -335,6 +335,7 @@ function parseActivities(categories) {
         activity.ActivityOptions.ActivityOption.forEach(function(activityOption) {
           var parsedOption = {};
           parsedOption['name'] = activityOption.name;
+          parsedOption['optionId'] = activityOption.optionId;
           parsedOption['type'] = activityOption.type;
           parsedOption['availabilities'] = [];
           if (!angular.isArray(activityOption.Availabilities.Availability)) {

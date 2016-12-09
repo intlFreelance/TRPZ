@@ -361,6 +361,7 @@ class PackageController extends Controller
                 $newActivityOption = new ActivityOption;
                 $newActivityOption->name = $activityOption["name"];
                 $newActivityOption->type = $activityOption["type"];
+                $newActivityOption->optionId = $activityOption["optionId"];
                 $newActivityOption->adultPrice = $activityOption["availabilities"][0]["adultPrice"];
                 $newActivityOption->childPrice = $activityOption["availabilities"][0]["childPrice"];
                 $newActivityOption->unitPrice = $activityOption["availabilities"][0]["unitPrice"];
