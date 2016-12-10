@@ -218,7 +218,8 @@ class FrontendController extends Controller
             }
             $supplementFeesArray = [
                 "AtProperty"=>[],
-                "Addition"=>[]
+                "Addition"=>[],
+                "Included"=>[]
             ];
             $boardBasesArray = [];
             $additionalFees = 0;
@@ -231,6 +232,8 @@ class FrontendController extends Controller
                         $supplementFeesArray["AtProperty"][] = $supplement;
                     }elseif($supplement->suppChargeType=="Addition" && $supplement->suppIsMandatory){
                         $supplementFeesArray["Addition"][] = $supplement;
+                    }elseif($supplement->suppChargeType=="Included" && $supplement->suppIsMandatory){
+                        $supplementFeesArray["Included"][] = $supplement;
                     }
                 }
             }
@@ -379,7 +382,7 @@ class FrontendController extends Controller
                         'ActivityId' => (string)($activity->activityId),
                         'Date' =>  (string)($date),
                         'OptionId' =>  (string)($activityOption->optionId),
-                        'NumOfAdults'=>$this->request->query('numberOfPeople'),
+                        'NumOfAdults'=>$activityOption->type == "PerPerson" ? $this->request->query('numberOfPeople') : '0',
                         'NumOfChildren'=>'0',
                         'NumOfUnits'=> $activityOption->type == "PerPerson" ? '0' : '1'
                       ]
