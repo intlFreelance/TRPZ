@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use Gloudemans\Shoppingcart\Facades\Cart;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Package;
 use Session;
@@ -40,7 +41,14 @@ class CartController extends Controller{
                 ];
             }
         }
-        
+        $activityAdditions = [];
+        if(isset($input['activityAdditions'])){
+            foreach($input['activityAdditions'] as $aa){
+                $addition = json_decode($aa[0]);
+                $addition->activityDate = Carbon::parse($addition->activityDate);
+                $activityAdditions[] = $addition;
+            }
+        }
         Cart::add($package->id, $package->name, 1, $price, 
         [
             'startDate'         => $input['startDate'], 
@@ -48,7 +56,8 @@ class CartController extends Controller{
             'hotelId'           => $package->packageHotels[0]->hotelId,
             'roomTypeId'        => $input['roomTypeId'],
             'activities'        => $activities,
-            'boardBases'        => isset($input['boardBases']) ? $input['boardBases'] : []
+            'boardBases'        => isset($input['boardBases']) ? $input['boardBases'] : [],
+            'activityAdditions' => $activityAdditions
         ])->setTaxRate(0);
         
         return redirect(route('cart.index'));

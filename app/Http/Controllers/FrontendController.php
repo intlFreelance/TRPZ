@@ -218,7 +218,8 @@ class FrontendController extends Controller
             }
             $supplementFeesArray = [
                 "AtProperty"=>[],
-                "Addition"=>[]
+                "Addition"=>[],
+                "Included"=>[]
             ];
             $boardBasesArray = [];
             $additionalFees = 0;
@@ -231,6 +232,8 @@ class FrontendController extends Controller
                         $supplementFeesArray["AtProperty"][] = $supplement;
                     }elseif($supplement->suppChargeType=="Addition" && $supplement->suppIsMandatory){
                         $supplementFeesArray["Addition"][] = $supplement;
+                    }elseif($supplement->suppChargeType=="Included" && $supplement->suppIsMandatory){
+                        $supplementFeesArray["Included"][] = $supplement;
                     }
                 }
             }
@@ -283,10 +286,14 @@ class FrontendController extends Controller
                     ],
                     'MaxPrice'=>'0',
                     'StarLevel'=>'0',
-                    'AvailableOnly'=>'true'
+                    'AvailableOnly'=>'false'
                 ]
             ];
-            return $hotel_api->SearchHotelsById($data);
+            $response = $hotel_api->SearchHotelsById($data);
+            if(!isset($response->Hotel)){
+                throw new Exception("This hotel is not available for the specified dates.");
+            }
+            return $response->Hotel;
     }
     public function getHotelById(){
         try{
@@ -375,9 +382,9 @@ class FrontendController extends Controller
                         'ActivityId' => (string)($activity->activityId),
                         'Date' =>  (string)($date),
                         'OptionId' =>  (string)($activityOption->optionId),
-                        'NumOfAdults'=>$this->request->query('numberOfPeople'),
+                        'NumOfAdults'=>$activityOption->type == "PerPerson" ? $this->request->query('numberOfPeople') : '0',
                         'NumOfChildren'=>'0',
-                        'NumOfUnits'=>'0'
+                        'NumOfUnits'=> $activityOption->type == "PerPerson" ? '0' : '1'
                       ]
                     ]
                 ]
