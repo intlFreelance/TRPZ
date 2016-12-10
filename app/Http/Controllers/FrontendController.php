@@ -47,8 +47,9 @@ class FrontendController extends Controller
         return view('frontend.category', $data);
     }
     public function package($categoryId, $id, $option=null, $parameter=null){
+        ini_set('max_execution_time', 300);
         $data['category'] = Category::find($categoryId);
-        $data['package'] = \App\Package::find($id);
+        $data['package'] = Package::find($id);
         $data['nonav'] = false;
         $data['noinputs'] = false;
         $data['voucher'] = null;
@@ -369,10 +370,10 @@ class FrontendController extends Controller
  }
 
     public function getActivityPrebook(){    
-        try{
+        try{            
             $activityId = $this->request->query('activityId');
             $date = Carbon::parse($this->request->query('date'))->format('Y-m-d');
-            $optionId = $this->request->query('optionId');
+            $optionId = $this->request->query('optionId')[0];
             $activity = Activity::find($activityId);
             $activityOption = ActivityOption::find($optionId);
             $data = [
