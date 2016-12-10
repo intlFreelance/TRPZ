@@ -487,7 +487,9 @@ function loadHotelInfo(){
         'start-date' : $('#startDate').val(),
         'end-date' : $('#endDate').val()
     };
+    showLoading(true);
     $.get("/search-hotel-by-id", data, function(data){
+        showLoading(false);
         if(!data.success){
             alert(data.message);
             return;
@@ -515,7 +517,9 @@ function loadPrices(){
         'roomType-id' : $('#roomTypeId').val(),
         'package-id' : $("#packageId").val()
     };
+    showLoading(true);
     $.get("/get-hotel-price", data, function(data){
+        showLoading(false);
         if(!data.success){
             alert(data.message);
             return;
@@ -570,7 +574,9 @@ function checkCancellationPolicy(button){
         'end-date' : $('#endDate').val(),
         'roomType-id' : $('#roomTypeId').val()
     };
+    showLoading(true);
     $.get("/get-hotel-cancellation-policy", data, function(data){
+        showLoading(false);
         $("#divCancellationPolicy").html(data.HotelPolicy);
         $("#policy-modal").modal();
     });
@@ -588,8 +594,9 @@ function ActivityPreBook(){
     $("#divActivityForm").empty();
     $("#divPassengersForm").empty();
     $("#ulCancellation").empty();
-    
+    showLoading(true);
     $.get("/activity-prebook", data, function(data){
+        showLoading(false);
         if(!data.success){
             alert(data.message);
             $("#activity-modal").modal('toggle');
