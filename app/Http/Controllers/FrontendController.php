@@ -338,11 +338,17 @@ class FrontendController extends Controller
         $policyMessage = '';
         foreach($policyArray as $singlePolicy) {
            if ($singlePolicy->Deadline->OffsetUnitMultiplier == 0) {
+               if ($singlePolicy->Deadline->OffsetDropTime == "AfterBooking") {
+                  $policyMessage .= "At any point after booking";
+              }
+              if ($singlePolicy->Deadline->OffsetDropTime == "BeforeArrival") {
+                    $policyMessage .= "For a \"No Show\"";
+              }
                if ($singlePolicy->AmountPercent->BasisType == "FullStay") {
-                   $policyMessage .= "After the cancellation deadline, the penalty is " . $singlePolicy->AmountPercent->Percent . "% of the cost for the full stay at this hotel.";
+                   $policyMessage .= " the penalty is " . $singlePolicy->AmountPercent->Percent . "% of the cost for the full stay at this hotel.";
                }
                if ($singlePolicy->AmountPercent->BasisType == "Nights") {
-                   $policyMessage .= "After the cancellation deadline, the penalty is the cost of " . $singlePolicy->AmountPercent->NmbrOfNights . " night(s) stay at this hotel.";
+                   $policyMessage .= " the penalty is the cost of " . $singlePolicy->AmountPercent->NmbrOfNights . " night(s) stay at this hotel.";
                }
            }
 
