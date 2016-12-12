@@ -27,6 +27,7 @@
     <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 </head>
 <body>
+    <div id="loading-overlay"><img class="centered" src="{{ url('img/loading.gif') }}" style="width: 200px;"/></div>
     @if(!(isset($nonav) && $nonav))
     <div id="sideNavigation">
       <div id="exit_nav" class="transition"><i class="fa fa-times transition" onclick="hideSidebar()"></i></div>
@@ -169,7 +170,15 @@
     <script src="/js/moment.min.js"></script>
     <script src="/js/bootstrap-datetimepicker.min.js"></script>
     <script src="/js/jquery.serialize-object.min.js"></script>
-    
+    <script>
+        function showLoading(val){
+            if(val){
+                $("#loading-overlay").show();
+            }else{
+                $("#loading-overlay").hide();
+            }   
+        }
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>
 </body>
 </html>

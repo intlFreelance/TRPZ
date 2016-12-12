@@ -197,9 +197,10 @@
                                             @if($nonav)
                                             <p>{!! $packageActivity->activity->activityOptions[0]->name !!}</p> 
                                             @else
-                                            <select class="form-control activity-options" activityId="{!! $packageActivity->activity->id !!}" name="activityOptions[{!! $packageActivity->activity->id !!}][]" id="activityOptions_{!! $packageActivity->activity->id !!}">
+                                            <select class="form-control activity-options" multiple="multiple" activityId="{!! $packageActivity->activity->id !!}" name="activityOptions[{!! $packageActivity->activity->id !!}][]" id="activityOptions_{!! $packageActivity->activity->id !!}">
+                                                    <?php $single = count($packageActivity->activity->activityOptions) === 1; ?>
                                                     @foreach($packageActivity->activity->activityOptions as $option)
-                                                    <option value="{!! $option->id !!}"> {!! $option->name !!}</option>
+                                                        <option value="{!! $option->id !!}" {!! $single ? 'selected' : '' !!} > {!! $option->name !!}</option>
                                                     @endforeach
                                                 </select>
                                             @endif
@@ -375,7 +376,7 @@ $(function(){
             if(checked){
                 $("#activity-"+activityId).show();
                 $("#activity-details-"+activityId).show();
-                if($('#activityOptions_'+activityId).children().length == 1){
+                if($('#activityOptions_'+activityId).children().length === 1){
                     $("#activity-modal").modal();
                 }else{
                     alert("Please select an Activity Option");
@@ -387,27 +388,50 @@ $(function(){
                         return false;
                     }
                 });
-                $('#activityOptions_'+activityId).multiselect('deselectAll', false);
+                if($('#activityOptions_'+activityId).children().length > 1){
+                    $('#activityOptions_'+activityId).multiselect('deselectAll', false);
+                }
                 $('#activityOptions_'+activityId).multiselect('updateButtonText');
                 $("#activity-"+activityId).hide();
                 $("#activity-details-"+activityId).hide();
+            }
+        },
+        onDropdownShow: function(event) {
+            if($("#startDate").val()==""){
+                alert("Please select Start Date first.");
+                event.preventDefault();
+                return false;
             }
         }
     });
     $(".activity-options").multiselect({
         buttonWidth: '100%',
-         onChange: function(option, checked) {
-            var control = $(this);
-            var activityId = $("#"+control[0].$select[0].id).attr("activityid");
-            $("#selectedActivityId").val(activityId);
-            $("#divActivityForms input").each(function(){
+        onChange: function(option, checked) {
+            
+             var control = $(this);
+             var selector = "#"+control[0].$select[0].id;
+             var activityId = $(selector).attr("activityid");
+             if(checked){
+                var values = [];
+                $(selector+" option").each(function() {
+                    if (option.val() != $(this).val()) {
+                        values.push($(this).val());
+                    }
+                });
+                $(selector).multiselect('deselect', values);
+
+                $("#selectedActivityId").val(activityId);
+                $("#divActivityForms input").each(function(){
                     if($(this).attr("activityid") == activityId){
                         $(this).remove();
                         return false;
                     }
-            });
-           $("#activity-modal").modal();
-         }
+                });
+               $("#activity-modal").modal();
+             }else{
+                $('#activityOptions_'+activityId).multiselect('select', option.val());
+             }
+        }
     });
     $("#roomTypeId").on("change", function(){
         loadPrices();
@@ -419,7 +443,9 @@ $(function(){
         if(!activitySaved){
             var activityId = $("#selectedActivityId").val();
             $("#activityId").multiselect('deselect', activityId);
-            $('#activityOptions_'+activityId).multiselect('deselectAll', false);
+            if($('#activityOptions_'+activityId).children().length > 1){
+                $('#activityOptions_'+activityId).multiselect('deselectAll', false);
+            }
             $('#activityOptions_'+activityId).multiselect('updateButtonText');
             $("#activity-"+activityId).hide();
             $("#activity-details-"+activityId).hide();
@@ -431,6 +457,7 @@ $(function(){
         $("#divPassengersForm").empty();
         $("#ulCancellation").empty();
         $("#activityDate").val("");
+        $('.nav-tabs a:first').tab('show'); 
     })
     $("#btnSaveActivity").click(function(){
         var valid = true;
@@ -487,7 +514,9 @@ function loadHotelInfo(){
         'start-date' : $('#startDate').val(),
         'end-date' : $('#endDate').val()
     };
+    showLoading(true);
     $.get("/search-hotel-by-id", data, function(data){
+        showLoading(false);
         if(!data.success){
             alert(data.message);
             return;
@@ -515,7 +544,9 @@ function loadPrices(){
         'roomType-id' : $('#roomTypeId').val(),
         'package-id' : $("#packageId").val()
     };
+    showLoading(true);
     $.get("/get-hotel-price", data, function(data){
+        showLoading(false);
         if(!data.success){
             alert(data.message);
             return;
@@ -570,7 +601,9 @@ function checkCancellationPolicy(button){
         'end-date' : $('#endDate').val(),
         'roomType-id' : $('#roomTypeId').val()
     };
+    showLoading(true);
     $.get("/get-hotel-cancellation-policy", data, function(data){
+        showLoading(false);
         $("#divCancellationPolicy").html(data.HotelPolicy);
         $("#policy-modal").modal();
     });
@@ -588,8 +621,9 @@ function ActivityPreBook(){
     $("#divActivityForm").empty();
     $("#divPassengersForm").empty();
     $("#ulCancellation").empty();
-    
+    showLoading(true);
     $.get("/activity-prebook", data, function(data){
+        showLoading(false);
         if(!data.success){
             alert(data.message);
             $("#activity-modal").modal('toggle');
