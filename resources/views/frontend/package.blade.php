@@ -512,7 +512,8 @@ function loadHotelInfo(){
     var data = {
         'hotel-id' : $('#hotel-id').val(),
         'start-date' : $('#startDate').val(),
-        'end-date' : $('#endDate').val()
+        'end-date' : $('#endDate').val(),
+        'number-of-people' : $("#numberOfPeople").val()
     };
     showLoading(true);
     $.get("/search-hotel-by-id", data, function(data){

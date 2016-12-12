@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Auth;
 use App\TouricoHotel;
 use App\TouricoActivity;
 use Exception;
-
+use Session;
 
 class FrontendController extends Controller
 {
@@ -97,6 +97,78 @@ class FrontendController extends Controller
         ]);
     }
     public function payment(){
+        //final validation 
+        $packageRemoved = false;
+        $hotel_api = new TouricoHotel();
+        foreach(Cart::content() as $row){
+            $package = Package::find($row->id);
+            $hotelId = $package->packageHotels[0]->hotel->hotelId;
+            $startDate = Carbon::parse($row->options->startDate)->format('Y-m-d');
+            $endDate = Carbon::parse($row->options->endDate)->format('Y-m-d');
+            $adultNum = $package->numberOfPeople;
+            $roomTypeId = $row->options->roomTypeId;
+            $priceType = $row->options->priceType;
+            $data = [
+                'request'=>[
+                    'HotelIdsInfo'=>[
+                        'HotelIdInfo'=>['id'=>$hotelId]
+                    ],
+                    'CheckIn'=>$startDate,
+                    'CheckOut'=>$endDate,
+                    'RoomsInformation'=>[
+                        'RoomInfo'=>[
+                            'AdultNum'=>$adultNum,
+                            'ChildNum'=>'0'
+                        ]
+                    ],
+                    'MaxPrice'=>'0',
+                    'StarLevel'=>'0',
+                    'AvailableOnly'=>'true'
+                ]
+            ];
+            $hotel = $hotel_api->CheckAvailabilityAndPrices($data)->Hotel;
+            //Checking room availability
+            $roomTypes = $hotel->RoomTypes->RoomType;
+            $roomType = null;
+            if(is_array($roomTypes)){
+                foreach($roomTypes as $iRoomType){
+                    if($iRoomType->hotelRoomTypeId == $roomTypeId){
+                        $roomType = $iRoomType;
+                        break;
+                    }
+                }
+            }else{
+                $roomType = $roomTypes;
+            }
+            $roomAvailable = $roomType->isAvailable;
+            $availabilities = [];
+            if(is_array($roomType->AvailabilityBreakdown->Availability)){
+                $availabilities = $roomType->AvailabilityBreakdown->Availability;
+            }else{
+                $availabilities = [$roomType->AvailabilityBreakdown->Availability];
+            }
+            foreach ($availabilities as $availability){
+                $roomAvailable &= $availability->status;
+            }
+            //checking prices availabilities
+            $pricesAndFees = $this->getHotelPriceDetails($roomType, $package);
+            $previousPrice =  floatval(str_replace(",", "", $row->price));
+            $actualPrice = floatval(str_replace(",", "", $pricesAndFees['prices'][$priceType]));
+
+            $priceAvailable = $previousPrice  === $actualPrice;
+            if(!$roomAvailable || !$priceAvailable){
+                if(!$roomAvailable){
+                    Session::flash('danger',"We're sorry! The package {$package->name} was removed, the room selected is not available in the specified dates.");
+                }else{
+                    Session::flash('danger',"We're sorry! The package {$package->name} was removed due to a price change.");
+                }
+               Cart::remove($row->rowId);
+               $packageRemoved = true;
+            }
+        }
+        if($packageRemoved){
+            return view('frontend.cart');
+        }
         return view('frontend.payment');
     }
     public function makePayment(Request $request){
@@ -187,7 +259,7 @@ class FrontendController extends Controller
             $hotelId=$this->request->query('hotel-id');
             $startDate = Carbon::parse($this->request->query('start-date'))->format('Y-m-d');
             $endDate = Carbon::parse($this->request->query('end-date'))->format('Y-m-d');
-            $hotel = $this->getTouricoHotel($hotelId, $startDate, $endDate);
+            $hotel = $this->getTouricoHotel($hotelId, $startDate, $endDate, $package->numberOfPeople);
             $roomTypes = $hotel->RoomTypes->RoomType;
             $roomType = null;
             if(is_array($roomTypes)){
@@ -200,7 +272,14 @@ class FrontendController extends Controller
             }else{
                 $roomType = $roomTypes;
             }
-            $subTotal = 0;
+            $pricesAndFees = $this->getHotelPriceDetails($roomType, $package);
+            return response()->json(['success'=>true, 'prices'=>$pricesAndFees['prices'], 'supplements'=>$pricesAndFees['supplements'], 'boardBases'=>$pricesAndFees['boardBases']]);
+        }catch(Exception $ex){
+            return response()->json(["success"=>false, "message"=>$ex->getMessage()]);
+        }
+    }
+    private function getHotelPriceDetails($roomType, $package){
+        $subTotal = 0;
             
             if(is_array($roomType->Occupancies->Occupancy)){
                 $ocupancy = $roomType->Occupancies->Occupancy[0];
@@ -264,13 +343,14 @@ class FrontendController extends Controller
                 "trpz"=> number_format(round($subTotal * (1 + $package->trpzMarkupPercentage/100) + $additionalFees, 2),2),
                 "jetSetGo"=> number_format(round($subTotal * (1 + $package->jetSetGoMarkupPercentage/100) + $additionalFees, 2),2)
             ];
-            return response()->json(['success'=>true, 'prices'=>$prices, 'supplements'=>$supplementFeesArray, 'boardBases'=>$boardBasesArray]);
-        }catch(Exception $ex){
-            throw $ex;
-            return response()->json(["success"=>false, "message"=>$ex->getMessage()]);
-        }
+            return [
+                'prices'=>$prices,
+                'supplements'=>$supplementFeesArray,
+                'boardBases'=>$boardBasesArray
+            ];
+        
     }
-    private function getTouricoHotel($hotelId, $startDate, $endDate){
+    private function getTouricoHotel($hotelId, $startDate, $endDate, $numberOfPeople){
         $hotel_api = new TouricoHotel();
             $data = [
                 'request'=>[
@@ -281,13 +361,13 @@ class FrontendController extends Controller
                     'CheckOut'=>$endDate,
                     'RoomsInformation'=>[
                         'RoomInfo'=>[
-                            'AdultNum'=>'2',
+                            'AdultNum'=>$numberOfPeople,
                             'ChildNum'=>'0'
                         ]
                     ],
                     'MaxPrice'=>'0',
                     'StarLevel'=>'0',
-                    'AvailableOnly'=>'false'
+                    'AvailableOnly'=>'true'
                 ]
             ];
             $response = $hotel_api->SearchHotelsById($data);
@@ -301,7 +381,8 @@ class FrontendController extends Controller
             $hotelId=$this->request->query('hotel-id');
             $startDate = Carbon::parse($this->request->query('start-date'))->format('Y-m-d');
             $endDate = Carbon::parse($this->request->query('end-date'))->format('Y-m-d');
-            $hotel = $this->getTouricoHotel($hotelId, $startDate, $endDate);
+            $numberOfPeople = $this->request->query('number-of-people');
+            $hotel = $this->getTouricoHotel($hotelId, $startDate, $endDate, $numberOfPeople);
             return response()->json(["success"=>true, "hotel"=>$hotel]);
         }catch(Exception $ex){
             return response()->json(["success"=>false, "message"=>$ex->getMessage()]);
