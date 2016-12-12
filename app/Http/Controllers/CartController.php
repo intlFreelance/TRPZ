@@ -57,7 +57,8 @@ class CartController extends Controller{
             'roomTypeId'        => $input['roomTypeId'],
             'activities'        => $activities,
             'boardBases'        => isset($input['boardBases']) ? $input['boardBases'] : [],
-            'activityAdditions' => $activityAdditions
+            'activityAdditions' => $activityAdditions,
+            'priceType'         => $input['priceType']
         ])->setTaxRate(0);
         
         return redirect(route('cart.index'));
