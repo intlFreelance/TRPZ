@@ -179,11 +179,11 @@ class AdminController extends Controller
         'request'=>[
           'RecordLocatorId'=>0,
           'HotelId'=>964,
-          'hotelRoomTypeId'=>12543222,
+          'HotelRoomTypeId'=>12543222,
           'CheckIn'=>'2017-01-13',
           'CheckOut'=>'2017-01-17',
           'RoomsInfo'=>[
-            'RoomReserveInfo'=>[
+            [
               'RoomId'=>1,
               'ContactPassenger'=>[
                 'FirstName'=>'Lebron',
@@ -194,25 +194,39 @@ class AdminController extends Controller
                 'Price'=>0
               ],
               'SelectedSupplements'=>[
-                'SupplementInfo'=> (object) [
+                (object) [
                   'suppId'=>1200028,
                   'supTotalPrice'=>'0.00',
                   'suppType'=>4
                 ],
-                'SupplementInfo'=> (object) [
+                (object) [
                   'suppId'=>1000615,
-                  'supTotalPrice'=>'60.00',
-                  'suppType'=>8
+                  'supTotalPrice'=>'100.00',
+                  'suppType'=>8,
+                  'SupAgeGroup'=>[
+                    (object) [
+                      'suppFrom'=>1,
+                      'suppTo'=>7,
+                      'suppQuantity'=>1,
+                      'suppPrice'=>'20.00'
+                    ],
+                    (object) [
+                      'suppFrom'=>8,
+                      'suppTo'=>99,
+                      'suppQuantity'=>2,
+                      'suppPrice'=>'40.00'
+                    ]
+                  ]
                 ],
               ],
-              'AdultNum'=>'1',
+              'AdultNum'=>'2',
               'ChildNum'=>'1',
               'ChildAges'=>[
-                (object) array('age'=>6)
+                (object) array('age'=>4)
               ]
             ],
-            'RoomReserveInfo'=>[
-              'RoomId'=>1,
+            [
+              'RoomId'=>2,
               'ContactPassenger'=>[
                 'FirstName'=>'Lebron',
                 'LastName'=>'James'
@@ -222,25 +236,30 @@ class AdminController extends Controller
                 'Price'=>0
               ],
               'SelectedSupplements'=>[
-                'SupplementInfo'=> (object) [
+                (object) [
                   'suppId'=>1200028,
                   'supTotalPrice'=>'0.00',
                   'suppType'=>4
                 ],
-                'SupplementInfo'=> (object) [
+                (object) [
                   'suppId'=>1000615,
-                  'supTotalPrice'=>'60.00',
-                  'suppType'=>8
-                ],
+                  'supTotalPrice'=>'120.00',
+                  'suppType'=>8,
+                  'SupAgeGroup'=>[
+                    (object) [
+                      'suppFrom'=>8,
+                      'suppTo'=>99,
+                      'suppQuantity'=>3,
+                      'suppPrice'=>'40.00'
+                    ]
+                  ]
+                ]
               ],
-              'AdultNum'=>'1',
-              'ChildNum'=>'1',
-              'ChildAges'=>[
-                (object) array('age'=>6)
-              ]
+              'AdultNum'=>'3',
+              'ChildNum'=>'0'
             ],
-            'RoomReserveInfo'=>[
-              'RoomId'=>1,
+            [
+              'RoomId'=>3,
               'ContactPassenger'=>[
                 'FirstName'=>'Lebron',
                 'LastName'=>'James'
@@ -250,15 +269,29 @@ class AdminController extends Controller
                 'Price'=>0
               ],
               'SelectedSupplements'=>[
-                'SupplementInfo'=> (object) [
+                (object) [
                   'suppId'=>1200028,
                   'supTotalPrice'=>'0.00',
                   'suppType'=>4
                 ],
-                'SupplementInfo'=> (object) [
+                (object) [
                   'suppId'=>1000615,
                   'supTotalPrice'=>'60.00',
-                  'suppType'=>8
+                  'suppType'=>8,
+                  'SupAgeGroup'=>[
+                    (object) [
+                      'suppFrom'=>1,
+                      'suppTo'=>7,
+                      'suppQuantity'=>1,
+                      'suppPrice'=>'20.00'
+                    ],
+                    (object) [
+                      'suppFrom'=>8,
+                      'suppTo'=>99,
+                      'suppQuantity'=>1,
+                      'suppPrice'=>'40.00'
+                    ]
+                  ]
                 ],
               ],
               'AdultNum'=>'1',
@@ -266,11 +299,14 @@ class AdminController extends Controller
               'ChildAges'=>[
                 (object) array('age'=>6)
               ]
-            ],
+            ]
           ],
           'PaymentType'=>'Obligo',
-          'RequestPrice'=>'2326.50',
-          'Currency'=>'USD'
+          'RequestedPrice'=>'2570.49',
+          'DeltaPrice'=>'25.70',
+          'IsOnlyAvailable'=>True,
+          'Currency'=>'USD',
+          'AgentRefNumber'=>'123NA'
         ]
       ];
       dd($hotel_api->book($data));
