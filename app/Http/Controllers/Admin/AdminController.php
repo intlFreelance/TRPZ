@@ -188,9 +188,9 @@ class AdminController extends Controller
               'ContactPassenger'=>[
                 'FirstName'=>'Lebron',
                 'LastName'=>'James'
-              ]
+              ],
               'SelectedBoardBase'=>[
-                'Id'=>1
+                'Id'=>1,
                 'Price'=>0
               ],
               'SelectedSupplements'=>[
@@ -216,9 +216,9 @@ class AdminController extends Controller
               'ContactPassenger'=>[
                 'FirstName'=>'Lebron',
                 'LastName'=>'James'
-              ]
+              ],
               'SelectedBoardBase'=>[
-                'Id'=>1
+                'Id'=>1,
                 'Price'=>0
               ],
               'SelectedSupplements'=>[
@@ -244,9 +244,9 @@ class AdminController extends Controller
               'ContactPassenger'=>[
                 'FirstName'=>'Lebron',
                 'LastName'=>'James'
-              ]
+              ],
               'SelectedBoardBase'=>[
-                'Id'=>1
+                'Id'=>1,
                 'Price'=>0
               ],
               'SelectedSupplements'=>[
