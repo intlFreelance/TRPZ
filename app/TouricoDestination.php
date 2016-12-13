@@ -46,7 +46,7 @@ class TouricoDestination extends SoapService {
     public function SearchDestinations($data)
     {
         $this->header('http://touricoholidays.com/WSDestinations/2008/08/DataContracts','LoginHeader',config('tourico.destination_header'));
-        return $this->call('GetDestination',[$data]);
+        return $this->call('GetHotelsByDestination',[$data]);
     }
 
 }

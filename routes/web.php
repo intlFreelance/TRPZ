@@ -27,6 +27,11 @@ Route::get('activity-prebook', 'FrontendController@getActivityPrebook');
 Route::group(['prefix' => 'admin','namespace' => 'Admin', 'middleware'=>'auth'], function () {
   Route::get('/', 'AdminController@index');
   Route::get('hotels', 'AdminController@hotels');
+  Route::get('hotelCancellation', 'AdminController@hotelCancellation');
+  Route::get('hotelsbyid', 'AdminController@hotelsById');
+  Route::get('hoteldetails', 'AdminController@hotelDetails');
+  Route::get('checkprices', 'AdminController@checkPrices');
+  Route::get('book', 'AdminController@book');
   Route::get('activities', 'AdminController@activities');
   Route::get('destinations', 'AdminController@destinations');
   Route::get('packages/json/destinations/{continent?}/{country?}/{state?}',  'PackageController@jsonDestinations');

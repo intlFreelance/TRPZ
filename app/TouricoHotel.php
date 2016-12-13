@@ -51,15 +51,21 @@ class TouricoHotel extends SoapService {
     }
 
     public function SearchHotels($data){        
-        return $this->call('SearchHotels',[$data])->SearchHotelsResult->HotelList;
+        return $this->call('SearchHotelsById',[$data])->SearchHotelsByIdResult->HotelList;
     }
     public function SearchHotelsById($data){
         return $this->call('SearchHotelsById',[$data])->SearchHotelsByIdResult->HotelList;
+    }
+    public function getHotelDetailsV3($data){
+        return $this->call('GetHotelDetailsV3',[$data]);
     }
     public function GetCancellationPolicies($data){
         return $this->call('GetCancellationPolicies',[$data]);
     }
     public function CheckAvailabilityAndPrices($data){
         return $this->call('CheckAvailabilityAndPrices',[$data])->CheckAvailabilityAndPricesResult->HotelList;
+    }
+    public function Book($data){        
+        return $this->call('BookHotelV3',[$data]);
     }
 }
