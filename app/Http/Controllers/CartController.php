@@ -5,6 +5,9 @@ use Gloudemans\Shoppingcart\Facades\Cart;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Package;
+use App\Activity;
+use App\ActivityOption;
+
 use Session;
 
 class CartController extends Controller{
@@ -35,18 +38,32 @@ class CartController extends Controller{
         $activities = [];
         if(isset($input['activityIds'])){
             foreach($input['activityIds'] as $activityId){
-                $activities[] = [
-                    "id" => $activityId,
-                    "options" => isset($input['activityOptions'][$activityId]) ? $input['activityOptions'][$activityId] :  []
+                $optionId = isset($input['activityOptions'][$activityId][0]) ? $input['activityOptions'][$activityId][0] :  null;
+                $activity = Activity::find($activityId);
+                $option = ActivityOption::find($optionId);
+                $activities[$activityId] = [
+                    "activityId"=> $activity->activityId,
+                    "option" => $option->optionId
                 ];
             }
         }
-        $activityAdditions = [];
         if(isset($input['activityAdditions'])){
             foreach($input['activityAdditions'] as $aa){
                 $addition = json_decode($aa[0]);
                 $addition->activityDate = Carbon::parse($addition->activityDate);
-                $activityAdditions[] = $addition;
+                $activities[$addition->selectedActivityId]["additions"] = $addition;
+            }
+        }
+        $supplements = [];
+        if(isset($input["supplements"])){
+            foreach($input["supplements"] as $sup){
+                $supplements[] = json_decode($sup);
+            }
+        }
+        $boardBases = [];
+        if(isset($input["boardBases"])){
+            foreach($input["boardBases"] as $bb){
+                $boardBases[] = json_decode($bb);
             }
         }
         Cart::add($package->id, $package->name, 1, $price, 
@@ -56,9 +73,10 @@ class CartController extends Controller{
             'hotelId'           => $package->packageHotels[0]->hotelId,
             'roomTypeId'        => $input['roomTypeId'],
             'activities'        => $activities,
-            'boardBases'        => isset($input['boardBases']) ? $input['boardBases'] : [],
-            'activityAdditions' => $activityAdditions,
-            'priceType'         => $input['priceType']
+            'boardBases'        => $boardBases,
+            'supplements'       => $supplements,
+            'priceType'         => $input['priceType'],
+            'price'             => $input['price']
         ])->setTaxRate(0);
         
         return redirect(route('cart.index'));

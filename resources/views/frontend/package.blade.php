@@ -80,6 +80,7 @@
             <input type="hidden" id="trpz" name="trpz"/>
             <input type="hidden" id="jetSetGo" name="jetSetGo"/>
             <input type="hidden" id="retail" name="retail"/>
+            <input type="hidden" id="price" name="price"/>
             <div id="divActivityForms"></div>
             <div class="container">
                 <div class="col-md-6">
@@ -153,6 +154,7 @@
                                 </thead>
                                 <tbody></tbody>
                             </table>
+                            <div id="divSupplements"></div>
                             <ul id="ulBoardBases"></ul>
                             <div id="divBoardBases"></div>
                         </div>
@@ -560,6 +562,7 @@ function loadPrices(){
         $("#jetSetGoPrice").html("$ "+data.prices.jetSetGo).removeClass("text-muted");
         $("#jetSetGoPrice2").html("$ "+data.prices.jetSetGo).removeClass("text-muted");
         $("#jetSetGo").val(data.prices.jetSetGo);
+        $("#price").val(data.prices.price);
         if(data.supplements.AtProperty.length > 0 || data.supplements.Addition.length > 0 || data.supplements.Included.length > 0 || data.boardBases.length > 0 ){ 
             $("#divAdditionalFees").show();
             if(data.supplements.AtProperty.length > 0 || data.supplements.Addition.length > 0 || data.supplements.Included.length > 0){
@@ -572,20 +575,24 @@ function loadPrices(){
         }
         
         $("#tbladditionalFees tbody").empty();
+        $("#divSupplements").empty();
         data.supplements.AtProperty.forEach(function(sup, i){
             $("#tbladditionalFees tbody").append("<tr><td>"+sup.suppName+"</td><td>"+sup.publishPrice+"</td><td>At Property</td></tr>");
+            $("#divSupplements").append("<input type='hidden' name='supplements[]' value='"+JSON.stringify(sup)+"'>");
         });
         data.supplements.Addition.forEach(function(sup, i){
             $("#tbladditionalFees tbody").append("<tr><td>"+sup.suppName+"</td><td>"+sup.publishPrice+"</td><td>Included in price</td></tr>");
+            $("#divSupplements").append("<input type='hidden' name='supplements[]' value='"+JSON.stringify(sup)+"'>");
         });
         data.supplements.Included.forEach(function(sup, i){
             $("#tbladditionalFees tbody").append("<tr><td>"+sup.suppName+"</td><td>"+(parseFloat(sup.publishPrice) == 0 ? "-" : sup.publishPrice) +"</td><td>Included in price</td></tr>");
+            $("#divSupplements").append("<input type='hidden' name='supplements[]' value='"+JSON.stringify(sup)+"'>");
         });
          $("#ulBoardBases").empty();
          $("#divBoardBases").empty();
         data.boardBases.forEach(function(bb, i){
             $("#ulBoardBases").append("<li id='"+bb.bbId+"'>"+bb.bbName+" is included</li>");
-            $("#divBoardBases").append("<input type='hidden' name='boardBases[]' value='"+bb.bbId+"'>");
+            $("#divBoardBases").append("<input type='hidden' name='boardBases[]' value='"+JSON.stringify(bb)+"'>");
         });
     });
 }

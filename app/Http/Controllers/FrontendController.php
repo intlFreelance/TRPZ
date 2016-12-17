@@ -23,6 +23,7 @@ use App\TouricoHotel;
 use App\TouricoActivity;
 use Exception;
 use Session;
+use App\Authorize;
 
 class FrontendController extends Controller
 {
@@ -193,15 +194,17 @@ class FrontendController extends Controller
         $transaction->transactionId = md5(uniqid(rand(), true));
         $transaction->paymentMethod = $input["paymentMethod"];
         $transaction->customer_id = Auth::guard('customer')->user()->id;
-        $transaction->save();
+        //$transaction->save();
         
         //Purchase created
         $purchase = new Purchase;
         $purchase->transaction_id = $transaction->id;
-        $purchase->save();
+       // $purchase->save();
         
         //Purchase details
         foreach(Cart::content() as $row){
+            $booking = $this->bookHotel($row);
+        /*
             $purchasePackage = new PurchasePackage;
             $purchasePackage->packageId = $row->id;
             $purchasePackage->purchase_id = $purchase->id;
@@ -209,27 +212,87 @@ class FrontendController extends Controller
             $purchasePackage->endDate = Carbon::parse($row->options->endDate)->format('Y-m-d');
             $purchasePackage->hotelId = $row->options->hotelId;
             $purchasePackage->roomTypeId = $row->options->roomTypeId;
-            $purchasePackage->save();
-            foreach($row->options->activities as $activity){
+           // $purchasePackage->save();
+            foreach($row->options->activities as $key => $activity){
                 $purchasePackageActivity = new PurchasePackageActivity;
-                $purchasePackageActivity->activityId = $activity['id'];
+                $purchasePackageActivity->activityId = $key;
                 $purchasePackageActivity->purchase_package_id = $purchasePackage->id;
                 $purchasePackageActivity->save();
                 foreach($activity["options"] as $optionId){
                     $purchasePackageActivityOption = new PurchasePackageActivityOption;
                     $purchasePackageActivityOption->activity_optionId = $optionId;
                     $purchasePackageActivityOption->purchase_package_activity_id = $purchasePackageActivity->id;
-                    $purchasePackageActivityOption->save();
+                   // $purchasePackageActivityOption->save();
                 }
             }
+             *
+         */
         }
-        
+        $expirationDate = str_pad($input["expMonth"], 2, "0").substr($input["expYear"], 2, 2);
+        $total = floatval(str_replace(",", "", Cart::total()));
+        $response = Authorize::chargeCreditCard($input['cardNumber'], $expirationDate, $input["securityCode"], $total);
+        dd($response);
         //Destroy Shopping Cart
-        Cart::destroy();
+      //  Cart::destroy();
         $data['purchase'] = $purchase;
-        return view('frontend.confirmation', $data);
+        //return view('frontend.confirmation', $data);
     }
     
+    private function bookHotel($cartRow){
+        try{
+            $hotel = Hotel::find($cartRow->options->hotelId);
+            $package = Package::find($cartRow->id);
+            $startDate = Carbon::parse($cartRow->options->startDate)->format('Y-m-d');
+            $endDate = Carbon::parse($cartRow->options->endDate)->format('Y-m-d');
+            $roomTypeId = $cartRow->options->roomTypeId;
+            $price = $cartRow->options->price;
+            $deltaPrice = round($price * 0.01, 2); 
+            $currency = $hotel->currency;
+            $boardBases = [];
+            foreach($cartRow->options->boardBases as $bb){
+                $boardBases[] = [
+                    'Id'=>$bb->bbId,
+                    'Price'=>$bb->bbPublishPrice
+                ];
+            }
+
+            $data = [
+                'request'=>[
+                  'RecordLocatorId'=>0,
+                  'HotelId'=>$hotel->hotelId,
+                  'HotelRoomTypeId'=>$roomTypeId,
+                  'CheckIn'=>$startDate,
+                  'CheckOut'=>$endDate,
+                  'RoomsInfo'=>[
+                    [
+                      'RoomId'=>0,
+                      'ContactPassenger'=>[
+                        'FirstName'=>Auth::guard('customer')->user()->firstName,
+                        'LastName'=>Auth::guard('customer')->user()->lastName
+                      ],
+                      'SelectedBoardBase'=> isset($boardBases[0]) ? $boardBases[0] : null,
+                      'SelectedSupplements'=> $cartRow->options->supplements,
+                      'AdultNum'=>$package->numberOfPeople,
+                      'ChildNum'=>'0',
+                    ]
+                  ],
+                  'PaymentType'=>'Obligo',
+                  'RequestedPrice'=>$price,
+                  'DeltaPrice'=>$deltaPrice,
+                  'IsOnlyAvailable'=>True,
+                  'Currency'=>$currency,
+                ]
+          ];
+            $hotel_api = new TouricoHotel();
+            return $hotel_api->book($data);
+        }catch(Exception $ex){
+            
+        }
+    }
+    
+    private function authorizePayment(){
+        
+    }
     public function confirmation($id){
         $purchase = Purchase:: find($id);
         $data['purchase'] = $purchase;
@@ -341,7 +404,8 @@ class FrontendController extends Controller
             $prices = [
                 "retail"=> number_format(round($subTotal * (1 + $package->retailMarkupPercentage/100) + $additionalFees, 2),2),
                 "trpz"=> number_format(round($subTotal * (1 + $package->trpzMarkupPercentage/100) + $additionalFees, 2),2),
-                "jetSetGo"=> number_format(round($subTotal * (1 + $package->jetSetGoMarkupPercentage/100) + $additionalFees, 2),2)
+                "jetSetGo"=> number_format(round($subTotal * (1 + $package->jetSetGoMarkupPercentage/100) + $additionalFees, 2),2),
+                "price"=> $subTotal + $additionalFees,
             ];
             return [
                 'prices'=>$prices,
