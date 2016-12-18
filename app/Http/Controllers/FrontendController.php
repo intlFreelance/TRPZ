@@ -201,10 +201,13 @@ class FrontendController extends Controller
         $purchase->transaction_id = $transaction->id;
        // $purchase->save();
         
+        $booking = [];
         //Purchase details
         foreach(Cart::content() as $row){
-            $booking = $this->bookHotel($row);
-        /*
+            //Hotel Booking
+            $hotelBooking = $this->bookHotel($row);
+            $activitiesBooking = [];
+        /*  
             $purchasePackage = new PurchasePackage;
             $purchasePackage->packageId = $row->id;
             $purchasePackage->purchase_id = $purchase->id;
@@ -213,7 +216,10 @@ class FrontendController extends Controller
             $purchasePackage->hotelId = $row->options->hotelId;
             $purchasePackage->roomTypeId = $row->options->roomTypeId;
            // $purchasePackage->save();
+         */
             foreach($row->options->activities as $key => $activity){
+                //Activity Booking
+                $activityBooking = $this->bookActivity($activity);
                 $purchasePackageActivity = new PurchasePackageActivity;
                 $purchasePackageActivity->activityId = $key;
                 $purchasePackageActivity->purchase_package_id = $purchasePackage->id;
@@ -225,8 +231,7 @@ class FrontendController extends Controller
                    // $purchasePackageActivityOption->save();
                 }
             }
-             *
-         */
+
         }
         $expirationDate = str_pad($input["expMonth"], 2, "0").substr($input["expYear"], 2, 2);
         $total = floatval(str_replace(",", "", Cart::total()));
@@ -284,7 +289,20 @@ class FrontendController extends Controller
                 ]
           ];
             $hotel_api = new TouricoHotel();
-            return $hotel_api->book($data);
+            return $hotel_api->Book($data);
+        }catch(Exception $ex){
+            
+        }
+    }
+    private function bookActivity($activity){
+        try{
+            $data = [
+                "BookActivityOptions"=>[
+                    
+                ]
+            ];
+            $activity_api = new TouricoActivity();
+            return $activity_api->Book($data);
         }catch(Exception $ex){
             
         }

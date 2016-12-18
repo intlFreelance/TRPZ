@@ -12,6 +12,7 @@ use Session;
 
 class CartController extends Controller{
     public function index(){
+        //dd(Cart::content());
         return view('frontend.cart');
     }
     public function destroy($rowId){
@@ -36,22 +37,9 @@ class CartController extends Controller{
         
         $price = floatval(str_replace(",","",$input[$input['priceType']]));
         $activities = [];
-        if(isset($input['activityIds'])){
-            foreach($input['activityIds'] as $activityId){
-                $optionId = isset($input['activityOptions'][$activityId][0]) ? $input['activityOptions'][$activityId][0] :  null;
-                $activity = Activity::find($activityId);
-                $option = ActivityOption::find($optionId);
-                $activities[$activityId] = [
-                    "activityId"=> $activity->activityId,
-                    "option" => $option->optionId
-                ];
-            }
-        }
-        if(isset($input['activityAdditions'])){
-            foreach($input['activityAdditions'] as $aa){
-                $addition = json_decode($aa[0]);
-                $addition->activityDate = Carbon::parse($addition->activityDate);
-                $activities[$addition->selectedActivityId]["additions"] = $addition;
+        if(isset($input['activities'])){
+            foreach($input['activities'] as $activity){
+                $activities[] = json_decode($activity);
             }
         }
         $supplements = [];
@@ -78,7 +66,7 @@ class CartController extends Controller{
             'priceType'         => $input['priceType'],
             'price'             => $input['price']
         ])->setTaxRate(0);
-        
+        dd(Cart::content());
         return redirect(route('cart.index'));
     }
 }

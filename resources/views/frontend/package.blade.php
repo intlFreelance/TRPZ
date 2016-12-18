@@ -170,7 +170,7 @@
                 <div class="col-md-6 form-group">
                     <h3>Activities</h3>
                      @if(!$nonav)
-                    <select class="form-control" class="activityId" id="activityId" name="activityIds[]" multiple="multiple">
+                    <select class="form-control" class="activityId" id="activityId" multiple="multiple">
                         @foreach($package->packageActivities as $packageActivity)
                         <option value="{!! $packageActivity->activity->id !!}"> {!! $packageActivity->activity->name !!}</option>
                         @endforeach
@@ -199,7 +199,7 @@
                                             @if($nonav)
                                             <p>{!! $packageActivity->activity->activityOptions[0]->name !!}</p> 
                                             @else
-                                            <select class="form-control activity-options" multiple="multiple" activityId="{!! $packageActivity->activity->id !!}" name="activityOptions[{!! $packageActivity->activity->id !!}][]" id="activityOptions_{!! $packageActivity->activity->id !!}">
+                                            <select class="form-control activity-options" multiple="multiple" activityId="{!! $packageActivity->activity->id !!}"  id="activityOptions_{!! $packageActivity->activity->id !!}">
                                                     <?php $single = count($packageActivity->activity->activityOptions) === 1; ?>
                                                     @foreach($packageActivity->activity->activityOptions as $option)
                                                         <option value="{!! $option->id !!}" {!! $single ? 'selected' : '' !!} > {!! $option->name !!}</option>
@@ -341,6 +341,7 @@
 var roomTypes;
 var roomType;
 var activitySaved = false;
+var currentActivity = null;
 $(function(){
     var now = moment(new Date());
     var end = moment("{!! $package->dealEndDate !!}");
@@ -452,6 +453,7 @@ $(function(){
             $("#activity-"+activityId).hide();
             $("#activity-details-"+activityId).hide();
         }
+        currentActivity = null;
     });
     $('#activity-modal').on('shown.bs.modal', function() {
         activitySaved = false;
@@ -487,10 +489,75 @@ $(function(){
             alert("Please complete all Passengers fields");
             return;
         }
+        if(currentActivity.ActivityAdditions.TextAdditions){
+            if(Array.isArray(currentActivity.ActivityAdditions.TextAdditions)){
+                currentActivity.ActivityAdditions.TextAdditions.forEach(function(TextAddition){
+                    var additionTypeID = TextAddition.additionTypeID;
+                    TextAddition.value = $("#TextAdditionID"+additionTypeID).val();
+                });
+            }else{
+                var additionTypeID = currentActivity.ActivityAdditions.TextAdditions.TextAddition.additionTypeID;
+                currentActivity.ActivityAdditions.TextAdditions.TextAddition.value = $("#TextAdditionID"+additionTypeID).val();
+            }
+        }
+        if(currentActivity.ActivityAdditions.TrueFalseAdditions){
+            if(Array.isArray(currentActivity.ActivityAdditions.TrueFalseAdditions)){
+                currentActivity.ActivityAdditions.TrueFalseAdditions.forEach(function(TrueFalseAddition){
+                    var additionTypeID = TrueFalseAddition.additionTypeID;
+                    TrueFalseAddition.value = $("#TrueFalseAdditionID"+additionTypeID).val();
+                });
+            }else{
+                var additionTypeID = currentActivity.ActivityAdditions.TrueFalseAdditions.TrueFalseAddition.additionTypeID;
+                currentActivity.ActivityAdditions.TrueFalseAdditions.TrueFalseAddition.value = $("#TrueFalseAdditionID"+additionTypeID).val();
+            }
+        }
+        if(currentActivity.ActivityAdditions.NumericAdditions){
+            if(Array.isArray(currentActivity.ActivityAdditions.NumericAdditions)){
+                currentActivity.ActivityAdditions.NumericAdditions.forEach(function(NumericAddition){
+                    var additionTypeID = NumericAddition.additionTypeID;
+                    NumericAddition.value = $("#NumericAdditionID"+additionTypeID).val();
+                });
+            }else{
+                var additionTypeID = currentActivity.ActivityAdditions.NumericAdditions.NumericAddition.additionTypeID;
+                currentActivity.ActivityAdditions.NumericAdditions.NumericAddition.value = $("#NumericAdditionID"+additionTypeID).val();
+            }
+        }
+        if(currentActivity.ActivityAdditions.NumericRangeAdditions){
+            if(Array.isArray(currentActivity.NumericRangeAdditions.NumericRangeAddition)){
+                currentActivity.ActivityAdditions.NumericRangeAdditions.forEach(function(NumericRangeAddition){
+                    var additionTypeID = NumericRangeAddition.additionTypeID;
+                    NumericRangeAddition.value = $("#NumericRangeAdditionID"+additionTypeID).val();
+                });
+            }else{
+                var additionTypeID = currentActivity.ActivityAdditions.NumericRangeAdditions.NumericRangeAddition.additionTypeID;
+                currentActivity.ActivityAdditions.NumericRangeAdditions.NumericRangeAddition.value = $("#NumericRangeAdditionID"+additionTypeID).val();
+            }
+        }
+        if(Array.isArray(currentActivity.Passengers.PassengerInfo)){
+            currentActivity.Passengers.PassengerInfo.forEach(function(passenger){
+                var seqNumber = passenger.seqNumber;
+                passenger.firstName = $("#FirstNamePassenger"+seqNumber).val();
+                passenger.lastName = $("#LastNamePassenger"+seqNumber).val();
+                if(seqNumber == 1){
+                    passenger.homePhone = $("#HomePhonePassenger"+seqNumber).val();
+                    passenger.mobilePhone = $("#MobilePhonePassenger"+seqNumber).val();
+                }
+            });
+        }else{
+            var seqNumber = currentActivity.Passengers.PassengerInfo.seqNumber;
+            currentActivity.Passengers.PassengerInfo.firstName = $("#FirstNamePassenger"+seqNumber).val();
+            currentActivity.Passengers.PassengerInfo.lastName = $("#LastNamePassenger"+seqNumber).val();
+            if(seqNumber == 1){
+                currentActivity.Passengers.PassengerInfo.homePhone = $("#HomePhonePassenger"+seqNumber).val();
+                currentActivity.Passengers.PassengerInfo.mobilePhone = $("#MobilePhonePassenger"+seqNumber).val();
+            }
+        }
+        //console.log(currentActivity);
+        
         activitySaved = true;
         var activityId = $("#selectedActivityId").val();
-        var jsonForm = $("#activities-form").serializeJSON();
-        $("#divActivityForms").append("<input type='hidden' activityid='"+activityId+"' name='activityAdditions["+activityId+"][]' value='"+jsonForm+"' />");
+        //var jsonForm = $("#activities-form").serializeJSON();
+        $("#divActivityForms").append("<input type='hidden' activityid='"+activityId+"' name='activities[]' value='"+JSON.stringify(currentActivity)+"' />");
         $('#activity-modal').modal('toggle');
     });
 });
@@ -526,7 +593,6 @@ function loadHotelInfo(){
         }
         var hotel = data.hotel;
         roomTypes = hotel.RoomTypes.RoomType;
-        console.log(hotel);
         if(Array.isArray(roomTypes)){
             $("#roomTypeId").empty().append("<option value></option>");
             roomTypes.forEach(function(roomType, i){
@@ -638,7 +704,8 @@ function ActivityPreBook(){
             return;
         }
         var activityInfo = data.response.ActivitiesInfo.ActivityInfo;
-        var textAdditions = activityInfo.ActivityAdditions.TextAdditions.TextAddition;
+        currentActivity = activityInfo;
+        var textAdditions = activityInfo.ActivityAdditions.TextAdditions.TextAddition ? activityInfo.ActivityAdditions.TextAdditions.TextAddition : [];
         var trueFalseAdditions = activityInfo.ActivityAdditions.TrueFalseAdditions ? activityInfo.ActivityAdditions.TrueFalseAdditions.TrueFalseAddition : [];
         var numericAdditions = activityInfo.ActivityAdditions.NumericAdditions ? activityInfo.ActivityAdditions.NumericAdditions.NumericAddition : [];
         var numericRangeAdditions = activityInfo.ActivityAdditions.NumericRangeAdditions ? activityInfo.ActivityAdditions.NumericRangeAdditions.NumericRangeAddition : [];
@@ -655,16 +722,16 @@ function ActivityPreBook(){
             numericRangeAdditions = [numericRangeAdditions];
         }
         textAdditions.forEach(function(addition, i){
-            $("#divActivityForm").append("<div class='col-md-6'><label>"+addition.additionType+"</label><textarea class='form-control' name='optionAddition[additionTypeID"+addition.additionTypeID+"]'></textarea></div>");
+            $("#divActivityForm").append("<div class='col-md-6'><label>"+addition.additionType+"</label><textarea class='form-control' id='TextAdditionID"+addition.additionTypeID+"'></textarea></div>");
         });
         trueFalseAdditions.forEach(function(addition, i){
-            $("#divActivityForm").append("<div class='col-md-6'><label>"+addition.additionType+"</label><select class='form-control' name='optionAddition[additionTypeID"+addition.additionTypeID+"]'><option value='True'>Yes</option><option value='False'>No</option></select></div>");
+            $("#divActivityForm").append("<div class='col-md-6'><label>"+addition.additionType+"</label><select class='form-control' id='TrueFalseAdditionID"+addition.additionTypeID+"'><option value='True'>Yes</option><option value='False'>No</option></select></div>");
         });
         numericAdditions.forEach(function(addition, i){
-            $("#divActivityForm").append("<div class='col-md-6'><label>"+addition.additionType+"</label><input type='number' class='form-control' name='optionAddition[additionTypeID"+addition.additionTypeID+"]'/></div>");
+            $("#divActivityForm").append("<div class='col-md-6'><label>"+addition.additionType+"</label><input type='number' class='form-control' id='NumericAdditionID"+addition.additionTypeID+"'/></div>");
         });
         numericRangeAdditions.forEach(function(addition, i){
-            $("#divActivityForm").append("<div class='col-md-6'><label>"+addition.additionType+"</label><input type='number' min='"+addition.minValue+"' max='"+addition.maxValue+"' class='form-control' name='optionAddition[additionTypeID"+addition.additionTypeID+"]'/></div>");
+            $("#divActivityForm").append("<div class='col-md-6'><label>"+addition.additionType+"</label><input type='number' min='"+addition.minValue+"' max='"+addition.maxValue+"' class='form-control' id='NumericRangeAdditionID"+addition.additionTypeID+"'/></div>");
         });
         var passengers = activityInfo.Passengers.PassengerInfo;
         if(!Array.isArray(passengers)){
@@ -672,16 +739,16 @@ function ActivityPreBook(){
         }
         passengers.forEach(function(p, i){
             $("#divPassengersForm").append(
-                                                "<div class='col-md-12'><h4>Passenger "+p.seqNumber+"</h4>"+
-                                                    "<div class='col-md-6'><label>First Name</label><input type='text' class='form-control' name='passenger[][firstName]'/></div>"+
-                                                    "<div class='col-md-6'><label>Last Name</label><input type='text' class='form-control' name='passenger[][lastName]'/></div>" + 
-                                                    (p.seqNumber == 1 ?
-                                                    "<div class='col-md-6'><label>Home Phone</label><input type='text' class='form-control' name='passenger[][homephone]'/></div>" +
-                                                    "<div class='col-md-6'><label>Mobile Phone</label><input type='text' class='form-control' name='passenger[][mobilephone]'/></div>" 
-                                                    : "" )+
-                                                "</div>"
+            "<div class='col-md-12'><h4>Passenger "+p.seqNumber+"</h4>"+
+                "<div class='col-md-6'><label>First Name</label><input type='text' class='form-control' id='FirstNamePassenger"+p.seqNumber+"'/></div>"+
+                "<div class='col-md-6'><label>Last Name</label><input type='text' class='form-control' id='LastNamePassenger"+p.seqNumber+"'/></div>" + 
+                (p.seqNumber == 1 ?
+                "<div class='col-md-6'><label>Home Phone</label><input type='text' class='form-control' id='HomePhonePassenger"+p.seqNumber+"''/></div>" +
+                "<div class='col-md-6'><label>Mobile Phone</label><input type='text' class='form-control' id='MobilePhonePassenger"+p.seqNumber+"'/></div>" 
+                : "" )+
+            "</div>"
                                                         
-                                            );
+        );
         });
         var cancellation = activityInfo.CancellationPolicy.CancellationPenalties.CancellationPenalty;
         if(!Array.isArray(cancellation)){
@@ -694,8 +761,6 @@ function ActivityPreBook(){
                 $("#ulCancellation").append("<li>Cancellation deadline is "+c.Deadline.unitsFromCheckIn+" "+c.Deadline.offsetUnit+" from check-in. Cancellation penalty is "+c.Penalty.value+" "+c.Penalty.basisType+".</li>");
             }
         });
-        
-       // alert(JSON.stringify(data));
     });
 }
 </script>

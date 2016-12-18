@@ -311,6 +311,96 @@ class AdminController extends Controller
       ];
       dd($hotel_api->book($data));
     }
+    public function bookActivity(){
+        $activity_api = new TouricoActivity();
+        $data = [
+            "BookActivityOptions"=>[
+                "orderInfo"=>(object)[
+                    "rgRefNum"=>"0",
+                    "requestedPrice"=>"252.2", //TODO: Where do I get this from
+                    "currency"=>"USD",
+                    //"confirmationLogoUrl"=>"http://www.touricoholidays.com/logos/touricoholidays.jpg",
+                    "paymentType"=>"Obligo",
+                    "recordLocatorId"=>"0",
+                    //"confirmationEmail"=>"john.pass@yahoo.com",
+                    //"agentRefNumber"=>"123NA",
+                    "DeltaPrice"=> (object)[
+                        "basisType"=>"Percent",
+                        "value"=>"1"
+                    ]
+                ],
+                "reservations"=>[
+                    "ActivitiesInfo"=>[
+                        (object)[
+                            "activityId"=>"1219169",
+                            "optionId"=>"15023436",
+                            "date"=>"2017-01-15",
+                            "ActivityPricing"=> (object)[
+                                "price"=>"252.2",
+                                "currency"=>"USD",
+                                "tax"=>"0",
+                                "PriceBreakdown"=>[
+                                    "Adult"=>(object)[
+                                        "numbers"=>"2",
+                                        "amount"=>"126.1"
+                                    ]
+                                ]
+                            ],
+                            "CancellationPolicy"=>[
+                                "CancellationPenalties"=>[
+                                    (object)[
+                                        "Deadline"=>(object)[
+                                            "offsetUnit"=>"Always",
+                                            "unitsFromCheckIn"=>"1"
+                                        ],
+                                        "Penalty"=>(object)[
+                                            "basisType"=>"Percent",
+                                            "value"=>"100"
+                                        ]
+                                    ]
+                                ]
+                            ],
+                            "ActivityAdditions"=>[
+                                "TextAdditions"=>[
+                                    (object)[
+                                        "additionTypeID"=>"21534",
+                                        "additionType"=>"Guest contact phone number including country code?",
+                                        "value"=>"+1 352-123-4567"
+                                    ]
+                                ]
+                            ],
+                            "Passengers"=>[
+                                (object)[
+                                    "mobilePhone"=>"111111111",
+                                    "homePhone"=>"222222222",
+                                    "isMainContact"=>"true",
+                                    "seatNumber"=>"",
+                                    "lastName"=>"Pass",
+                                    "type"=>"Adult",
+                                    "seqNumber"=>"1",
+                                    "middleName"=>"Anderson",
+                                    "firstName"=>"John"
+                                ],
+                                (object)[
+                                    "mobilePhone"=>"111111111",
+                                    "homePhone"=>"222222222",
+                                    "isMainContact"=>"false",
+                                    "seatNumber"=>"",
+                                    "lastName"=>"Pass",
+                                    "type"=>"Adult",
+                                    "seqNumber"=>"1",
+                                    "middleName"=>"Alison",
+                                    "firstName"=>"Jane"
+                                ]
+                            ],
+                            //"SpecialRequests"=>"We will arrive at 15:00. Thanks."
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        dd($activity_api->Book($data));
+    }
 
     public function activities()
     {

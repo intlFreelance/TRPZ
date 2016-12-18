@@ -50,10 +50,10 @@ class Authorize {
       $request->setMerchantAuthentication($merchantAuthentication);
       $request->setTransactionRequest( $transactionRequestType);
       $controller = new AnetController\CreateTransactionController($request);
-      $response = $controller->executeWithApiResponse($baseURL);
+      $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
       $data = [];
       if ($response != null){
-        if($response->getMessages()->getResultCode() == "OK"){
+        if($response->getMessages()->getResultCode() == "Ok"){
           $tresponse = $response->getTransactionResponse();
         
         if ($tresponse != null && $tresponse->getMessages() != null){

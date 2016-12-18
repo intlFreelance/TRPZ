@@ -32,6 +32,7 @@ Route::group(['prefix' => 'admin','namespace' => 'Admin', 'middleware'=>'auth'],
   Route::get('hoteldetails', 'AdminController@hotelDetails');
   Route::get('checkprices', 'AdminController@checkPrices');
   Route::get('book', 'AdminController@book');
+  Route::get('book-activity', 'AdminController@bookActivity');
   Route::get('activities', 'AdminController@activities');
   Route::get('destinations', 'AdminController@destinations');
   Route::get('packages/json/destinations/{continent?}/{country?}/{state?}',  'PackageController@jsonDestinations');
