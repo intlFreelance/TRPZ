@@ -92,13 +92,14 @@ class PackageController extends Controller
 
     public function updateDestinations()
     {
+        ini_set('memory_limit','256M');
         Destination::truncate();
         echo "Destinations Truncateded...<br>";
         $destination_api = new TouricoDestination;
         $data = [
             'Destination'=>[
                 'Continent'=>null,
-                'StatusDate'=>date('Y-m-d',strtotime('-2 years'))
+                'StatusDate'=> '2008-01-01' // date('Y-m-d',strtotime('-2 years'))
             ]
         ];
         $destination_response = $destination_api->SearchDestinations($data);
