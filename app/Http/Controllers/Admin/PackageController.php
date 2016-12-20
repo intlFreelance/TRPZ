@@ -92,7 +92,7 @@ class PackageController extends Controller
 
     public function updateDestinations()
     {
-        ini_set('memory_limit','256M');
+        ini_set('memory_limit','512M');
         Destination::truncate();
         echo "Destinations Truncateded...<br>";
         $destination_api = new TouricoDestination;
@@ -108,7 +108,7 @@ class PackageController extends Controller
     }
 
     private function parseDestinations($destination_response){
-      ini_set('memory_limit','256M');
+      ini_set('memory_limit','512M');
       foreach($destination_response->DestinationResult->Continent as $continent){
         $continent_destination = Destination::firstOrNew([
           'name'          => $continent->name,
