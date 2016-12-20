@@ -92,6 +92,7 @@ class PackageController extends Controller
 
     public function updateDestinations()
     {
+        ini_set('max_execution_time', 0);
         ini_set('memory_limit','512M');
         Destination::truncate();
         echo "Destinations Truncateded...<br>";
