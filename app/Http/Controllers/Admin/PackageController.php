@@ -108,6 +108,7 @@ class PackageController extends Controller
     }
 
     private function parseDestinations($destination_response){
+      ini_set('memory_limit','256M');
       foreach($destination_response->DestinationResult->Continent as $continent){
         $continent_destination = Destination::firstOrNew([
           'name'          => $continent->name,
