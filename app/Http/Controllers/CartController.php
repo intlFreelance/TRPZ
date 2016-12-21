@@ -12,7 +12,7 @@ use Session;
 
 class CartController extends Controller{
     public function index(){
-        //dd(Cart::content());
+         //dd(Cart::content());
         return view('frontend.cart');
     }
     public function destroy($rowId){
@@ -39,7 +39,7 @@ class CartController extends Controller{
         $activities = [];
         if(isset($input['activities'])){
             foreach($input['activities'] as $activity){
-                $activities[] = json_decode($activity);
+                $activities[] = json_decode(html_entity_decode($activity, ENT_QUOTES | ENT_HTML5));
             }
         }
         $supplements = [];
@@ -54,19 +54,18 @@ class CartController extends Controller{
                 $boardBases[] = json_decode($bb);
             }
         }
+        $hotel = json_decode($input['hotel']);
         Cart::add($package->id, $package->name, 1, $price, 
         [
             'startDate'         => $input['startDate'], 
             'endDate'           => $input['endDate'],
-            'hotelId'           => $package->packageHotels[0]->hotelId,
+            'hotel'             => $hotel,
             'roomTypeId'        => $input['roomTypeId'],
             'activities'        => $activities,
             'boardBases'        => $boardBases,
             'supplements'       => $supplements,
             'priceType'         => $input['priceType'],
-            'price'             => $input['price']
         ])->setTaxRate(0);
-        dd(Cart::content());
         return redirect(route('cart.index'));
     }
 }

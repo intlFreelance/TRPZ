@@ -65,7 +65,7 @@ class TouricoHotel extends SoapService {
     public function CheckAvailabilityAndPrices($data){
         return $this->call('CheckAvailabilityAndPrices',[$data])->CheckAvailabilityAndPricesResult->HotelList;
     }
-    public function Book($data){        
-        return $this->call('BookHotelV3',[$data])->BookHotelV3Result->ResGroup;
+    public function Book($data){
+            return $this->call('BookHotelV3',[$data])->BookHotelV3Result->ResGroup;
     }
 }

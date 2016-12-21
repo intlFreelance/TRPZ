@@ -9,8 +9,8 @@ class Activity extends Model
     function activityOptions(){
         return $this->hasMany('App\ActivityOption');
     }
-    function packageActivities() {
-        return $this->hasMany('App\PackageActivity');
+    function packageActivity() {
+        return $this->hasOne('App\PackageActivity','activityId');
     }
     public $timestamps = false;
     protected static function boot() {
