@@ -51,7 +51,7 @@ class TouricoHotel extends SoapService {
     }
 
     public function SearchHotels($data){        
-        return $this->call('SearchHotelsById',[$data])->SearchHotelsByIdResult->HotelList;
+        return $this->call('SearchHotels',[$data])->SearchHotelsResult->HotelList;
     }
     public function SearchHotelsById($data){
         return $this->call('SearchHotelsById',[$data])->SearchHotelsByIdResult->HotelList;

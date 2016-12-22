@@ -13,6 +13,8 @@
                     <div class="panel-body">
                         <div class="row">
                             @if($b->success)
+                            <div class="col-md-12">
+                                <h3>Hotel</h3>
                                 <div class="panel panel-default">
                                     <div class="panel-heading"><h3 class="panel-title">{!! $b->hotel->name !!} - Hotel Reservation #{!! $b->hotelBooking->Reservations->Reservation->reservationId !!}</h3></div>
                                     <div class="panel-body">
@@ -21,25 +23,41 @@
                                         <p><b>Number of People:</b> {!! $b->hotelBooking->Reservations->Reservation->numOfAdults !!}</p>
                                         <p><b>CheckIn Date:</b> {!!  \Carbon\Carbon::parse($b->hotelBooking->Reservations->Reservation->fromDate)->format('d/m/Y') !!}</p>
                                         <p><b>CheckOut Date:</b> {!!  \Carbon\Carbon::parse($b->hotelBooking->Reservations->Reservation->toDate)->format('d/m/Y') !!}</p>
+                                        <p><b>Transaction Number:</b> {!! $b->hotelBooking->tranNum !!}</p>
                                     </div>
                                 </div>
+                            </div>
                                 <div class="col-sm-12">
                                     @if(count($b->activitiesBooking) > 0)
                                         <h3>Activities</h3>
-                                        @foreach($b->activitiesBooking as $ab)
+                                        @foreach($b->activitiesBooking as $key => $ab)
+                                        @if($key % 2 == 0)
+                                            <div class="row">
+                                        @endif
+                                            <?php $activity =  App\Activity::find($ab->activity->activityDbId); ?>
                                             <div class="col-sm-6">
                                                 @if($ab->success)
                                                     <div class="panel panel-default">
-                                                        <div class="panel-heading"><h3 class="panel-title">Activity Reservation #{!! $ab->hotelBooking->Reservations->Reservation->reservationId !!}</h3></div>
+                                                        <div class="panel-heading"><h3 class="panel-title">{!! $activity->name !!} - Activity Reservation #{!! $ab->activityBooking->Reservations->ActivityReservation->reservationId !!}</h3></div>
                                                         <div class="panel-body">
-                                                            
+                                                            <p><b>Activity Date:</b>{!! \Carbon\Carbon::parse($ab->activityBooking->Reservations->ActivityReservation->date)->format('d/m/Y') !!}</p>
+                                                            <p><b>Transaction Number:</b> {!! $ab->activityBooking->Reservations->ActivityReservation->tranNumber !!}</p>
+                                                            <p><b>Description:</b> {!! $activity->description !!}</p>
                                                         </div>
                                                     </div>
                                                 @else
-                                                    <p>We're sorry, there was an error while booking the Activity.</p>
-                                                    <p>{!! $ab->message !!}</p>
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-heading"><h3 class="panel-title">{!! $activity->name !!} - Activity Reservation</h3></div>
+                                                        <div class="panel-body">
+                                                            <p>We're sorry, there was an error while booking the Activity.</p>
+                                                            <p>{!! $ab->message !!}</p>
+                                                        </div>
+                                                    </div>
                                                 @endif
                                             </div>
+                                        @if($key % 2 != 0)
+                                            </div>
+                                        @endif
                                         @endforeach
                                     @endif
                                 </div>
@@ -52,13 +70,15 @@
                         </div>
                     </div>
                 </div>
-                    {!! dump($b) !!}
                 @endforeach
+            </div>
+            <div class="footer">
+                <a href="javascript: window.print();" class="btn btn-lg btn-warning pull-right no-print"><i class="fa fa-print" aria-hidden="true"></i> Print Purchase Confirmation</a>
             </div>
         </div>
     </div>
 </div>
-<div class="container-fluid">
+<div class="container-fluid no-print">
     @include('frontend.additional')    
 </div>
 @endsection

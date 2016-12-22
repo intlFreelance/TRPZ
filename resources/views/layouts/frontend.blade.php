@@ -126,7 +126,7 @@
           
       </div>
       @yield('content')
-      <div class="container-full blue-container footer">
+      <div class="container-full blue-container footer no-print">
         <div class="container">
           <div class="row">
               <div class="col-sm-3">

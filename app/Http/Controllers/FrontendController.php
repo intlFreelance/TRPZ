@@ -235,6 +235,7 @@ class FrontendController extends Controller
             }catch(Exception $ex){
                 $hotelBookingResult->success = false;
                 $hotelBookingResult->message = $ex->getMessage();
+                $hotelBookingResult->code = $ex->getCode();
             }         
             if(isset($hotelBookingResult->hotelBooking) && $hotelBookingResult->success){
                 foreach($row->options->activities as $key => $activity){
@@ -265,13 +266,14 @@ class FrontendController extends Controller
                         $row = Cart::update($row->rowId, ["price"=>$price]);
                         $activityBookingResult->success = false;
                         $activityBookingResult->message = $ex->getMessage();
+                        $activityBookingResult->code = $ex->getCode();
                     }
                     $hotelBookingResult->activitiesBooking[] = $activityBookingResult;
                 }
             }
             if($hotelBookingResult->success){
                 $totalCharge += $row->price;
-                //Cart::remove($row->rowId);
+                Cart::remove($row->rowId);
             }
             $booking[] = $hotelBookingResult;
         }
