@@ -202,6 +202,7 @@ class FrontendController extends Controller
         $transaction->transactionId = md5(uniqid(rand(), true));
         $transaction->paymentMethod = $input["paymentMethod"];
         $transaction->customer_id = Auth::guard('customer')->user()->id;
+        $transaction->amount = 0;
         $transaction->save();
         
         //Purchase created
@@ -231,6 +232,7 @@ class FrontendController extends Controller
                 $purchasePackage->endDate = Carbon::parse($row->options->endDate)->format('Y-m-d');
                 $purchasePackage->hotelId = $package->packageHotels[0]->hotel->id;
                 $purchasePackage->roomTypeId = $row->options->roomTypeId;
+                $purchasePackage->hotelReservationId = $hotelBookingResult->hotelBooking->Reservations->Reservation->reservationId;
                 $purchasePackage->save();
             }catch(Exception $ex){
                 $hotelBookingResult->success = false;
@@ -250,6 +252,7 @@ class FrontendController extends Controller
                         $purchasePackageActivity = new PurchasePackageActivity;
                         $purchasePackageActivity->activityId = $activity->activityDbId;
                         $purchasePackageActivity->purchase_package_id = $purchasePackage->id;
+                        $purchasePackageActivity->activityReservationId = $activityBookingResult->activityBooking->Reservations->ActivityReservation->reservationId;
                         $purchasePackageActivity->save();
                         
                         $purchasePackageActivityOption = new PurchasePackageActivityOption;
@@ -273,7 +276,7 @@ class FrontendController extends Controller
             }
             if($hotelBookingResult->success){
                 $totalCharge += $row->price;
-                Cart::remove($row->rowId);
+                //Cart::remove($row->rowId);
             }
             $booking[] = $hotelBookingResult;
         }
@@ -288,6 +291,7 @@ class FrontendController extends Controller
             //TODO: handle when credit card payment is declined
         }
         $transaction->transactionId = $paymentResponse->transID;
+        $transaction->amount = $totalCharge;
         $transaction->save();
         $data['purchase'] = $purchase;
         $data['booking'] = $booking;

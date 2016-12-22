@@ -30,6 +30,7 @@
                                 <div class="col-sm-12">
                                     @if(count($b->activitiesBooking) > 0)
                                         <h3>Activities</h3>
+                                        <?php $count = count($b->activitiesBooking);  ?>
                                         @foreach($b->activitiesBooking as $key => $ab)
                                         @if($key % 2 == 0)
                                             <div class="row">
@@ -55,7 +56,7 @@
                                                     </div>
                                                 @endif
                                             </div>
-                                        @if($key % 2 != 0)
+                                        @if($key % 2 != 0 || $key+1 == $count)
                                             </div>
                                         @endif
                                         @endforeach
@@ -72,9 +73,16 @@
                 </div>
                 @endforeach
             </div>
-            <div class="footer">
-                <a href="javascript: window.print();" class="btn btn-lg btn-warning pull-right no-print"><i class="fa fa-print" aria-hidden="true"></i> Print Purchase Confirmation</a>
-            </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <p class="pull-right">
+                            <h3>Total Charged: ${!! number_format($purchase->transaction->amount, 2)  !!}</h3>
+                        </p>
+                    </div>
+                    <div class="col-sm-12">
+                        <a href="javascript: window.print();" class="btn btn-lg btn-warning pull-right no-print"><i class="fa fa-print" aria-hidden="true"></i> Print Purchase Confirmation</a>
+                    </div>
+                </div>
         </div>
     </div>
 </div>
