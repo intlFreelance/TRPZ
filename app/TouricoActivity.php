@@ -59,14 +59,8 @@ class TouricoActivity extends SoapService {
        return $this->call('ActivityPreBook',[$data])->ActivityPreBookResult->ActivitiesSelectedOptions;
     }
     public function Book($data){
-        try{
             $this->header('http://schemas.tourico.com/webservices/authentication','AuthenticationHeader',config('tourico.activity_header'));
-            return $this->call('BookActivity', [$data]);
-        }catch(\Exception $ex){
-            throw $ex;
-            dd($this->getLastRequest());
-        }
-       
+            return $this->call('BookActivity', [$data])->BookActivityResult->ResGroup;
     }
 
 }

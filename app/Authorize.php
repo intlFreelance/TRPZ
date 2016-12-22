@@ -4,6 +4,7 @@ namespace App;
 
 use net\authorize\api\contract\v1 as AnetAPI;
 use net\authorize\api\controller as AnetController;
+use stdClass;
 use Exception;
 class Authorize {
     
@@ -18,10 +19,6 @@ class Authorize {
       }
       $TransactionKey = config("authorize.TransactionKey");
       
-      if(empty(config("authorize.baseURL"))){
-          throw new Exception("The variable 'authorize.baseURL' must be set.");
-      }
-      $baseURL = config("authorize.baseURL");
       // Common setup for API credentials
       $merchantAuthentication = new AnetAPI\MerchantAuthenticationType();
       $merchantAuthentication->setName($APILoginID);
@@ -51,40 +48,39 @@ class Authorize {
       $request->setTransactionRequest( $transactionRequestType);
       $controller = new AnetController\CreateTransactionController($request);
       $response = $controller->executeWithApiResponse(\net\authorize\api\constants\ANetEnvironment::PRODUCTION);
-      $data = [];
+      $data = new stdClass();
       if ($response != null){
         if($response->getMessages()->getResultCode() == "Ok"){
           $tresponse = $response->getTransactionResponse();
         
         if ($tresponse != null && $tresponse->getMessages() != null){
-            $data = [
-                "success"=>true,
-                "responseCode"=>$tresponse->getResponseCode(),
-                "authCode" => $tresponse->getAuthCode(),
-                "transID"=> $tresponse->getTransId(),
-                "code"=> $tresponse->getMessages()[0]->getCode(),
-                "description"=> $tresponse->getMessages()[0]->getDescription()
-            ];
+                $data->success=true;
+                $data->responseCode = $tresponse->getResponseCode();
+                $data->authCode = $tresponse->getAuthCode();
+                $data->transID = $tresponse->getTransId();
+                $data->code = $tresponse->getMessages()[0]->getCode();
+                $data->description = $tresponse->getMessages()[0]->getDescription();
           }else{
-            $data = ["success"=>false];
+            $data->success=false;
             if($tresponse->getErrors() != null){
-                $data["errorCode"] = $tresponse->getErrors()[0]->getErrorCode();
-                $data["errorMessage"] = $tresponse->getErrors()[0]->getErrorText();
+                $data->errorCode = $tresponse->getErrors()[0]->getErrorCode();
+                $data->errorMessage = $tresponse->getErrors()[0]->getErrorText();
             }
           }
         }else{
-          $data = ["success"=>false];
+          $data->success = false;
           $tresponse = $response->getTransactionResponse();
           if($tresponse != null && $tresponse->getErrors() != null){
-            $data["errorCode"] = $tresponse->getErrors()[0]->getErrorCode();
-            $data["errorMessage"] = $tresponse->getErrors()[0]->getErrorText();
+            $data->errorCode =  $tresponse->getErrors()[0]->getErrorCode();
+            $data->errorMessage = $tresponse->getErrors()[0]->getErrorText();
           }else{
-            $data["errorCode"] = $response->getMessages()->getMessage()[0]->getCode();
-            $data["errorMessage"] = $response->getMessages()->getMessage()[0]->getText();
+            $data->errorCode =  $response->getMessages()->getMessage()[0]->getCode();
+            $data->errorMessage = $response->getMessages()->getMessage()[0]->getText();
           }
         }      
       }else{
-        $data = ["success"=>false, "errorMessage"=>"No response returned."];
+        $data->success = false; 
+        $data->errorMessage = "No response returned.";
       }
       return $data;
     }

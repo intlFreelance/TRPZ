@@ -645,7 +645,11 @@ $(function(){
                 }
         }
         activitySaved = true;
-        var activityId = $("#selectedActivityId").val();
+        var activityId = parseInt($("#selectedActivityId").val());
+        var activityOptionId = parseInt($('#activityOptions_'+activityId).val()[0]);
+        currentActivity.activityDbId = activityId;
+        currentActivity.activityOptionDbId = activityOptionId;
+        console.log(currentActivity);
         var serializedActivity = JSON.stringify(currentActivity).replace(/'/g,"&apos;");
         $("#divActivityForms").append("<input type='hidden' activityid='"+activityId+"' name='activities[]' value='"+serializedActivity+"' />");
         $('#activity-modal').modal('toggle');
@@ -700,7 +704,9 @@ function loadPrices(){
     if($("#roomTypeId").val() == "") return;
     var activities = [];
     $("input[name='activities[]']").each(function(i){
-        activities.push(JSON.parse($(this).val()));
+        var activity = JSON.parse($(this).val());
+        activity.dbId = $(this).attr("activityid");
+        activities.push(activity);
     });    
     var data = {
         'hotel-id' : $('#hotel-id').val(),

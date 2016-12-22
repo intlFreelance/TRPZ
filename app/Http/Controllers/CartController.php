@@ -12,6 +12,7 @@ use Session;
 
 class CartController extends Controller{
     public function index(){
+        //Cart::destroy();
          //dd(Cart::content());
         return view('frontend.cart');
     }
