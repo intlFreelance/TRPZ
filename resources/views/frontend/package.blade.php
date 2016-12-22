@@ -80,6 +80,7 @@
             <input type="hidden" id="trpz" name="trpz"/>
             <input type="hidden" id="jetSetGo" name="jetSetGo"/>
             <input type="hidden" id="retail" name="retail"/>
+            <input type="hidden" id="hotel" name="hotel"/>
             <div id="divActivityForms"></div>
             <div class="container">
                 <div class="col-md-6">
@@ -153,6 +154,7 @@
                                 </thead>
                                 <tbody></tbody>
                             </table>
+                            <div id="divSupplements"></div>
                             <ul id="ulBoardBases"></ul>
                             <div id="divBoardBases"></div>
                         </div>
@@ -168,7 +170,7 @@
                 <div class="col-md-6 form-group">
                     <h3>Activities</h3>
                      @if(!$nonav)
-                    <select class="form-control" class="activityId" id="activityId" name="activityIds[]" multiple="multiple">
+                    <select class="form-control" class="activityId" id="activityId" multiple="multiple">
                         @foreach($package->packageActivities as $packageActivity)
                         <option value="{!! $packageActivity->activity->id !!}"> {!! $packageActivity->activity->name !!}</option>
                         @endforeach
@@ -197,7 +199,7 @@
                                             @if($nonav)
                                             <p>{!! $packageActivity->activity->activityOptions[0]->name !!}</p> 
                                             @else
-                                            <select class="form-control activity-options" multiple="multiple" activityId="{!! $packageActivity->activity->id !!}" name="activityOptions[{!! $packageActivity->activity->id !!}][]" id="activityOptions_{!! $packageActivity->activity->id !!}">
+                                            <select class="form-control activity-options" multiple="multiple" activityId="{!! $packageActivity->activity->id !!}"  id="activityOptions_{!! $packageActivity->activity->id !!}">
                                                     <?php $single = count($packageActivity->activity->activityOptions) === 1; ?>
                                                     @foreach($packageActivity->activity->activityOptions as $option)
                                                         <option value="{!! $option->id !!}" {!! $single ? 'selected' : '' !!} > {!! $option->name !!}</option>
@@ -339,6 +341,7 @@
 var roomTypes;
 var roomType;
 var activitySaved = false;
+var currentActivity = null;
 $(function(){
     var now = moment(new Date());
     var end = moment("{!! $package->dealEndDate !!}");
@@ -394,6 +397,7 @@ $(function(){
                 $('#activityOptions_'+activityId).multiselect('updateButtonText');
                 $("#activity-"+activityId).hide();
                 $("#activity-details-"+activityId).hide();
+                loadPrices();
             }
         },
         onDropdownShow: function(event) {
@@ -407,7 +411,6 @@ $(function(){
     $(".activity-options").multiselect({
         buttonWidth: '100%',
         onChange: function(option, checked) {
-            
              var control = $(this);
              var selector = "#"+control[0].$select[0].id;
              var activityId = $(selector).attr("activityid");
@@ -450,6 +453,7 @@ $(function(){
             $("#activity-"+activityId).hide();
             $("#activity-details-"+activityId).hide();
         }
+        currentActivity = null;
     });
     $('#activity-modal').on('shown.bs.modal', function() {
         activitySaved = false;
@@ -485,11 +489,171 @@ $(function(){
             alert("Please complete all Passengers fields");
             return;
         }
+        if(currentActivity.ActivityAdditions.TextAdditions){
+            if(Array.isArray(currentActivity.ActivityAdditions.TextAdditions.TextAddition)){
+                currentActivity.ActivityAdditions.TextAdditions.TextAddition.forEach(function(TextAddition){
+                    var additionTypeID = TextAddition.additionTypeID;
+                    TextAddition.value = $("#TextAdditionID"+additionTypeID).val();
+                });
+            }else{
+                var additionTypeID = currentActivity.ActivityAdditions.TextAdditions.TextAddition.additionTypeID;
+                currentActivity.ActivityAdditions.TextAdditions.TextAddition.value = $("#TextAdditionID"+additionTypeID).val();
+            }
+        }
+        if(currentActivity.ActivityAdditions.TrueFalseAdditions){
+            if(Array.isArray(currentActivity.ActivityAdditions.TrueFalseAdditions.TrueFalseAddition)){
+                currentActivity.ActivityAdditions.TrueFalseAdditions.TrueFalseAddition.forEach(function(TrueFalseAddition){
+                    var additionTypeID = TrueFalseAddition.additionTypeID;
+                    TrueFalseAddition.value = $("#TrueFalseAdditionID"+additionTypeID).val();
+                });
+            }else{
+                var additionTypeID = currentActivity.ActivityAdditions.TrueFalseAdditions.TrueFalseAddition.additionTypeID;
+                currentActivity.ActivityAdditions.TrueFalseAdditions.TrueFalseAddition.value = $("#TrueFalseAdditionID"+additionTypeID).val();
+            }
+        }
+        if(currentActivity.ActivityAdditions.NumericAdditions){
+            if(Array.isArray(currentActivity.ActivityAdditions.NumericAdditions.NumericAddition)){
+                currentActivity.ActivityAdditions.NumericAdditions.NumericAddition.forEach(function(NumericAddition){
+                    var additionTypeID = NumericAddition.additionTypeID;
+                    NumericAddition.value = $("#NumericAdditionID"+additionTypeID).val();
+                });
+            }else{
+                var additionTypeID = currentActivity.ActivityAdditions.NumericAdditions.NumericAddition.additionTypeID;
+                currentActivity.ActivityAdditions.NumericAdditions.NumericAddition.value = $("#NumericAdditionID"+additionTypeID).val();
+            }
+        }
+        if(currentActivity.ActivityAdditions.NumericRangeAdditions){
+            if(Array.isArray(currentActivity.ActivityAdditions.NumericRangeAdditions.NumericRangeAddition)){
+                currentActivity.ActivityAdditions.NumericRangeAdditions.NumericRangeAdditionforEach(function(NumericRangeAddition){
+                    var additionTypeID = NumericRangeAddition.additionTypeID;
+                    NumericRangeAddition.value = $("#NumericRangeAdditionID"+additionTypeID).val();
+                });
+            }else{
+                var additionTypeID = currentActivity.ActivityAdditions.NumericRangeAdditions.NumericRangeAddition.additionTypeID;
+                currentActivity.ActivityAdditions.NumericRangeAdditions.NumericRangeAddition.value = $("#NumericRangeAdditionID"+additionTypeID).val();
+            }
+        }
+        if(Array.isArray(currentActivity.Passengers.PassengerInfo)){
+            currentActivity.Passengers.PassengerInfo.forEach(function(passenger){
+                var seqNumber = passenger.seqNumber;
+                passenger.firstName = $("#FirstNamePassenger"+seqNumber).val();
+                passenger.lastName = $("#LastNamePassenger"+seqNumber).val();
+                if(seqNumber == 1){
+                    passenger.homePhone = $("#HomePhonePassenger"+seqNumber).val();
+                    passenger.mobilePhone = $("#MobilePhonePassenger"+seqNumber).val();
+                }
+                if(passenger.PassengerAdditions){
+                    if(passenger.PassengerAdditions.TextAdditions){
+                        if(Array.isArray(passenger.PassengerAdditions.TextAdditions.TextAddition)){
+                            passenger.PassengerAdditions.TextAdditions.TextAddition.forEach(function(TextAddition){
+                                var additionTypeID = TextAddition.additionTypeID;
+                                TextAddition.value = $("#P"+seqNumber+"TextAdditionID"+additionTypeID).val();
+                            });
+                        }else{
+                            var additionTypeID = passenger.PassengerAdditions.TextAdditions.TextAddition.additionTypeID;
+                            passenger.PassengerAdditions.TextAdditions.TextAddition.value = $("#P"+seqNumber+"TextAdditionID"+additionTypeID).val();
+                        }
+                    }
+                    if(passenger.PassengerAdditions.TrueFalseAdditions){
+                        if(Array.isArray(passenger.PassengerAdditions.TrueFalseAdditions.TrueFalseAddition)){
+                            passenger.PassengerAdditions.TrueFalseAdditions.TrueFalseAddition.forEach(function(TrueFalseAddition){
+                                var additionTypeID = TrueFalseAddition.additionTypeID;
+                                TrueFalseAddition.value = $("#P"+seqNumber+"TrueFalseAdditionID"+additionTypeID).val();
+                            });
+                        }else{
+                            var additionTypeID = passenger.PassengerAdditions.TrueFalseAdditions.TrueFalseAddition.additionTypeID;
+                            passenger.PassengerAdditions.TrueFalseAdditions.TrueFalseAddition.value = $("#P"+seqNumber+"TrueFalseAdditionID"+additionTypeID).val();
+                        }
+                    }
+                    if(passenger.PassengerAdditions.NumericAdditions){
+                        if(Array.isArray(passenger.PassengerAdditions.NumericAdditions.NumericAddition)){
+                            passenger.PassengerAdditions.NumericAdditions.NumericAddition.forEach(function(NumericAddition){
+                                var additionTypeID = NumericAddition.additionTypeID;
+                                NumericAddition.value = $("#P"+seqNumber+"NumericAdditionID"+additionTypeID).val();
+                            });
+                        }else{
+                            var additionTypeID = passenger.PassengerAdditions.NumericAdditions.NumericAddition.additionTypeID;
+                            passenger.PassengerAdditions.NumericAdditions.NumericAddition.value = $("#P"+seqNumber+"NumericAdditionID"+additionTypeID).val();
+                        }
+                    }
+                    if(passenger.PassengerAdditions.NumericRangeAdditions){
+                        if(Array.isArray(passenger.PassengerAdditions.NumericRangeAdditions.NumericRangeAddition)){
+                            passenger.PassengerAdditions.NumericRangeAdditions.NumericRangeAdditionforEach(function(NumericRangeAddition){
+                                var additionTypeID = NumericRangeAddition.additionTypeID;
+                                NumericRangeAddition.value = $("#P"+seqNumber+"NumericRangeAdditionID"+additionTypeID).val();
+                            });
+                        }else{
+                            var additionTypeID = passenger.PassengerAdditions.NumericRangeAdditions.NumericRangeAddition.additionTypeID;
+                            passenger.PassengerAdditions.NumericRangeAdditions.NumericRangeAddition.value = $("#P"+seqNumber+"NumericRangeAdditionID"+additionTypeID).val();
+                        }
+                    }
+                }
+            });
+        }else{
+            var seqNumber = currentActivity.Passengers.PassengerInfo.seqNumber;
+            currentActivity.Passengers.PassengerInfo.firstName = $("#FirstNamePassenger"+seqNumber).val();
+            currentActivity.Passengers.PassengerInfo.lastName = $("#LastNamePassenger"+seqNumber).val();
+            if(seqNumber == 1){
+                currentActivity.Passengers.PassengerInfo.homePhone = $("#HomePhonePassenger"+seqNumber).val();
+                currentActivity.Passengers.PassengerInfo.mobilePhone = $("#MobilePhonePassenger"+seqNumber).val();
+            }
+            if(currentActivity.Passengers.PassengerInfo.PassengerAdditions){
+                    if(currentActivity.Passengers.PassengerInfo.PassengerAdditions.TextAdditions){
+                        if(Array.isArray(currentActivity.Passengers.PassengerInfo.PassengerAdditions.TextAdditions.TextAddition)){
+                            currentActivity.Passengers.PassengerInfo.PassengerAdditions.TextAdditions.TextAddition.forEach(function(TextAddition){
+                                var additionTypeID = TextAddition.additionTypeID;
+                                TextAddition.value = $("#P"+seqNumber+"TextAdditionID"+additionTypeID).val();
+                            });
+                        }else{
+                            var additionTypeID = currentActivity.Passengers.PassengerInfo.PassengerAdditions.TextAdditions.TextAddition.additionTypeID;
+                            currentActivity.Passengers.PassengerInfo.PassengerAdditions.TextAdditions.TextAddition.value = $("#P"+seqNumber+"TextAdditionID"+additionTypeID).val();
+                        }
+                    }
+                    if(currentActivity.Passengers.PassengerInfo.PassengerAdditions.TrueFalseAdditions){
+                        if(Array.isArray(currentActivity.Passengers.PassengerInfo.PassengerAdditions.TrueFalseAdditions.TrueFalseAddition)){
+                            currentActivity.Passengers.PassengerInfo.PassengerAdditions.TrueFalseAdditions.TrueFalseAddition.forEach(function(TrueFalseAddition){
+                                var additionTypeID = TrueFalseAddition.additionTypeID;
+                                TrueFalseAddition.value = $("#P"+seqNumber+"TrueFalseAdditionID"+additionTypeID).val();
+                            });
+                        }else{
+                            var additionTypeID = currentActivity.Passengers.PassengerInfo.PassengerAdditions.TrueFalseAdditions.TrueFalseAddition.additionTypeID;
+                            currentActivity.Passengers.PassengerInfo.PassengerAdditions.TrueFalseAdditions.TrueFalseAddition.value = $("#P"+seqNumber+"TrueFalseAdditionID"+additionTypeID).val();
+                        }
+                    }
+                    if(currentActivity.Passengers.PassengerInfo.PassengerAdditions.NumericAdditions){
+                        if(Array.isArray(passenger.PassengerAdditions.NumericAdditions.NumericAddition)){
+                            currentActivity.Passengers.PassengerInfo.PassengerAdditions.NumericAdditions.NumericAddition.forEach(function(NumericAddition){
+                                var additionTypeID = NumericAddition.additionTypeID;
+                                NumericAddition.value = $("#P"+seqNumber+"NumericAdditionID"+additionTypeID).val();
+                            });
+                        }else{
+                            var additionTypeID = currentActivity.Passengers.PassengerInfo.PassengerAdditions.NumericAdditions.NumericAddition.additionTypeID;
+                            currentActivity.Passengers.PassengerInfo.PassengerAdditions.NumericAdditions.NumericAddition.value = $("#P"+seqNumber+"NumericAdditionID"+additionTypeID).val();
+                        }
+                    }
+                    if(currentActivity.Passengers.PassengerInfo.PassengerAdditions.NumericRangeAdditions){
+                        if(Array.isArray(currentActivity.Passengers.PassengerInfo.PassengerAdditions.NumericRangeAdditions.NumericRangeAddition)){
+                            currentActivity.Passengers.PassengerInfo.PassengerAdditions.NumericRangeAdditions.NumericRangeAdditionforEach(function(NumericRangeAddition){
+                                var additionTypeID = NumericRangeAddition.additionTypeID;
+                                NumericRangeAddition.value = $("#P"+seqNumber+"NumericRangeAdditionID"+additionTypeID).val();
+                            });
+                        }else{
+                            var additionTypeID = currentActivity.Passengers.PassengerInfo.PassengerAdditions.NumericRangeAdditions.NumericRangeAddition.additionTypeID;
+                            currentActivity.Passengers.PassengerInfo.PassengerAdditions.NumericRangeAdditions.NumericRangeAddition.value = $("#P"+seqNumber+"NumericRangeAdditionID"+additionTypeID).val();
+                        }
+                    }
+                }
+        }
         activitySaved = true;
-        var activityId = $("#selectedActivityId").val();
-        var jsonForm = $("#activities-form").serializeJSON();
-        $("#divActivityForms").append("<input type='hidden' activityid='"+activityId+"' name='activityAdditions["+activityId+"][]' value='"+jsonForm+"' />");
+        var activityId = parseInt($("#selectedActivityId").val());
+        var activityOptionId = parseInt($('#activityOptions_'+activityId).val()[0]);
+        currentActivity.activityDbId = activityId;
+        currentActivity.activityOptionDbId = activityOptionId;
+        console.log(currentActivity);
+        var serializedActivity = JSON.stringify(currentActivity).replace(/'/g,"&apos;");
+        $("#divActivityForms").append("<input type='hidden' activityid='"+activityId+"' name='activities[]' value='"+serializedActivity+"' />");
         $('#activity-modal').modal('toggle');
+        loadPrices();
     });
 });
 function initMap() {
@@ -523,8 +687,8 @@ function loadHotelInfo(){
             return;
         }
         var hotel = data.hotel;
+        $("#hotel").val(JSON.stringify(hotel));
         roomTypes = hotel.RoomTypes.RoomType;
-        console.log(hotel);
         if(Array.isArray(roomTypes)){
             $("#roomTypeId").empty().append("<option value></option>");
             roomTypes.forEach(function(roomType, i){
@@ -538,12 +702,19 @@ function loadHotelInfo(){
 }
 function loadPrices(){
     if($("#roomTypeId").val() == "") return;
+    var activities = [];
+    $("input[name='activities[]']").each(function(i){
+        var activity = JSON.parse($(this).val());
+        activity.dbId = $(this).attr("activityid");
+        activities.push(activity);
+    });    
     var data = {
         'hotel-id' : $('#hotel-id').val(),
         'start-date' : $('#startDate').val(),
         'end-date' : $('#endDate').val(),
         'roomType-id' : $('#roomTypeId').val(),
-        'package-id' : $("#packageId").val()
+        'package-id' : $("#packageId").val(),
+        'activities': JSON.stringify(activities)
     };
     showLoading(true);
     $.get("/get-hotel-price", data, function(data){
@@ -572,20 +743,24 @@ function loadPrices(){
         }
         
         $("#tbladditionalFees tbody").empty();
+        $("#divSupplements").empty();
         data.supplements.AtProperty.forEach(function(sup, i){
             $("#tbladditionalFees tbody").append("<tr><td>"+sup.suppName+"</td><td>"+sup.publishPrice+"</td><td>At Property</td></tr>");
+            $("#divSupplements").append("<input type='hidden' name='supplements[]' value='"+JSON.stringify(sup)+"'>");
         });
         data.supplements.Addition.forEach(function(sup, i){
             $("#tbladditionalFees tbody").append("<tr><td>"+sup.suppName+"</td><td>"+sup.publishPrice+"</td><td>Included in price</td></tr>");
+            $("#divSupplements").append("<input type='hidden' name='supplements[]' value='"+JSON.stringify(sup)+"'>");
         });
         data.supplements.Included.forEach(function(sup, i){
             $("#tbladditionalFees tbody").append("<tr><td>"+sup.suppName+"</td><td>"+(parseFloat(sup.publishPrice) == 0 ? "-" : sup.publishPrice) +"</td><td>Included in price</td></tr>");
+            $("#divSupplements").append("<input type='hidden' name='supplements[]' value='"+JSON.stringify(sup)+"'>");
         });
          $("#ulBoardBases").empty();
          $("#divBoardBases").empty();
         data.boardBases.forEach(function(bb, i){
             $("#ulBoardBases").append("<li id='"+bb.bbId+"'>"+bb.bbName+" is included</li>");
-            $("#divBoardBases").append("<input type='hidden' name='boardBases[]' value='"+bb.bbId+"'>");
+            $("#divBoardBases").append("<input type='hidden' name='boardBases[]' value='"+JSON.stringify(bb)+"'>");
         });
     });
 }
@@ -631,7 +806,8 @@ function ActivityPreBook(){
             return;
         }
         var activityInfo = data.response.ActivitiesInfo.ActivityInfo;
-        var textAdditions = activityInfo.ActivityAdditions.TextAdditions.TextAddition;
+        currentActivity = activityInfo;
+        var textAdditions = activityInfo.ActivityAdditions.TextAdditions ? activityInfo.ActivityAdditions.TextAdditions.TextAddition : [];
         var trueFalseAdditions = activityInfo.ActivityAdditions.TrueFalseAdditions ? activityInfo.ActivityAdditions.TrueFalseAdditions.TrueFalseAddition : [];
         var numericAdditions = activityInfo.ActivityAdditions.NumericAdditions ? activityInfo.ActivityAdditions.NumericAdditions.NumericAddition : [];
         var numericRangeAdditions = activityInfo.ActivityAdditions.NumericRangeAdditions ? activityInfo.ActivityAdditions.NumericRangeAdditions.NumericRangeAddition : [];
@@ -648,33 +824,63 @@ function ActivityPreBook(){
             numericRangeAdditions = [numericRangeAdditions];
         }
         textAdditions.forEach(function(addition, i){
-            $("#divActivityForm").append("<div class='col-md-6'><label>"+addition.additionType+"</label><textarea class='form-control' name='optionAddition[additionTypeID"+addition.additionTypeID+"]'></textarea></div>");
+            $("#divActivityForm").append("<div class='col-md-6'><label>"+addition.additionType+"</label><textarea class='form-control' id='TextAdditionID"+addition.additionTypeID+"'></textarea></div>");
         });
         trueFalseAdditions.forEach(function(addition, i){
-            $("#divActivityForm").append("<div class='col-md-6'><label>"+addition.additionType+"</label><select class='form-control' name='optionAddition[additionTypeID"+addition.additionTypeID+"]'><option value='True'>Yes</option><option value='False'>No</option></select></div>");
+            $("#divActivityForm").append("<div class='col-md-6'><label>"+addition.additionType+"</label><select class='form-control' id='TrueFalseAdditionID"+addition.additionTypeID+"'><option value='True'>Yes</option><option value='False'>No</option></select></div>");
         });
         numericAdditions.forEach(function(addition, i){
-            $("#divActivityForm").append("<div class='col-md-6'><label>"+addition.additionType+"</label><input type='number' class='form-control' name='optionAddition[additionTypeID"+addition.additionTypeID+"]'/></div>");
+            $("#divActivityForm").append("<div class='col-md-6'><label>"+addition.additionType+"</label><input type='number' class='form-control' id='NumericAdditionID"+addition.additionTypeID+"'/></div>");
         });
         numericRangeAdditions.forEach(function(addition, i){
-            $("#divActivityForm").append("<div class='col-md-6'><label>"+addition.additionType+"</label><input type='number' min='"+addition.minValue+"' max='"+addition.maxValue+"' class='form-control' name='optionAddition[additionTypeID"+addition.additionTypeID+"]'/></div>");
+            $("#divActivityForm").append("<div class='col-md-6'><label>"+addition.additionType+"</label><input type='number' min='"+addition.minValue+"' max='"+addition.maxValue+"' class='form-control' id='NumericRangeAdditionID"+addition.additionTypeID+"'/></div>");
         });
         var passengers = activityInfo.Passengers.PassengerInfo;
         if(!Array.isArray(passengers)){
             passengers = [passengers];
         }
         passengers.forEach(function(p, i){
+            var additions = "";
+            if(p.PassengerAdditions){
+                var passengerAdditions = p.PassengerAdditions;
+                var textAdditions = passengerAdditions.TextAdditions ? passengerAdditions.TextAdditions.TextAddition : [];
+                var trueFalseAdditions = passengerAdditions.TrueFalseAdditions ? passengerAdditions.TrueFalseAdditions.TrueFalseAddition : [];
+                var numericAdditions = passengerAdditions.NumericAdditions ? passengerAdditions.NumericAdditions.NumericAddition : [];
+                var numericRangeAdditions = passengerAdditions.NumericRangeAdditions ? passengerAdditions.NumericRangeAdditions.NumericRangeAddition : [];
+                if(!Array.isArray(textAdditions)){
+                    textAdditions = [textAdditions];
+                }
+                if(!Array.isArray(trueFalseAdditions)){
+                    trueFalseAdditions = [trueFalseAdditions];
+                }
+                if(!Array.isArray(numericAdditions)){
+                    numericAdditions = [numericAdditions];
+                }
+                if(!Array.isArray(numericRangeAdditions)){
+                    numericRangeAdditions = [numericRangeAdditions];
+                }
+                textAdditions.forEach(function(addition, i){
+                    additions += "<div class='col-md-6'><label>"+addition.additionType+"</label><textarea class='form-control' id='P"+p.seqNumber+"TextAdditionID"+addition.additionTypeID+"'></textarea></div>";
+                });
+                trueFalseAdditions.forEach(function(addition, i){
+                    additions += "<div class='col-md-6'><label>"+addition.additionType+"</label><select class='form-control' id='P"+p.seqNumber+"TrueFalseAdditionID"+addition.additionTypeID+"'><option value='True'>Yes</option><option value='False'>No</option></select></div>";
+                });
+                numericAdditions.forEach(function(addition, i){
+                    additions += "<div class='col-md-6'><label>"+addition.additionType+"</label><input type='number' class='form-control' id='P"+p.seqNumber+"NumericAdditionID"+addition.additionTypeID+"'/></div>";
+                });
+                numericRangeAdditions.forEach(function(addition, i){
+                    additions += "<div class='col-md-6'><label>"+addition.additionType+"</label><input type='number' min='"+addition.minValue+"' max='"+addition.maxValue+"' class='form-control' id='P"+p.seqNumber+"NumericRangeAdditionID"+addition.additionTypeID+"'/></div>";
+                });
+            }
             $("#divPassengersForm").append(
-                                                "<div class='col-md-12'><h4>Passenger "+p.seqNumber+"</h4>"+
-                                                    "<div class='col-md-6'><label>First Name</label><input type='text' class='form-control' name='passenger[][firstName]'/></div>"+
-                                                    "<div class='col-md-6'><label>Last Name</label><input type='text' class='form-control' name='passenger[][lastName]'/></div>" + 
-                                                    (p.seqNumber == 1 ?
-                                                    "<div class='col-md-6'><label>Home Phone</label><input type='text' class='form-control' name='passenger[][homephone]'/></div>" +
-                                                    "<div class='col-md-6'><label>Mobile Phone</label><input type='text' class='form-control' name='passenger[][mobilephone]'/></div>" 
-                                                    : "" )+
-                                                "</div>"
-                                                        
-                                            );
+            "<div class='col-md-12'><h4>Passenger "+p.seqNumber+"</h4>"+
+                "<div class='col-md-6'><label>First Name</label><input type='text' class='form-control' id='FirstNamePassenger"+p.seqNumber+"'/></div>"+
+                "<div class='col-md-6'><label>Last Name</label><input type='text' class='form-control' id='LastNamePassenger"+p.seqNumber+"'/></div>" + 
+                (p.seqNumber == 1 ?
+                "<div class='col-md-6'><label>Home Phone</label><input type='text' class='form-control' id='HomePhonePassenger"+p.seqNumber+"''/></div>" +
+                "<div class='col-md-6'><label>Mobile Phone</label><input type='text' class='form-control' id='MobilePhonePassenger"+p.seqNumber+"'/></div>" 
+                : "" ) + additions +
+            "</div>");
         });
         var cancellation = activityInfo.CancellationPolicy.CancellationPenalties.CancellationPenalty;
         if(!Array.isArray(cancellation)){
@@ -687,8 +893,6 @@ function ActivityPreBook(){
                 $("#ulCancellation").append("<li>Cancellation deadline is "+c.Deadline.unitsFromCheckIn+" "+c.Deadline.offsetUnit+" from check-in. Cancellation penalty is "+c.Penalty.value+" "+c.Penalty.basisType+".</li>");
             }
         });
-        
-       // alert(JSON.stringify(data));
     });
 }
 </script>

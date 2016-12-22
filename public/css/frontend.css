@@ -643,3 +643,9 @@ a.hero-button:hover{
     vertical-align: middle;
     float: none;
 }
+@media print
+{
+    .no-print{
+        display: none;
+    }
+}

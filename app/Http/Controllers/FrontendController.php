@@ -23,6 +23,8 @@ use App\TouricoHotel;
 use App\TouricoActivity;
 use Exception;
 use Session;
+use App\Authorize;
+use stdClass;
 
 class FrontendController extends Controller
 {
@@ -98,6 +100,10 @@ class FrontendController extends Controller
     }
     public function payment(){
         //final validation 
+        if(Cart::count() == 0){
+            Session::flash('danger',"There are no items in the cart yet.");
+            return view('frontend.cart');
+        }
         $packageRemoved = false;
         $hotel_api = new TouricoHotel();
         foreach(Cart::content() as $row){
@@ -107,7 +113,8 @@ class FrontendController extends Controller
             $endDate = Carbon::parse($row->options->endDate)->format('Y-m-d');
             $adultNum = $package->numberOfPeople;
             $roomTypeId = $row->options->roomTypeId;
-            $priceType = $row->options->priceType;
+            $activities = $row->options->activities;
+            $hotelInCart = $row->options->hotel;
             $data = [
                 'request'=>[
                     'HotelIdsInfo'=>[
@@ -151,9 +158,10 @@ class FrontendController extends Controller
                 $roomAvailable &= $availability->status;
             }
             //checking prices availabilities
-            $pricesAndFees = $this->getHotelPriceDetails($roomType, $package);
-            $previousPrice =  floatval(str_replace(",", "", $row->price));
-            $actualPrice = floatval(str_replace(",", "", $pricesAndFees['prices'][$priceType]));
+            $actualPricesAndFees = $this->getHotelPriceDetails($hotel, $roomTypeId, $package, $activities);
+            $previousPricesAndFees = $this->getHotelPriceDetails($hotelInCart, $roomTypeId, $package, $activities);
+            $previousPrice =  floatval(str_replace(",", "", $previousPricesAndFees['prices']["price"]));
+            $actualPrice = floatval(str_replace(",", "", $actualPricesAndFees['prices']["price"]));
 
             $priceAvailable = $previousPrice  === $actualPrice;
             if(!$roomAvailable || !$priceAvailable){
@@ -172,10 +180,11 @@ class FrontendController extends Controller
         return view('frontend.payment');
     }
     public function makePayment(Request $request){
+        ini_set('max_execution_time', 300);
         $this->validate($request, [
             'paymentMethod' => 'required|max:255',
             'nameOnCard' => 'required|max:255',
-            'cardNumber' => 'required|max:16|min:16',
+            'cardNumber' => 'required|max:16|min:13',
             'cardType'=> 'required',
             'expMonth' => 'required|numeric|between:1,12',
             'expYear' => 'required|numeric|between:'.date('Y').','.(date('Y') + 10),
@@ -200,36 +209,178 @@ class FrontendController extends Controller
         $purchase->transaction_id = $transaction->id;
         $purchase->save();
         
+        $booking = [];
+        $totalCharge = 0;
         //Purchase details
         foreach(Cart::content() as $row){
-            $purchasePackage = new PurchasePackage;
-            $purchasePackage->packageId = $row->id;
-            $purchasePackage->purchase_id = $purchase->id;
-            $purchasePackage->startDate = Carbon::parse($row->options->startDate)->format('Y-m-d');
-            $purchasePackage->endDate = Carbon::parse($row->options->endDate)->format('Y-m-d');
-            $purchasePackage->hotelId = $row->options->hotelId;
-            $purchasePackage->roomTypeId = $row->options->roomTypeId;
-            $purchasePackage->save();
-            foreach($row->options->activities as $activity){
-                $purchasePackageActivity = new PurchasePackageActivity;
-                $purchasePackageActivity->activityId = $activity['id'];
-                $purchasePackageActivity->purchase_package_id = $purchasePackage->id;
-                $purchasePackageActivity->save();
-                foreach($activity["options"] as $optionId){
-                    $purchasePackageActivityOption = new PurchasePackageActivityOption;
-                    $purchasePackageActivityOption->activity_optionId = $optionId;
-                    $purchasePackageActivityOption->purchase_package_activity_id = $purchasePackageActivity->id;
-                    $purchasePackageActivityOption->save();
+            //Hotel Booking
+            $package = Package::find($row->id);
+            $hotelBookingResult = new stdClass();
+            $hotelBookingResult->hotel = $row->options->hotel;
+            $hotelBookingResult->package = $package;
+            $hotelBookingResult->activitiesBooking = [];
+            try{
+                $hotelBooking = $this->bookHotel($row);
+                $hotelBookingResult->hotelBooking = $hotelBooking;
+                $hotelBookingResult->success = true;
+                
+                $purchasePackage = new PurchasePackage;
+                $purchasePackage->packageId = $row->id;
+                $purchasePackage->purchase_id = $purchase->id;
+                $purchasePackage->startDate = Carbon::parse($row->options->startDate)->format('Y-m-d');
+                $purchasePackage->endDate = Carbon::parse($row->options->endDate)->format('Y-m-d');
+                $purchasePackage->hotelId = $package->packageHotels[0]->hotel->id;
+                $purchasePackage->roomTypeId = $row->options->roomTypeId;
+                $purchasePackage->save();
+            }catch(Exception $ex){
+                $hotelBookingResult->success = false;
+                $hotelBookingResult->message = $ex->getMessage();
+                $hotelBookingResult->code = $ex->getCode();
+            }         
+            if(isset($hotelBookingResult->hotelBooking) && $hotelBookingResult->success){
+                foreach($row->options->activities as $key => $activity){
+                    //Activity Booking
+                    $activityBookingResult = new stdClass();
+                    $activityBookingResult->activity = $activity;
+                    try{
+                        $activityBooking = $this->bookActivity($activity);
+                        $activityBookingResult->activityBooking = $activityBooking;
+                        $activityBookingResult->success = true;
+                        
+                        $purchasePackageActivity = new PurchasePackageActivity;
+                        $purchasePackageActivity->activityId = $activity->activityDbId;
+                        $purchasePackageActivity->purchase_package_id = $purchasePackage->id;
+                        $purchasePackageActivity->save();
+                        
+                        $purchasePackageActivityOption = new PurchasePackageActivityOption;
+                        $purchasePackageActivityOption->activity_optionId = $activity->activityOptionDbId;
+                        $purchasePackageActivityOption->purchase_package_activity_id = $purchasePackageActivity->id;
+                        $purchasePackageActivityOption->save();
+                    }catch(Exception $ex){
+                        $activities = $row->options->activities;
+                        unset($activities[$key]);
+                        //$options = $row->options;
+                        //$options["activities"] = $activities;
+                        $pricesAndFees = $this->getHotelPriceDetails($row->options->hotel, $row->options->roomTypeId, $package, $activities);
+                        $price =  floatval(str_replace(",", "", $pricesAndFees['prices'][$row->options->priceType]));
+                        $row = Cart::update($row->rowId, ["price"=>$price]);
+                        $activityBookingResult->success = false;
+                        $activityBookingResult->message = $ex->getMessage();
+                        $activityBookingResult->code = $ex->getCode();
+                    }
+                    $hotelBookingResult->activitiesBooking[] = $activityBookingResult;
                 }
             }
+            if($hotelBookingResult->success){
+                $totalCharge += $row->price;
+                Cart::remove($row->rowId);
+            }
+            $booking[] = $hotelBookingResult;
         }
+        if($totalCharge == 0){
+            Session::flash('danger',"There are no items in the cart yet.");
+            return view('frontend.cart');
+        }
+        $expirationDate = str_pad($input["expMonth"], 2, "0").substr($input["expYear"], 2, 2);
+        $paymentResponse = Authorize::chargeCreditCard($input['cardNumber'], $expirationDate, $input["securityCode"], $totalCharge);
         
-        //Destroy Shopping Cart
-        Cart::destroy();
+        if(!$paymentResponse->success){
+            //TODO: handle when credit card payment is declined
+        }
+        $transaction->transactionId = $paymentResponse->transID;
+        $transaction->save();
         $data['purchase'] = $purchase;
+        $data['booking'] = $booking;
         return view('frontend.confirmation', $data);
     }
     
+    private function bookHotel($cartRow){
+            $package = Package::find($cartRow->id);
+            $hotelId = $package->packageHotels[0]->hotel->id;
+            $dbhotel = Hotel::find($hotelId);
+            $hotel = $cartRow->options->hotel;
+            $startDate = Carbon::parse($cartRow->options->startDate)->format('Y-m-d');
+            $endDate = Carbon::parse($cartRow->options->endDate)->format('Y-m-d');
+            $roomTypeId = $cartRow->options->roomTypeId;
+            $roomTypes = $hotel->RoomTypes->RoomType;
+            $roomType = null;
+            if(is_array($roomTypes)){
+                foreach($roomTypes as $iRoomType){
+                    if($iRoomType->hotelRoomTypeId == $roomTypeId){
+                        $roomType = $iRoomType;
+                        break;
+                    }
+                }
+            }else{
+                $roomType = $roomTypes;
+            }
+            if(is_array($roomType->Occupancies->Occupancy)){
+                $ocupancy = $roomType->Occupancies->Occupancy[0];
+            }else{
+                $ocupancy = $roomType->Occupancies->Occupancy;
+            }
+            //dd($ocupancy);
+            $price = $ocupancy->occupPublishPrice;
+            $deltaPrice = round($price * 0.02, 2); 
+            $currency = $dbhotel->currency;
+            $boardBases = [];
+            foreach($cartRow->options->boardBases as $bb){
+                $boardBases[] = ['Id'=>$bb->bbId, 'Price'=>$bb->bbPublishPrice];
+            }
+            $data = [
+                'request'=>[
+                  'RecordLocatorId'=>0,
+                  'HotelId'=>$dbhotel->hotelId,
+                  'HotelRoomTypeId'=>$roomTypeId,
+                  'CheckIn'=>$startDate,
+                  'CheckOut'=>$endDate,
+                  'RoomsInfo'=>[
+                    [
+                      'RoomId'=>0,
+                      'ContactPassenger'=>[
+                        'FirstName'=>Auth::guard('customer')->user()->firstName,
+                        'LastName'=>Auth::guard('customer')->user()->lastName
+                      ],
+                      'SelectedBoardBase'=> isset($boardBases[0]) ? $boardBases[0] : null,
+                      'SelectedSupplements'=> $cartRow->options->supplements,
+                      'AdultNum'=>$package->numberOfPeople,
+                      'ChildNum'=>'0',
+                    ]
+                  ],
+                  'PaymentType'=>'Obligo',
+                  'RequestedPrice'=>$price,
+                  'DeltaPrice'=>$deltaPrice,
+                  'IsOnlyAvailable'=>True,
+                  'Currency'=>$currency,
+                ]
+          ];
+            $hotel_api = new TouricoHotel();
+            return $hotel_api->Book($data);
+    }
+    private function bookActivity($activity){
+            $data = [
+            "BookActivityOptions"=>[
+                "orderInfo"=>(object)[
+                    "rgRefNum"=>"0",
+                    "requestedPrice"=>$activity->ActivityPricing->price, //TODO: Where do I get this from
+                    "currency"=>"USD",
+                    "paymentType"=>"Obligo",
+                    "recordLocatorId"=>"0",
+                    "DeltaPrice"=> (object)[
+                        "basisType"=>"Percent",
+                        "value"=>"2"
+                    ]
+                ],
+                "reservations"=>["ActivitiesInfo"=>[$activity]]
+            ]
+        ];
+            $activity_api = new TouricoActivity();
+            return $activity_api->Book($data);
+    }
+    
+    private function authorizePayment(){
+        
+    }
     public function confirmation($id){
         $purchase = Purchase:: find($id);
         $data['purchase'] = $purchase;
@@ -260,6 +411,15 @@ class FrontendController extends Controller
             $startDate = Carbon::parse($this->request->query('start-date'))->format('Y-m-d');
             $endDate = Carbon::parse($this->request->query('end-date'))->format('Y-m-d');
             $hotel = $this->getTouricoHotel($hotelId, $startDate, $endDate, $package->numberOfPeople);
+            $activities = json_decode($this->request->query('activities'));
+            
+            $pricesAndFees = $this->getHotelPriceDetails($hotel, $roomTypeId, $package, $activities);
+            return response()->json(['success'=>true, 'prices'=>$pricesAndFees['prices'], 'supplements'=>$pricesAndFees['supplements'], 'boardBases'=>$pricesAndFees['boardBases']]);
+        }catch(Exception $ex){
+            return response()->json(["success"=>false, "message"=>$ex->getMessage()]);
+        }
+    }
+    private function getHotelPriceDetails($hotel, $roomTypeId, $package, $activities){
             $roomTypes = $hotel->RoomTypes->RoomType;
             $roomType = null;
             if(is_array($roomTypes)){
@@ -272,24 +432,14 @@ class FrontendController extends Controller
             }else{
                 $roomType = $roomTypes;
             }
-            $pricesAndFees = $this->getHotelPriceDetails($roomType, $package);
-            return response()->json(['success'=>true, 'prices'=>$pricesAndFees['prices'], 'supplements'=>$pricesAndFees['supplements'], 'boardBases'=>$pricesAndFees['boardBases']]);
-        }catch(Exception $ex){
-            return response()->json(["success"=>false, "message"=>$ex->getMessage()]);
-        }
-    }
-    private function getHotelPriceDetails($roomType, $package){
-        $subTotal = 0;
-            
             if(is_array($roomType->Occupancies->Occupancy)){
                 $ocupancy = $roomType->Occupancies->Occupancy[0];
             }else{
                 $ocupancy = $roomType->Occupancies->Occupancy;
             }
-            $breakdownPrices = $ocupancy->PriceBreakdown->Price;
+            $subTotal = $ocupancy->occupPublishPrice;
             $boardBases = null;
             $supplements = null;
-            
             if(isset($ocupancy->BoardBases->Boardbase)){
                 $boardBases = $ocupancy->BoardBases->Boardbase;
             }
@@ -327,9 +477,7 @@ class FrontendController extends Controller
                     }
                 }
             }
-            foreach($breakdownPrices as $price){
-                $subTotal += floatval($price->valuePublish);
-            }
+            
             foreach($supplementFeesArray["Addition"] as $addFee){
                 $times = 1;
                 if(get_class($supplement) == "App\PerPersonSupplement"){
@@ -337,11 +485,15 @@ class FrontendController extends Controller
                 }
                 $additionalFees += $addFee->publishPrice * $times;
             }
-            
+            $activitiesFees = 0;
+            foreach($activities as $activity){
+                $activitiesFees += $activity->ActivityPricing->price;
+            }
             $prices = [
-                "retail"=> number_format(round($subTotal * (1 + $package->retailMarkupPercentage/100) + $additionalFees, 2),2),
-                "trpz"=> number_format(round($subTotal * (1 + $package->trpzMarkupPercentage/100) + $additionalFees, 2),2),
-                "jetSetGo"=> number_format(round($subTotal * (1 + $package->jetSetGoMarkupPercentage/100) + $additionalFees, 2),2)
+                "retail"=> number_format(round($subTotal * (1 + $package->retailMarkupPercentage/100) + $additionalFees + $activitiesFees, 2),2),
+                "trpz"=> number_format(round($subTotal * (1 + $package->trpzMarkupPercentage/100) + $additionalFees + $activitiesFees, 2),2),
+                "jetSetGo"=> number_format(round($subTotal * (1 + $package->jetSetGoMarkupPercentage/100) + $additionalFees + $activitiesFees, 2),2),
+                "price"=> $subTotal,
             ];
             return [
                 'prices'=>$prices,
