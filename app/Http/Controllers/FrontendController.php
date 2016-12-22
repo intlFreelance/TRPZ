@@ -382,7 +382,7 @@ class FrontendController extends Controller
         
     }
     public function confirmation($id){
-        $purchase = Purchase:: find($id);
+        $purchase = Purchase::find($id);
         $data['purchase'] = $purchase;
         return view('frontend.confirmation', $data);
     }
