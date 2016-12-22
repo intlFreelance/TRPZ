@@ -100,7 +100,7 @@ class PackageController extends Controller
         $data = [
             'Destination'=>[
                 'Continent'=>null,
-                'StatusDate'=> date('Y-m-d',strtotime('-2 years'))
+                'StatusDate'=> date('Y-m-d',strtotime('-1 years'))
             ]
         ];
         $destination_response = $destination_api->SearchDestinations($data);
