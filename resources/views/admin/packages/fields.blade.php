@@ -279,8 +279,14 @@
                 <div
                     ng-repeat="hotel in hotels"
                     class="hotel-panel panel panel-default pull-left">
-                    <div class="panel-heading"><%hotel.name%></div>
-                    <div class="panel-body">
+                    <div class="panel-heading">
+                        <%hotel.name%>
+                        <div class="pull-right">
+                            <span style="padding-right:25px"><%hotel.minAverPrice + ' ' + hotel.currency%></span>
+                            <a  data-toggle="collapse" data-target="#hotel-<%$index%>"><span class="caret"></span> </a>
+                        </div>
+                    </div>
+                    <div class="panel-body collapse" id="hotel-<%$index%>">
                         <div class="row">
                             <div class="col-sm-2">
                                 <img width="100" height="100" src="<%hotel.thumb%>"/>
