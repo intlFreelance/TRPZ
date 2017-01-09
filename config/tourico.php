@@ -24,8 +24,8 @@ $demo = [
     'destination_header' => ['username'=>'destinfirst','password'=>'Destination@18','culture'=>'en_US','version'=>'7.123']
 ];
 
-// Returning Production only for the test sever
-return $production;
+// Returning Demo only for development
+return $demo;
 
 $uri_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri_segments = explode('/', trim($uri_path, '/'));
