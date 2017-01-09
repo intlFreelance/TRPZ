@@ -45,6 +45,7 @@ class TouricoDestination extends SoapService {
 
     public function SearchDestinations($data)
     {
+        ini_set('memory_limit','512M');
         $this->header('http://touricoholidays.com/WSDestinations/2008/08/DataContracts','LoginHeader',config('tourico.destination_header'));
         return $this->call('GetHotelsByDestination',[$data]);
     }

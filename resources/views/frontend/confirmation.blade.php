@@ -6,7 +6,7 @@
         <div class="col-md-10 col-md-offset-1">
             <div class="col-md-12">
                 <h1 class="blue-header">Purchase Confirmation</h1>
-                <h3>Transaction Code: {!! $purchase->transaction->transactionId !!} </h3>
+                <h3>Purchase Confirmation Code: {!! $purchase->transaction->transactionId !!} </h3>
                 @foreach($booking as $b)
                 <div class="panel panel-default">
                     <div class="panel-heading"><h3 class="panel-title">Package {!! $b->package->name !!}</h3></div>
@@ -19,11 +19,11 @@
                                     <div class="panel-heading"><h3 class="panel-title">{!! $b->hotel->name !!} - Hotel Reservation #{!! $b->hotelBooking->Reservations->Reservation->reservationId !!}</h3></div>
                                     <div class="panel-body">
                                         <p><b>Address:</b> {!! $b->hotel->Location->address !!}, {!! $b->hotel->Location->city !!}, {!! $b->hotel->Location->stateCode !!}</p>
-                                        <p><b>Number of Room:</b> {!! $b->hotel->NumOfRoom !!}</p>
                                         <p><b>Number of People:</b> {!! $b->hotelBooking->Reservations->Reservation->numOfAdults !!}</p>
                                         <p><b>CheckIn Date:</b> {!!  \Carbon\Carbon::parse($b->hotelBooking->Reservations->Reservation->fromDate)->format('d/m/Y') !!}</p>
                                         <p><b>CheckOut Date:</b> {!!  \Carbon\Carbon::parse($b->hotelBooking->Reservations->Reservation->toDate)->format('d/m/Y') !!}</p>
-                                        <p><b>Transaction Number:</b> {!! $b->hotelBooking->tranNum !!}</p>
+                                        <p><b>Voucher Code:</b> {!! $b->hotelBooking->tranNum !!}</p>
+
                                     </div>
                                 </div>
                             </div>
@@ -42,7 +42,7 @@
                                                         <div class="panel-heading"><h3 class="panel-title">{!! $activity->name !!} - Activity Reservation #{!! $ab->activityBooking->Reservations->ActivityReservation->reservationId !!}</h3></div>
                                                         <div class="panel-body">
                                                             <p><b>Activity Date:</b>{!! \Carbon\Carbon::parse($ab->activityBooking->Reservations->ActivityReservation->date)->format('d/m/Y') !!}</p>
-                                                            <p><b>Transaction Number:</b> {!! $ab->activityBooking->Reservations->ActivityReservation->tranNumber !!}</p>
+                                                            <p><b>Voucher Code:</b> {!! $ab->activityBooking->Reservations->ActivityReservation->tranNumber !!}</p>
                                                             <p><b>Description:</b> {!! $activity->description !!}</p>
                                                         </div>
                                                     </div>
