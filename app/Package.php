@@ -32,4 +32,28 @@ class Package extends Model
         }
         return rtrim($categoriesNames,', ' );
     }
+    public function getRetailPrice($formatted=true){
+        $hotel = $this->packageHotels[0]->hotel;
+        $price = round($hotel->minAverPrice * $this->numberOfDays * (1 + $this->retailMarkupPercentage/100),2);
+        if($formatted){
+            $price = "$ ".number_format($price, 2);
+        }
+        return $price;
+    }
+    public function getTrpzPrice($formatted=true){
+        $hotel = $this->packageHotels[0]->hotel;
+        $price = round($hotel->minAverPrice * $this->numberOfDays * (1 + $this->trpzMarkupPercentage/100), 2);
+        if($formatted){
+            $price = "$ ".number_format($price, 2);
+        }
+        return $price;
+    }
+    public function getJetSetGoPrice($formatted=true){
+        $hotel = $this->packageHotels[0]->hotel;
+        $price = round($hotel->minAverPrice * $this->numberOfDays * (1 + $this->jetSetGoMarkupPercentage/100),2);
+        if($formatted){
+            $price = "$ ".number_format($price, 2);
+        }
+        return $price;
+    }
 }
