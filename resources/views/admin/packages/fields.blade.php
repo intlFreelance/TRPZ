@@ -280,6 +280,7 @@
                     ng-repeat="hotel in hotels"
                     class="hotel-panel panel panel-default pull-left">
                     <div class="panel-heading">
+                        <span ng-show="hotel.bestValue" class="glyphicon glyphicon-star" title="Exclusive Deal"></span>
                         <%hotel.name%>
                         <div class="pull-right">
                             <span style="padding-right:25px"><%hotel.minAverPrice + ' ' + hotel.currency%></span>
