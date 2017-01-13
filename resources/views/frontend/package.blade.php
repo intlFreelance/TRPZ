@@ -13,13 +13,13 @@
         </div>
         <div class="row package-pricing">
                 <div class="package-price col-md-4">
-                    <p>Retail Price: <span id="retailPrice" class="text-muted">Select Travel Dates</span></p>
+                    <p>From: <span id="retailPrice">{!! $package->getRetailPrice() !!}</span></p>
                 </div>
                 <div class="package-price col-md-4">
-                    <p>Jet Set Go Price: <span id="jetSetGoPrice" class="text-muted">Select Travel Dates</span></p>
+                    <p>Jet Set Go Price: <span id="jetSetGoPrice">{!! $package->getJetSetGoPrice() !!}</span></p>
                 </div>
                 <div class="package-price col-md-4">
-                    <p>Trpz Price: <span id="trpzPrice" class="text-muted">Select Travel Dates</span></p>
+                    <p>Trpz Price: <span id="trpzPrice">{!! $package->getTrpzPrice() !!}</span></p>
                 </div>
            
         </div>
@@ -238,7 +238,7 @@
                         <div class="package-pricing2-description">
                             <div class="col-md-6">
                                 <h4>Jet Set Go®</h4>
-                                <h4 id="jetSetGoPrice2" class="text-muted">Select Travel Dates</h4>
+                                <h4 id="jetSetGoPrice2">{!! $package->getJetSetGoPrice() !!}</h4>
                                 <p>Discount: 61% </p>
                             </div>
                             <div class="col-md-6">
@@ -254,7 +254,7 @@
                         <div class="package-pricing2-description">
                             <div class="col-md-6">
                                 <h4>Trpz™</h4>
-                                <h4 id="trpzPrice2" class="text-muted">Select Travel Dates</h4>
+                                <h4 id="trpzPrice2">{!! $package->getTrpzPrice() !!}</h4>
                                 <p>Discount: 39%</p>
                             </div>
                             <div class="col-md-6">
@@ -723,13 +723,13 @@ function loadPrices(){
             alert(data.message);
             return;
         }
-        $("#retailPrice").html("$ "+data.prices.retail).removeClass("text-muted");
+        $("#retailPrice").html("$ "+data.prices.retail);
         $("#retail").val(data.prices.retail);
-        $("#trpzPrice").html("$ "+data.prices.trpz).removeClass("text-muted");
-        $("#trpzPrice2").html("$ "+data.prices.trpz).removeClass("text-muted");
+        $("#trpzPrice").html("$ "+data.prices.trpz);
+        $("#trpzPrice2").html("$ "+data.prices.trpz);
         $("#trpz").val(data.prices.trpz);
-        $("#jetSetGoPrice").html("$ "+data.prices.jetSetGo).removeClass("text-muted");
-        $("#jetSetGoPrice2").html("$ "+data.prices.jetSetGo).removeClass("text-muted");
+        $("#jetSetGoPrice").html("$ "+data.prices.jetSetGo);
+        $("#jetSetGoPrice2").html("$ "+data.prices.jetSetGo);
         $("#jetSetGo").val(data.prices.jetSetGo);
         if(data.supplements.AtProperty.length > 0 || data.supplements.Addition.length > 0 || data.supplements.Included.length > 0 || data.boardBases.length > 0 ){ 
             $("#divAdditionalFees").show();
