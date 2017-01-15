@@ -263,7 +263,7 @@
         <div>
         <div class="row">
             <div class="col-sm-12">
-                <h4>Select Hotel<img ng-show="activitiesLoading" class="loading" src="{{ url('img/trpzLoading.gif') }}"/></h4>
+                <h4>Select Hotel<img ng-show="hotelsLoading" class="loading" src="{{ url('img/trpzLoading.gif') }}"/></h4>
             </div>
         </div>
         <div class="row">
@@ -278,7 +278,8 @@
                 <p ng-show="hotels && hotels.length === 0">No hotels available at this destination.</p>-->
                 <div
                     ng-repeat="hotel in hotels"
-                    class="hotel-panel panel panel-default pull-left">
+                    class="hotel-panel panel panel-default pull-left"
+                    ng-show="!hotelSelected || addedHotels[0] === hotel">
                     <div class="panel-heading">
                         <span ng-show="hotel.bestValue" class="glyphicon glyphicon-star" title="Exclusive Deal" style="color: #FFC107;"></span>
                         <%hotel.name%>
@@ -300,6 +301,43 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <p><%hotel.desc%></p>
+                            </div>
+                            <div class="col-sm-12"  ng-show="hotelSelected && addedHotels[0] === hotel && selectedHotelDetails">
+                                <b>Location:</b> <% selectedHotelDetails.Location.address %>, <% selectedHotelDetails.Location.city %>, <% selectedHotelDetails.Location.state %> <% selectedHotelDetails.Location.zip %> 
+                                <br/>
+                                <b>Reference Points:</b> 
+                                <ul>
+                                    <li ng-repeat="refPoint in selectedHotelDetails.RefPoints">
+                                        <% refPoint.distance %> <% refPoint.unit %>s <% refPoint.direction %> from <% refPoint.name %>
+                                    </li>
+                                </ul>
+                                <br/>
+                                <b>Amenities:</b>
+                                <ul>
+                                    <li ng-repeat="amenity in selectedHotelDetails.Amenities"><% amenity.name %></li>
+                                </ul>
+                                <br/>
+                                <b>Room Types</b>
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Room Type</th>
+                                            <th>Facilities</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="roomType in selectedHotelDetails.RoomType">
+                                            <td>
+                                                <% roomType.name %>
+                                            </td>
+                                            <td>
+                                                <ul>
+                                                    <li ng-repeat="facility in roomType.Facilities.Facility"><% facility.name %></li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
