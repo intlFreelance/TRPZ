@@ -20,6 +20,8 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
   $scope.nonFormValidation = nonFormValidation;
   $scope.loadModel = loadModel;
   $scope.categories = [];
+  $scope.hotelSelected = false;
+  $scope.selectedHotelDetails = undefined;
   
   getDestinations(null);
   getCategories();
@@ -112,6 +114,8 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
   }
   function selectHotel(hotel){
       $scope.addedHotels[0] = hotel;
+      getHotelDetails(hotel);
+      $scope.hotelSelected = true;
   }
   function addHotel(hotel) {
 	var alreadyAdded = false;
@@ -126,7 +130,39 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
       $scope.addedHotels.push(hotel);
     }
   }
-
+  function getHotelDetails(hotel){
+      $scope.hotelsLoading = true;
+    var url = '/admin/hoteldetails?' +
+    'hotel-id=' + hotel.hotelId;
+    $http.get(url)
+      .then(function(response) {
+          $scope.selectedHotelDetails = {};
+          $scope.selectedHotelDetails.Location = response.data.details.Location;
+          if(!angular.isArray(response.data.details.Amenities.Amenity)){
+              $scope.selectedHotelDetails.Amenities = [];
+              $scope.selectedHotelDetails.Amenities[0] = response.data.details.Amenities.Amenity;
+          }else{
+              $scope.selectedHotelDetails.Amenities = response.data.details.Amenities.Amenity;
+          }
+          if(!angular.isArray(response.data.details.RoomType)){
+              $scope.selectedHotelDetails.RoomType = [];
+              $scope.selectedHotelDetails.RoomType[0] = response.data.details.RoomType;
+          }else{
+              $scope.selectedHotelDetails.RoomType = response.data.details.RoomType;
+          }
+          if(!angular.isArray(response.data.details.RefPoints)){
+              $scope.selectedHotelDetails.RefPoints = [];
+              $scope.selectedHotelDetails.RefPoints[0] = response.data.details.RefPoints;
+          }else{
+              $scope.selectedHotelDetails.RefPoints = response.data.details.RefPoints;
+          }
+          $scope.hotelsLoading = false;
+      })
+      .catch(function(error) {
+            $log.error('Failed to load Hotel Details', error);
+            $scope.hotelsLoading = false;
+      });
+  }
   function removeHotel(hotel) {
     $scope.addedHotels.forEach(function(addedHotel) {
 	  if (parseInt(addedHotel.hotelId) === parseInt(hotel.hotelId)){
@@ -134,6 +170,8 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
             $scope.addedHotels.splice(indexToRemove, 1);
           }
     });
+    $scope.hotelSelected = false;
+    $scope.selectedHotelDetails = undefined;
   }
 
   function getActivities(destination) {
