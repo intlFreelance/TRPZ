@@ -90,7 +90,7 @@
                         @if(isset($voucher))
                             {!! Form::text('startDate', $package->startDate->format('m/d/Y'), [ 'class' => 'form-control', 'readonly'=>'readonly']) !!}
                         @else
-                            {!! Form::text('startDate', null, ['id'=>'startDate', 'class' => 'form-control', 'required'=>'required']) !!}
+                            {!! Form::text('startDate', null, ['id'=>'startDate', 'class' => 'form-control', 'required'=>'required', 'autocomplete'=>'off']) !!}
                             @if ($errors->has('startDate'))
                                 <span class="help-block">
                                     <strong>{{ $errors->first('startDate') }}</strong>
@@ -232,16 +232,16 @@
             
             @if(!$nonav)
             <div class="container">
-                <div class="col-md-12"><h3>Package Pricing Options</h3></div>
-                <div class="col-md-6">
+                <div class="col-sm-12"><h3>Package Pricing Options</h3></div>
+                <div class="col-sm-6">
                     <div class="package-pricing2">
                         <div class="package-pricing2-description">
-                            <div class="col-md-6">
+                            <div class="col-sm-6">
                                 <h4>Jet Set Go®</h4>
                                 <h4 id="jetSetGoPrice2">{!! $package->getJetSetGoPrice() !!}</h4>
                                 <p>Discount: 61% </p>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-sm-6">
                                 <p style="font-size: 14px;">Jet Set Go® offers you a whole new way pay for travel: by playing games! Download Jet Set Go® right now to stop paying for travel and start playing for travel!</p>
                             </div>
                         </div>
@@ -249,15 +249,16 @@
                     </div>
 
                 </div>
-                <div class="col-md-6">
+                <br/>
+                <div class="col-sm-6">
                     <div class="package-pricing2">
                         <div class="package-pricing2-description">
-                            <div class="col-md-6">
+                            <div class="col-sm-6">
                                 <h4>Trpz™</h4>
                                 <h4 id="trpzPrice2">{!! $package->getTrpzPrice() !!}</h4>
                                 <p>Discount: 39%</p>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-sm-6">
                                 <p style="font-size: 14px;">By booking your vacation package with Trpz™, you receive unmatched discounts on one of a kind vacation experiences.</p>
                             </div>
                         </div>
