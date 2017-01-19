@@ -732,8 +732,11 @@ function loadPrices(){
         $("#jetSetGoPrice").html("$ "+data.prices.jetSetGo);
         $("#jetSetGoPrice2").html("$ "+data.prices.jetSetGo);
         $("#jetSetGo").val(data.prices.jetSetGo);
-        $jetSetGoDiscountPercentage = round((data.prices.retail - data.prices.jetSetGo)/data.prices.retail * 100,1);
-        $trpzDiscountPercentage = round((data.prices.retail - data.prices.trpz)/data.prices.retail * 100,1);
+        var retailPrice = parseFloat(data.prices.retail.replace(",",""));
+        var jetSetGoPrice = parseFloat(data.prices.jetSetGo.replace(",",""));
+        var trpzPrice = parseFloat(data.prices.trpz.replace(",",""));
+        $jetSetGoDiscountPercentage = round((retailPrice - jetSetGoPrice)/retailPrice * 100,1);
+        $trpzDiscountPercentage = round((retailPrice - trpzPrice)/retailPrice * 100,1);
         $("#jetSetGoDiscountPercentage").html($jetSetGoDiscountPercentage+"%");
         $("#trpzDiscountPercentage").html($trpzDiscountPercentage+"%");
         if(data.supplements.AtProperty.length > 0 || data.supplements.Addition.length > 0 || data.supplements.Included.length > 0 || data.boardBases.length > 0 ){ 
