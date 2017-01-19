@@ -239,7 +239,7 @@
                             <div class="col-sm-6">
                                 <h4>Jet Set Go®</h4>
                                 <h4 id="jetSetGoPrice2">{!! $package->getJetSetGoPrice() !!}</h4>
-                                <p>Discount: 61% </p>
+                                <p>Discount: <span id="jetSetGoDiscountPercentage">{!! $package->getJetSetGoDiscountPercentage() !!}</span> </p>
                             </div>
                             <div class="col-sm-6">
                                 <p style="font-size: 14px;">Jet Set Go® offers you a whole new way pay for travel: by playing games! Download Jet Set Go® right now to stop paying for travel and start playing for travel!</p>
@@ -256,7 +256,7 @@
                             <div class="col-sm-6">
                                 <h4>Trpz™</h4>
                                 <h4 id="trpzPrice2">{!! $package->getTrpzPrice() !!}</h4>
-                                <p>Discount: 39%</p>
+                                <p>Discount: <span id="trpzDiscountPercentage">{!! $package->getTrpzDiscountPercentage() !!}</span></p>
                             </div>
                             <div class="col-sm-6">
                                 <p style="font-size: 14px;">By booking your vacation package with Trpz™, you receive unmatched discounts on one of a kind vacation experiences.</p>
@@ -732,6 +732,10 @@ function loadPrices(){
         $("#jetSetGoPrice").html("$ "+data.prices.jetSetGo);
         $("#jetSetGoPrice2").html("$ "+data.prices.jetSetGo);
         $("#jetSetGo").val(data.prices.jetSetGo);
+        $jetSetGoDiscountPercentage = round((data.prices.retail - data.prices.jetSetGo)/data.prices.retail * 100,1);
+        $trpzDiscountPercentage = round((data.prices.retail - data.prices.trpz)/data.prices.retail * 100,1);
+        $("#jetSetGoDiscountPercentage").html($jetSetGoDiscountPercentage+"%");
+        $("#trpzDiscountPercentage").html($trpzDiscountPercentage+"%");
         if(data.supplements.AtProperty.length > 0 || data.supplements.Addition.length > 0 || data.supplements.Included.length > 0 || data.boardBases.length > 0 ){ 
             $("#divAdditionalFees").show();
             if(data.supplements.AtProperty.length > 0 || data.supplements.Addition.length > 0 || data.supplements.Included.length > 0){
