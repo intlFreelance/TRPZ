@@ -57,7 +57,7 @@ class TouricoHotel extends SoapService {
         return $this->call('SearchHotelsById',[$data])->SearchHotelsByIdResult->HotelList;
     }
     public function getHotelDetailsV3($data){
-        return $this->call('GetHotelDetailsV3',[$data]);
+        return $this->call('GetHotelDetailsV3',[$data])->GetHotelDetailsV3Result->any["TWS_HotelDetailsV3"]->Hotel;
     }
     public function GetCancellationPolicies($data){
         return $this->call('GetCancellationPolicies',[$data]);

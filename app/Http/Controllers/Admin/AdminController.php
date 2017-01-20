@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\TouricoHotel;
 use App\TouricoActivity;
 use App\TouricoDestination;
-
+use Exception;
 class AdminController extends Controller
 {
     /**
@@ -15,9 +15,10 @@ class AdminController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Request $request)
     {
         $this->middleware('auth');
+        $this->request = $request;   
     }
 
     /**
@@ -112,13 +113,19 @@ class AdminController extends Controller
 
     public function hotelDetails()
     {
-      $hotel_api = new TouricoHotel;
-      $data = [
-        'HotelIds'=>[
-            (object) array('id' => 1320286)
-        ]
-      ];
-      dd($hotel_api->getHotelDetailsV3($data));
+        try{
+            $hotel_api = new TouricoHotel;
+            $hotelId = $this->request->query('hotel-id');
+            $data = [
+              'HotelIds'=>[
+                  (object) array('id' => $hotelId)
+              ]
+            ];
+            $details = $hotel_api->getHotelDetailsV3($data);
+            return response()->json(['success'=>true, 'details'=> $details]);
+        }catch(Exception $ex){
+            return response()->json(["success"=>false, "message"=>$ex->getMessage()]);
+        }
     }
 
     public function hotelCancellation() {
