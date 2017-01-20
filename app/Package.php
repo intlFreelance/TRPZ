@@ -56,4 +56,22 @@ class Package extends Model
         }
         return $price;
     }
+    public function getJetSetGoDiscountPercentage($formatted=true){
+        $retailPrice = $this->getRetailPrice(false);
+        $jetSetGoPrice = $this->getJetSetGoPrice(false);
+        $percentage = round((($retailPrice - $jetSetGoPrice)/$retailPrice)*100, 1);
+        if($formatted){
+            $percentage = $percentage."%";
+        }
+        return $percentage;
+    }
+    public function getTrpzDiscountPercentage($formatted=true){
+        $retailPrice = $this->getRetailPrice(false);
+        $trpzPrice = $this->getTrpzPrice(false);
+        $percentage = round((($retailPrice - $trpzPrice)/$retailPrice)*100, 1);
+        if($formatted){
+            $percentage = $percentage."%";
+        }
+        return $percentage;
+    }
 }

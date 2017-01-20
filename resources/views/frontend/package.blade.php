@@ -90,7 +90,7 @@
                         @if(isset($voucher))
                             {!! Form::text('startDate', $package->startDate->format('m/d/Y'), [ 'class' => 'form-control', 'readonly'=>'readonly']) !!}
                         @else
-                            {!! Form::text('startDate', null, ['id'=>'startDate', 'class' => 'form-control', 'required'=>'required']) !!}
+                            {!! Form::text('startDate', null, ['id'=>'startDate', 'class' => 'form-control', 'required'=>'required', 'autocomplete'=>'off']) !!}
                             @if ($errors->has('startDate'))
                                 <span class="help-block">
                                     <strong>{{ $errors->first('startDate') }}</strong>
@@ -232,16 +232,16 @@
             
             @if(!$nonav)
             <div class="container">
-                <div class="col-md-12"><h3>Package Pricing Options</h3></div>
-                <div class="col-md-6">
+                <div class="col-sm-12"><h3>Package Pricing Options</h3></div>
+                <div class="col-sm-6">
                     <div class="package-pricing2">
                         <div class="package-pricing2-description">
-                            <div class="col-md-6">
+                            <div class="col-sm-6">
                                 <h4>Jet Set Go®</h4>
                                 <h4 id="jetSetGoPrice2">{!! $package->getJetSetGoPrice() !!}</h4>
-                                <p>Discount: 61% </p>
+                                <p>Discount: <span id="jetSetGoDiscountPercentage">{!! $package->getJetSetGoDiscountPercentage() !!}</span> </p>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-sm-6">
                                 <p style="font-size: 14px;">Jet Set Go® offers you a whole new way pay for travel: by playing games! Download Jet Set Go® right now to stop paying for travel and start playing for travel!</p>
                             </div>
                         </div>
@@ -249,15 +249,16 @@
                     </div>
 
                 </div>
-                <div class="col-md-6">
+                <br/>
+                <div class="col-sm-6">
                     <div class="package-pricing2">
                         <div class="package-pricing2-description">
-                            <div class="col-md-6">
+                            <div class="col-sm-6">
                                 <h4>Trpz™</h4>
                                 <h4 id="trpzPrice2">{!! $package->getTrpzPrice() !!}</h4>
-                                <p>Discount: 39%</p>
+                                <p>Discount: <span id="trpzDiscountPercentage">{!! $package->getTrpzDiscountPercentage() !!}</span></p>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-sm-6">
                                 <p style="font-size: 14px;">By booking your vacation package with Trpz™, you receive unmatched discounts on one of a kind vacation experiences.</p>
                             </div>
                         </div>
@@ -731,6 +732,13 @@ function loadPrices(){
         $("#jetSetGoPrice").html("$ "+data.prices.jetSetGo);
         $("#jetSetGoPrice2").html("$ "+data.prices.jetSetGo);
         $("#jetSetGo").val(data.prices.jetSetGo);
+        var retailPrice = parseFloat(data.prices.retail.replace(",",""));
+        var jetSetGoPrice = parseFloat(data.prices.jetSetGo.replace(",",""));
+        var trpzPrice = parseFloat(data.prices.trpz.replace(",",""));
+        $jetSetGoDiscountPercentage = round((retailPrice - jetSetGoPrice)/retailPrice * 100,1);
+        $trpzDiscountPercentage = round((retailPrice - trpzPrice)/retailPrice * 100,1);
+        $("#jetSetGoDiscountPercentage").html($jetSetGoDiscountPercentage+"%");
+        $("#trpzDiscountPercentage").html($trpzDiscountPercentage+"%");
         if(data.supplements.AtProperty.length > 0 || data.supplements.Addition.length > 0 || data.supplements.Included.length > 0 || data.boardBases.length > 0 ){ 
             $("#divAdditionalFees").show();
             if(data.supplements.AtProperty.length > 0 || data.supplements.Addition.length > 0 || data.supplements.Included.length > 0){
