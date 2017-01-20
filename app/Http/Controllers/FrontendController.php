@@ -324,7 +324,7 @@ class FrontendController extends Controller
                 $ocupancy = $roomType->Occupancies->Occupancy;
             }
             //dd($ocupancy);
-            $price = $ocupancy->occupPublishPrice;
+            $price = $ocupancy->occupPrice;
             $deltaPrice = round($price * 0.02, 2); 
             $currency = $dbhotel->currency;
             $boardBases = [];
@@ -441,7 +441,7 @@ class FrontendController extends Controller
             }else{
                 $ocupancy = $roomType->Occupancies->Occupancy;
             }
-            $subTotal = $ocupancy->occupPublishPrice;
+            $subTotal = $ocupancy->occupPrice;
             $boardBases = null;
             $supplements = null;
             if(isset($ocupancy->BoardBases->Boardbase)){
