@@ -383,6 +383,10 @@ a.purple-button{
 .box:hover > .overlay {
     opacity: .8;
 }
+.title-link, .title-link:hover{
+    text-decoration: none;
+    color: white;
+}
 a.hero-button{
     color: #ffffff !important;
     padding: 10px 50px;
@@ -518,7 +522,7 @@ a.hero-button:hover{
 }
 .package-pricing2-description{
     margin: 30px;
-    height: 130px;
+    min-height: 130px;
 
 }
 .package-pricing2 h4 {
