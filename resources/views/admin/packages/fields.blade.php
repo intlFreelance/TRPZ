@@ -31,12 +31,12 @@
             <div class="row">
                 <div class="col-sm-4">
                     <div class="form-group">
-                        <label>Number of Days</label>
-                        <input ng-model="numberOfDays" min="1" name="numberOfDays" type="number" class="form-control" required  ng-pattern="/^[0-9]+$/">
-                        <span style="color:red" ng-show="packageForm.numberOfDays.$invalid &&  (packageForm.$submitted || packageForm.numberOfDays.$touched )">
-                            <span ng-show="packageForm.numberOfDays.$error.required">Number of Days required.</span>
-                            <span ng-show="!packageForm.numberOfDays.$error.min && packageForm.numberOfDays.$error.pattern">Number of Days must be integer.</span>
-                            <span ng-show="packageForm.numberOfDays.$error.min">Number of People must be greater than zero.</span>
+                        <label>Number of Nights</label>
+                        <input ng-model="numberOfNights" min="1" name="numberOfNights" type="number" class="form-control" required  ng-pattern="/^[0-9]+$/">
+                        <span style="color:red" ng-show="packageForm.numberOfNights.$invalid &&  (packageForm.$submitted || packageForm.numberOfNights.$touched )">
+                            <span ng-show="packageForm.numberOfNights.$error.required">Number of Nights required.</span>
+                            <span ng-show="!packageForm.numberOfNights.$error.min && packageForm.numberOfNights.$error.pattern">Number of Nights must be integer.</span>
+                            <span ng-show="packageForm.numberOfNights.$error.min">Number of Nights must be greater than zero.</span>
                         </span>
                     </div>
                 </div>
@@ -257,7 +257,7 @@
         </div>
         <div class="row">
         <div class="col-sm-12">
-            <p ng-show="missingDates" class="alert alert-danger">Please choose valid start date and number of days.</p>
+            <p ng-show="missingDates" class="alert alert-danger">Please choose valid start date and number of nights.</p>
         </div>
         </div>
         <div>
