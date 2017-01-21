@@ -361,8 +361,13 @@ $(function(){
         var endDate = new Date(e.date);
         var numberOfNights = parseInt($("#numberOfNights").val());
         endDate.setDate(endDate.getDate() + numberOfNights);
-        $("#activityDate").datetimepicker("maxDate", moment(endDate));
-        $("#activityDate").datetimepicker("minDate", moment(e.date));
+        if(moment(endDate) < moment($("#activityDate").datetimepicker("minDate"))){
+            $("#activityDate").datetimepicker("minDate", moment(e.date));
+            $("#activityDate").datetimepicker("maxDate", moment(endDate));
+        }else{
+            $("#activityDate").datetimepicker("maxDate", moment(endDate));
+            $("#activityDate").datetimepicker("minDate", moment(e.date));
+        }
         $('#endDate').val(moment(endDate).format('MM/DD/YYYY'));
         loadHotelInfo();
     }).val("");
@@ -375,6 +380,7 @@ $(function(){
     $("#activityId").multiselect({
         buttonWidth: '100%',
         onChange: function(option, checked, select) {
+            alert("hola");
             var activityId = $(option).val();
             $("#selectedActivityId").val(activityId);
             if(checked){
@@ -650,7 +656,6 @@ $(function(){
         var activityOptionId = parseInt($('#activityOptions_'+activityId).val()[0]);
         currentActivity.activityDbId = activityId;
         currentActivity.activityOptionDbId = activityOptionId;
-        console.log(currentActivity);
         var serializedActivity = JSON.stringify(currentActivity).replace(/'/g,"&apos;");
         $("#divActivityForms").append("<input type='hidden' activityid='"+activityId+"' name='activities[]' value='"+serializedActivity+"' />");
         $('#activity-modal').modal('toggle');
@@ -681,6 +686,13 @@ function loadHotelInfo(){
         'number-of-people' : $("#numberOfPeople").val()
     };
     showLoading(true);
+    $("#roomTypeId").empty();
+    //$("#activityId").multiselect("deselectAll", false);
+    //$('#activityId').multiselect('updateButtonText');
+     $("#divActivityForms input").each(function(){
+         $('#activityId').multiselect('deselect', $(this).attr("activityid"), true);
+      });
+    $("#divAdditionalFees").hide();
     $.get("/search-hotel-by-id", data, function(data){
         showLoading(false);
         if(!data.success){
@@ -691,7 +703,7 @@ function loadHotelInfo(){
         $("#hotel").val(JSON.stringify(hotel));
         roomTypes = hotel.RoomTypes.RoomType;
         if(Array.isArray(roomTypes)){
-            $("#roomTypeId").empty().append("<option value></option>");
+            $("#roomTypeId").append("<option value></option>");
             roomTypes.forEach(function(roomType, i){
                 $("#roomTypeId").append("<option value='"+roomType.hotelRoomTypeId+"'>"+roomType.name+"</option>");
             });
@@ -702,7 +714,8 @@ function loadHotelInfo(){
     });
 }
 function loadPrices(){
-    if($("#roomTypeId").val() == "") return;
+    alert($("#roomTypeId").val());
+    if(!$("#roomTypeId").val() || $("#roomTypeId").val() == "") return;
     var activities = [];
     $("input[name='activities[]']").each(function(i){
         var activity = JSON.parse($(this).val());
