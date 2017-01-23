@@ -13,13 +13,13 @@
         </div>
         <div class="row package-pricing">
                 <div class="package-price col-md-4">
-                    <p>From: <span id="retailPrice">{!! $package->getRetailPrice() !!}</span></p>
+                    <p>Retail from: <span id="retailPrice">{!! $package->getRetailPrice() !!}</span></p>
                 </div>
                 <div class="package-price col-md-4">
-                    <p>Jet Set Go Price: <span id="jetSetGoPrice">{!! $package->getJetSetGoPrice() !!}</span></p>
+                    <p>Jet Set Go! from: <span id="jetSetGoPrice">{!! $package->getJetSetGoPrice() !!}</span></p>
                 </div>
                 <div class="package-price col-md-4">
-                    <p>Trpz Price: <span id="trpzPrice">{!! $package->getTrpzPrice() !!}</span></p>
+                    <p>TRPZ from: <span id="trpzPrice">{!! $package->getTrpzPrice() !!}</span></p>
                 </div>
            
         </div>
