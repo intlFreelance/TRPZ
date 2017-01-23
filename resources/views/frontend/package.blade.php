@@ -74,7 +74,7 @@
         <div class="row">
             {!! Form::open(['route' => ['cart.add'], 'method' => 'post', 'id'=>'package-form']) !!}
             <input type="hidden" value="{!! $package->id !!}" name="packageId" id="packageId"/>
-            <input type="hidden" value="{!! $package->numberOfDays !!}" id="numberOfDays"/>
+            <input type="hidden" value="{!! $package->numberOfNights !!}" id="numberOfNights"/>
             <input type="hidden" value="{!! $package->numberOfPeople !!}" id="numberOfPeople"/>
             <input type="hidden" id="priceType" name="priceType"/>
             <input type="hidden" id="trpz" name="trpz"/>
@@ -101,7 +101,7 @@
                     <div class="col-md-6 form-group">
                         <label for="endDate" class="control-label">End Date</label>
                         @if(isset($voucher))
-                            {!! Form::text('endDate', $package->startDate->addDays($package->numberOfDays)->format('m/d/Y'), [ 'class' => 'form-control', 'readonly'=>'readonly']) !!}
+                            {!! Form::text('endDate', $package->startDate->addDays($package->numberOfNights)->format('m/d/Y'), [ 'class' => 'form-control', 'readonly'=>'readonly']) !!}
                         @else
                             {!! Form::text('endDate', null, ['id'=>'endDate', 'class' => 'form-control', 'required'=>'required', 'readonly'=>'readonly']) !!}
                         @endif
@@ -359,8 +359,8 @@ $(function(){
         maxDate: moment("{!! $package->endDate !!}")
     }).on("dp.hide", function (e) {
         var endDate = new Date(e.date);
-        var numberOfDays = parseInt($("#numberOfDays").val());
-        endDate.setDate(endDate.getDate() + numberOfDays);
+        var numberOfNights = parseInt($("#numberOfNights").val());
+        endDate.setDate(endDate.getDate() + numberOfNights);
         $("#activityDate").datetimepicker("maxDate", moment(endDate));
         $("#activityDate").datetimepicker("minDate", moment(e.date));
         $('#endDate').val(moment(endDate).format('MM/DD/YYYY'));

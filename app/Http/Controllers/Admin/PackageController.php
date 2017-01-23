@@ -268,7 +268,7 @@ class PackageController extends Controller
         $package->tripItinerary = isset($newPackage['tripItinerary']) ? $newPackage['tripItinerary'] : "";
         $package->frequentlyAskedQuestions = isset($newPackage['frequentlyAskedQuestions']) ? $newPackage['frequentlyAskedQuestions'] : "";
         $package->otherNotes = isset($newPackage['otherNotes']) ? $newPackage['otherNotes'] : "";
-        $package->numberOfDays = $newPackage['numberOfDays'];
+        $package->numberOfNights = $newPackage['numberOfNights'];
         $package->startDate = Carbon::createFromFormat('m/d/Y',$newPackage['startDate'])->format('Y-m-d');
         $package->endDate = Carbon::createFromFormat('m/d/Y', $newPackage['endDate'])->format('Y-m-d');
         $package->numberOfPeople = $newPackage['numberOfPeople'];

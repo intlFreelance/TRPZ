@@ -96,7 +96,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
     $scope.missingDates = false;
     $scope.city = destination.name;
     var endDate = new Date($scope.startDate);
-    endDate.setDate(endDate.getDate() + $scope.numberOfDays);
+    endDate.setDate(endDate.getDate() + $scope.numberOfNights);
     var hotelUrl = '/admin/search-hotels?' +
     'destination=' + destination.destinationCode +
     '&start-date=' + $scope.startDate +
@@ -179,7 +179,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
     $scope.activitiesLoading = true;
     $scope.missingDates = false;
     var endDate = new Date($scope.startDate);
-    endDate.setDate(endDate.getDate() + $scope.numberOfDays);
+    endDate.setDate(endDate.getDate() + $scope.numberOfNights);
     var activityUrl = '/admin/search-activities?' +
     'destination-id=' + destination.destinationId +
     '&start-date=' + $scope.startDate +
@@ -243,7 +243,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
       tripItinerary : $scope.tripItinerary,
       frequentlyAskedQuestions : $scope.frequentlyAskedQuestions,
       otherNotes : $scope.otherNotes,
-      numberOfDays: $scope.numberOfDays,
+      numberOfNights: $scope.numberOfNights,
       startDate: $filter('date')($scope.startDate, 'yyyy-MM-dd'),
       endDate: $filter('date')($scope.endDate, 'yyyy-MM-dd'),
       numberOfPeople: $scope.numberOfPeople,
@@ -283,7 +283,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
         $scope.tripItinerary = package.tripItinerary;
         $scope.frequentlyAskedQuestions = package.frequentlyAskedQuestions;
         $scope.otherNotes = package.otherNotes;
-        $scope.numberOfDays = package.numberOfDays;
+        $scope.numberOfNights = package.numberOfNights;
         $scope.startDate = $filter('date')( package.startDate, 'MM/dd/yyyy');
         $scope.endDate = $filter('date')( package.endDate, 'MM/dd/yyyy');
         $scope.numberOfPeople = package.numberOfPeople;
