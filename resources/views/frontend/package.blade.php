@@ -380,7 +380,6 @@ $(function(){
     $("#activityId").multiselect({
         buttonWidth: '100%',
         onChange: function(option, checked, select) {
-            alert("hola");
             var activityId = $(option).val();
             $("#selectedActivityId").val(activityId);
             if(checked){
@@ -714,7 +713,6 @@ function loadHotelInfo(){
     });
 }
 function loadPrices(){
-    alert($("#roomTypeId").val());
     if(!$("#roomTypeId").val() || $("#roomTypeId").val() == "") return;
     var activities = [];
     $("input[name='activities[]']").each(function(i){
