@@ -204,8 +204,8 @@ $(function(){
         maxDate: moment("12/31/2016")
     }).on("dp.hide", function (e) {
         var endDate = new Date(e.date);
-        var numberOfDays = parseInt($("#numberOfDays").val());
-        endDate.setDate(endDate.getDate() + numberOfDays);
+        var numberOfNights = parseInt($("#numberOfNights").val());
+        endDate.setDate(endDate.getDate() + numberOfNights);
         $('#endDate').val(moment(endDate).format('MM/DD/YYYY'));
     }).val("");
     $("#hotelId").on("change", function(){
@@ -368,7 +368,7 @@ function initMap() {
                 <div class="row">
             <form method="POST" action="http://localhost:8000/cart" accept-charset="UTF-8"><input name="_token" type="hidden" value="qLbzudXmmRHJwCRFduWHyrcByC0yabPxWmDRvZGp">
             <input type="hidden" value="76" name="packageId" />
-            <input type="hidden" value="5" id="numberOfDays"/>
+            <input type="hidden" value="5" id="numberOfNights"/>
             <div class="container">
                 <div class="col-md-6">
                     <div class="col-md-12"><h3>Select Dates</h3></div>
@@ -513,8 +513,8 @@ $(function(){
         maxDate: moment("2016-12-31 00:00:00")
     }).on("dp.hide", function (e) {
         var endDate = new Date(e.date);
-        var numberOfDays = parseInt($("#numberOfDays").val());
-        endDate.setDate(endDate.getDate() + numberOfDays);
+        var numberOfNights = parseInt($("#numberOfNights").val());
+        endDate.setDate(endDate.getDate() + numberOfNights);
         $('#endDate').val(moment(endDate).format('MM/DD/YYYY'));
     }).val("");
     $("#hotelId").on("change", function(){
@@ -762,7 +762,7 @@ function initMap() {
                 <div class="row">
             <form method="POST" action="http://localhost:8000/cart" accept-charset="UTF-8"><input name="_token" type="hidden" value="qLbzudXmmRHJwCRFduWHyrcByC0yabPxWmDRvZGp">
             <input type="hidden" value="76" name="packageId" />
-            <input type="hidden" value="5" id="numberOfDays"/>
+            <input type="hidden" value="5" id="numberOfNights"/>
             <div class="container">
                 <div class="col-md-6">
                     <div class="col-md-12"><h3>Select Dates</h3></div>
@@ -907,8 +907,8 @@ $(function(){
         maxDate: moment("2016-12-31 00:00:00")
     }).on("dp.hide", function (e) {
         var endDate = new Date(e.date);
-        var numberOfDays = parseInt($("#numberOfDays").val());
-        endDate.setDate(endDate.getDate() + numberOfDays);
+        var numberOfNights = parseInt($("#numberOfNights").val());
+        endDate.setDate(endDate.getDate() + numberOfNights);
         $('#endDate').val(moment(endDate).format('MM/DD/YYYY'));
     }).val("");
     $("#hotelId").on("change", function(){
