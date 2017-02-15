@@ -288,7 +288,8 @@ class FrontendController extends Controller
         $paymentResponse = Authorize::chargeCreditCard($input['cardNumber'], $expirationDate, $input["securityCode"], $totalCharge);
         
         if(!$paymentResponse->success){
-            //TODO: handle when credit card payment is declined
+            Session::flash('danger',"We were not able to process your payment at this time. ".(isset($paymentResponse) && isset($paymentResponse->errorMessage)? $paymentResponse->errorMessage : ""));
+            return view('frontend.payment');
         }
         $transaction->transactionId = $paymentResponse->transID;
         $transaction->amount = $totalCharge;

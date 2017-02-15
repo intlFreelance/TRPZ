@@ -16,6 +16,7 @@ class TransactionsTableSeeder extends Seeder
          DB::table('transactions')->insert([
             'paymentMethod'=>'PayPal',
             'transactionId'=>'1234',
+            'amount'=>110.00,
             'customer_id'=>$customer->id,
             'created_at'=>$now,
             'updated_at'=>$now
@@ -23,6 +24,7 @@ class TransactionsTableSeeder extends Seeder
          DB::table('transactions')->insert([
             'paymentMethod'=>'CC',
             'transactionId'=>'567',
+            'amount'=>100.00,
             'customer_id'=>$customer->id,
             'created_at'=>$now,
             'updated_at'=>$now

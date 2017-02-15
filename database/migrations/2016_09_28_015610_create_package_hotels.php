@@ -27,6 +27,6 @@ class CreatePackageHotels extends Migration
      */
     public function down()
     {
-        Schema::drop('packages_hotels');
+        Schema::drop('package_hotels');
     }
 }
