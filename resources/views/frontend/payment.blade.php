@@ -5,6 +5,13 @@
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
             <div class="col-md-12">
+            <div>
+                    @foreach (['danger', 'warning', 'success', 'info'] as $msg)
+                      @if(Session::has($msg))
+                        <p class="alert alert-{{ $msg }}">{{ Session::get($msg) }} <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a></p>
+                      @endif
+                    @endforeach
+              </div>
                 <h1 class="blue-header">Check Out</h1>
                 {!! Form::open(['route' => ['payment'], 'method' => 'post']) !!}
                 <div class="row">
