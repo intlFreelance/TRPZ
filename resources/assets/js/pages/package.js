@@ -225,8 +225,6 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
   }
 
   function submit(file, form) {
-      // console.log(form.$valid,"form valid");
-      // console.log(form,"form");
     if (!form.$valid || !nonFormValidation()) {
           return;
     }
@@ -251,6 +249,8 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
       retailMarkupPercentage: $scope.retailMarkupPercentage,
       trpzMarkupPercentage: $scope.trpzMarkupPercentage,
       jetSetGoMarkupPercentage: $scope.jetSetGoMarkupPercentage,
+      jetSetGoCode: $scope.jetSetGoCode,
+      jetSetGoDiscount: $scope.jetSetGoDiscount,
       hotels: $scope.addedHotels,
       activities: $scope.addedActivities
     };
@@ -291,6 +291,8 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
         $scope.retailMarkupPercentage = parseFloat(package.retailMarkupPercentage);
         $scope.trpzMarkupPercentage = parseFloat(package.trpzMarkupPercentage);
         $scope.jetSetGoMarkupPercentage = parseFloat(package.jetSetGoMarkupPercentage);
+        $scope.jetSetGoCode = package.jetSetGoCode;
+        $scope.jetSetGoDiscount = parseFloat(package.jetSetGoDiscount);
         $scope.addedHotels = hotels;
         $scope.addedActivities  = activities;
     }).catch(function(error){
@@ -327,7 +329,7 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
   }
 
   function nonFormValidation() {
-      return dateValidation() && hotelValidation() && categoriesValidation();
+      return dateValidation() && hotelValidation() && categoriesValidation() ;
       
   }
   function categoriesValidation(){

@@ -171,41 +171,62 @@
             </div>
         </div>
         <div class="row">
-        <div class="col-sm-4">
-            <div class="form-group">
-                <label>Retail Markup Percentage</label>
-                <input ng-model="retailMarkupPercentage" name="retailMarkupPercentage" type="number" min="0" max="100" class="form-control" required>
-                <span style="color:red" ng-show="packageForm.retailMarkupPercentage.$invalid && (packageForm.$submitted || packageForm.retailMarkupPercentage.$touched)">
-                    <span ng-show="packageForm.retailMarkupPercentage.$error.required">Retail Markup Percentage required.</span>
-                    <span ng-show="packageForm.retailMarkupPercentage.$error.min">Retail Markup Percentage must be greater or equal than 0.</span>
-                    <span ng-show="packageForm.retailMarkupPercentage.$error.max">Retail Markup Percentage must be less or equal than 100.</span>
-                </span>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label>Retail Markup Percentage</label>
+                    <input ng-model="retailMarkupPercentage" name="retailMarkupPercentage" type="number" min="0" max="100" class="form-control" required>
+                    <span style="color:red" ng-show="packageForm.retailMarkupPercentage.$invalid && (packageForm.$submitted || packageForm.retailMarkupPercentage.$touched)">
+                        <span ng-show="packageForm.retailMarkupPercentage.$error.required">Retail Markup Percentage required.</span>
+                        <span ng-show="packageForm.retailMarkupPercentage.$error.min">Retail Markup Percentage must be greater or equal than 0.</span>
+                        <span ng-show="packageForm.retailMarkupPercentage.$error.max">Retail Markup Percentage must be less or equal than 100.</span>
+                    </span>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label>TRPZ Markup Percentage</label>
+                    <input ng-model="trpzMarkupPercentage" name="trpzMarkupPercentage" type="number" min="0" max="100" class="form-control" required>
+                    <span style="color:red" ng-show="packageForm.trpzMarkupPercentage.$invalid && (packageForm.$submitted || packageForm.trpzMarkupPercentage.$touched)">
+                        <span ng-show="packageForm.trpzMarkupPercentage.$error.required">TRPZ Markup Percentage required.</span>
+                        <span ng-show="packageForm.trpzMarkupPercentage.$error.min">TRPZ Markup Percentage must be greater or equal than 0.</span>
+                        <span ng-show="packageForm.trpzMarkupPercentage.$error.max">TRPZ Markup Percentage must be less or equal than 100.</span>
+                    </span>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label>Jet Set Go Markup Percentage</label>
+                    <input ng-model="jetSetGoMarkupPercentage" name="jetSetGoMarkupPercentage" type="number" min="0" max="100" class="form-control" required>
+                    <span style="color:red" ng-show="packageForm.jetSetGoMarkupPercentage.$invalid && (packageForm.$submitted || packageForm.jetSetGoMarkupPercentage.$touched)">
+                        <span ng-show="packageForm.jetSetGoMarkupPercentage.$error.required">Jet Set Go Markup Percentage required.</span>
+                        <span ng-show="packageForm.jetSetGoMarkupPercentage.$error.min">Jet Set Go Markup Percentage must be greater or equal than 0.</span>
+                        <span ng-show="packageForm.jetSetGoMarkupPercentage.$error.max">Jet Set Go Markup Percentage must be less or equal than 100.</span>
+                    </span>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label>Jet Set Go Code</label>
+                    <input ng-model="jetSetGoCode" name="jetSetGoCode" type="text" ng-minlength="5" ng-maxlength="15" class="form-control" ng-required="jetSetGoDiscount">
+                    <span style="color:red" ng-show="packageForm.jetSetGoCode.$invalid && (packageForm.$submitted || packageForm.jetSetGoCode.$touched)">
+                        <span ng-show="packageForm.jetSetGoCode.$error.required">Jet Set Go Code required.</span>
+                        <span ng-show="packageForm.jetSetGoCode.$error.minlength">Jet Set Go Code must be at least 5 characters long.</span>
+                        <span ng-show="packageForm.jetSetGoCode.$error.maxlength">Jet Set Go Code must be 15 or less characters long.</span>
+                    </span>
+                </div>
+            </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label>Jet Set Go Discount</label>
+                        <input ng-model="jetSetGoDiscount" name="jetSetGoDiscount" type="number" min="0" class="form-control" ng-required="jetSetGoCode">
+                    <span style="color:red" ng-show="packageForm.jetSetGoDiscount.$invalid && (packageForm.$submitted || packageForm.jetSetGoDiscount.$touched)">
+                        <span ng-show="packageForm.jetSetGoDiscount.$error.required">Jet Set Go Discount required.</span>
+                        <span ng-show="packageForm.jetSetGoDiscount.$error.min">Jet Set Go Discount must be greater than zero.</span>
+                    </span>
+                    </div>
             </div>
         </div>
-        <div class="col-sm-4">
-            <div class="form-group">
-                <label>TRPZ Markup Percentage</label>
-                <input ng-model="trpzMarkupPercentage" name="trpzMarkupPercentage" type="number" min="0" max="100" class="form-control" required>
-                <span style="color:red" ng-show="packageForm.trpzMarkupPercentage.$invalid && (packageForm.$submitted || packageForm.trpzMarkupPercentage.$touched)">
-                    <span ng-show="packageForm.trpzMarkupPercentage.$error.required">TRPZ Markup Percentage required.</span>
-                    <span ng-show="packageForm.trpzMarkupPercentage.$error.min">TRPZ Markup Percentage must be greater or equal than 0.</span>
-                    <span ng-show="packageForm.trpzMarkupPercentage.$error.max">TRPZ Markup Percentage must be less or equal than 100.</span>
-                </span>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="form-group">
-                <label>Jet Set Go Markup Percentage</label>
-                <input ng-model="jetSetGoMarkupPercentage" name="jetSetGoMarkupPercentage" type="number" min="0" max="100" class="form-control" required>
-                <span style="color:red" ng-show="packageForm.jetSetGoMarkupPercentage.$invalid && (packageForm.$submitted || packageForm.jetSetGoMarkupPercentage.$touched)">
-                    <span ng-show="packageForm.jetSetGoMarkupPercentage.$error.required">Jet Set Go Markup Percentage required.</span>
-                    <span ng-show="packageForm.jetSetGoMarkupPercentage.$error.min">Jet Set Go Markup Percentage must be greater or equal than 0.</span>
-                    <span ng-show="packageForm.jetSetGoMarkupPercentage.$error.max">Jet Set Go Markup Percentage must be less or equal than 100.</span>
-                </span>
-            </div>
-        </div>
-        <div class="col-sm-6"></div>
-        </div>
+
         <div class="row">
         <div class="col-sm-12">
             <h4 id="destination-text" class="pull-left">Select a Destination</h4>

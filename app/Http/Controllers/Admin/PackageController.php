@@ -276,6 +276,8 @@ class PackageController extends Controller
         $package->retailMarkupPercentage = $newPackage['retailMarkupPercentage'];
         $package->trpzMarkupPercentage = $newPackage['trpzMarkupPercentage'];
         $package->jetSetGoMarkupPercentage= $newPackage['jetSetGoMarkupPercentage'];
+        $package->jetSetGoCode = $newPackage['jetSetGoCode'];
+        $package->jetSetGoDiscount = $newPackage['jetSetGoDiscount'];
         
         $package->save();
         
