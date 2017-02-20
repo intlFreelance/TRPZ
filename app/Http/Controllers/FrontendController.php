@@ -511,7 +511,7 @@ class FrontendController extends Controller
                 'prices'=>$prices,
                 'supplements'=>$supplementFeesArray,
                 'boardBases'=>$boardBasesArray,
-                'jetSetGoCode'=> $jetSetGoCode ? true : false,
+                'jetSetGoCode'=> !empty($jetSetGoCode) ? true : false,
                 'jetSetGoDiscount'=>$jetSetGoDiscount
             ];
         
