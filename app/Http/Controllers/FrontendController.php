@@ -115,6 +115,7 @@ class FrontendController extends Controller
             $roomTypeId = $row->options->roomTypeId;
             $activities = $row->options->activities;
             $hotelInCart = $row->options->hotel;
+            $jetSetGoCode = $row->options->jetSetGoCode;
             $data = [
                 'request'=>[
                     'HotelIdsInfo'=>[
@@ -158,8 +159,8 @@ class FrontendController extends Controller
                 $roomAvailable &= $availability->status;
             }
             //checking prices availabilities
-            $actualPricesAndFees = $this->getHotelPriceDetails($hotel, $roomTypeId, $package, $activities);
-            $previousPricesAndFees = $this->getHotelPriceDetails($hotelInCart, $roomTypeId, $package, $activities);
+            $actualPricesAndFees = $this->getHotelPriceDetails($hotel, $roomTypeId, $package, $activities, $jetSetGoCode);
+            $previousPricesAndFees = $this->getHotelPriceDetails($hotelInCart, $roomTypeId, $package, $activities, $jetSetGoCode);
             $previousPrice =  floatval(str_replace(",", "", $previousPricesAndFees['prices']["price"]));
             $actualPrice = floatval(str_replace(",", "", $actualPricesAndFees['prices']["price"]));
 
@@ -417,14 +418,14 @@ class FrontendController extends Controller
             $endDate = Carbon::parse($this->request->query('end-date'))->format('Y-m-d');
             $hotel = $this->getTouricoHotel($hotelId, $startDate, $endDate, $package->numberOfPeople);
             $activities = json_decode($this->request->query('activities'));
-            
-            $pricesAndFees = $this->getHotelPriceDetails($hotel, $roomTypeId, $package, $activities);
+            $jetSetGoCode = !empty($this->request->query('jetSetGoCode')) ? $this->request->query('jetSetGoCode') : null;
+            $pricesAndFees = $this->getHotelPriceDetails($hotel, $roomTypeId, $package, $activities, $jetSetGoCode);
             return response()->json(['success'=>true, 'prices'=>$pricesAndFees['prices'], 'supplements'=>$pricesAndFees['supplements'], 'boardBases'=>$pricesAndFees['boardBases']]);
         }catch(Exception $ex){
             return response()->json(["success"=>false, "message"=>$ex->getMessage()]);
         }
     }
-    private function getHotelPriceDetails($hotel, $roomTypeId, $package, $activities){
+    private function getHotelPriceDetails($hotel, $roomTypeId, $package, $activities, $jetSetGoCode=null){
             $roomTypes = $hotel->RoomTypes->RoomType;
             $roomType = null;
             if(is_array($roomTypes)){
@@ -494,16 +495,24 @@ class FrontendController extends Controller
             foreach($activities as $activity){
                 $activitiesFees += $activity->ActivityPricing->price;
             }
+            $jetSetGoDiscount = 0.00;
+            if(!empty($jetSetGoCode)){
+                if($jetSetGoCode == $package->jetSetGoCode){
+                    $jetSetGoDiscount = $package->jetSetGoDiscount;
+                }
+            }
             $prices = [
                 "retail"=> number_format(round($subTotal * (1 + $package->retailMarkupPercentage/100) + $additionalFees + $activitiesFees, 2),2),
                 "trpz"=> number_format(round($subTotal * (1 + $package->trpzMarkupPercentage/100) + $additionalFees + $activitiesFees, 2),2),
-                "jetSetGo"=> number_format(round($subTotal * (1 + $package->jetSetGoMarkupPercentage/100) + $additionalFees + $activitiesFees, 2),2),
+                "jetSetGo"=> number_format(round($subTotal * (1 + $package->jetSetGoMarkupPercentage/100) + $additionalFees + $activitiesFees - $jetSetGoDiscount, 2),2),
                 "price"=> $subTotal,
             ];
             return [
                 'prices'=>$prices,
                 'supplements'=>$supplementFeesArray,
-                'boardBases'=>$boardBasesArray
+                'boardBases'=>$boardBasesArray,
+                'jetSetGoCode'=> $jetSetGoCode ? true : false,
+                'jetSetGoDiscount'=>$jetSetGoDiscount
             ];
         
     }

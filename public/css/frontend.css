@@ -543,8 +543,19 @@ a.hero-button:hover{
 }
 #start-playing {
     background: #662d91;
-    color: white;
     border: 2px solid #662d91;
+}
+#JetSetGoCode{
+    width: 220px;
+    display: inline-block;
+}
+.btn-book-now{
+    background-color: rgba(255, 255, 255, 0.44);
+    border-radius: 5px;
+    color: white;
+    width: 145px;
+    border-style: none;
+    margin-left: 10px;
 }
 #book-now {
     background: #55a218;

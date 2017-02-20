@@ -81,6 +81,7 @@
             <input type="hidden" id="jetSetGo" name="jetSetGo"/>
             <input type="hidden" id="retail" name="retail"/>
             <input type="hidden" id="hotel" name="hotel"/>
+            <input type="hidden" id="jetSetGoCode" name="jetSetGoCode"/>
             <div id="divActivityForms"></div>
             <div class="container">
                 <div class="col-md-6">
@@ -245,7 +246,10 @@
                                 <p style="font-size: 14px;">Jet Set Go® offers you a whole new way pay for travel: by playing games! Download Jet Set Go® right now to stop paying for travel and start playing for travel!</p>
                             </div>
                         </div>
-                        <input type="button" id="start-playing" class="button package-buttons"   value="Start Playing!" onclick="checkCancellationPolicy('jetSetGo');"/>
+                        <div class="button package-buttons" id="start-playing">
+                            <input type="text" placeholder="Enter code" id="txtJetSetGoCode" class="form-control" />
+                            <input type="button" value="Book Now" class="btn-book-now"  onclick="checkCancellationPolicy('jetSetGo');"/>
+                        </div>
                     </div>
 
                 </div>
@@ -726,7 +730,8 @@ function loadPrices(){
         'end-date' : $('#endDate').val(),
         'roomType-id' : $('#roomTypeId').val(),
         'package-id' : $("#packageId").val(),
-        'activities': JSON.stringify(activities)
+        'activities': JSON.stringify(activities),
+        'jetSetGoCode': $("#txtJetSetGoCode").val()
     };
     showLoading(true);
     $.get("/get-hotel-price", data, function(data){
@@ -743,6 +748,12 @@ function loadPrices(){
         $("#jetSetGoPrice").html("$ "+data.prices.jetSetGo);
         $("#jetSetGoPrice2").html("$ "+data.prices.jetSetGo);
         $("#jetSetGo").val(data.prices.jetSetGo);
+        if(data.jetSetGoCode && parseFloat(data.jetSetGoDiscount) > 0){
+            $("#jetSetGoCode").val(data.jetSetGoCode);
+        }else{
+            $("#jetSetGoCode").val("");
+        }
+
         var retailPrice = parseFloat(data.prices.retail.replace(",",""));
         var jetSetGoPrice = parseFloat(data.prices.jetSetGo.replace(",",""));
         var trpzPrice = parseFloat(data.prices.trpz.replace(",",""));
@@ -914,6 +925,13 @@ function ActivityPreBook(){
         });
     });
 }
+$("#txtJetSetGoCode").on("blur", function(){
+    if(!$("#roomTypeId").val()){
+        alert("Please select a Room Type first.");
+        $(this).val("");
+    }
+    loadPrices();
+});
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDB05Vggn0A3-DwI7AwGWEe2ea5E5K1ZYs&callback=initMap" async defer></script>
 @endsection

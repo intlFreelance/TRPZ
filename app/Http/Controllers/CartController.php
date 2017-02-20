@@ -66,6 +66,7 @@ class CartController extends Controller{
             'boardBases'        => $boardBases,
             'supplements'       => $supplements,
             'priceType'         => $input['priceType'],
+            'jetSetGoCode'      => $input['jetSetGoCode']
         ])->setTaxRate(0);
         return redirect(route('cart.index'));
     }

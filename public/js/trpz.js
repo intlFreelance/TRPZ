@@ -11516,6 +11516,11 @@ app.controller('PackageController', function($scope, $http, $log, $filter, Uploa
   }
 
   function submit(file, form) {
+      if($scope.jetSetGoCode || $scope.jetSetGoDiscount){
+          if(!$scope.jetSetGoCode || !$scope.jetSetGoDiscount){
+              return;
+          }
+      }
     if (!form.$valid || !nonFormValidation()) {
           return;
     }
